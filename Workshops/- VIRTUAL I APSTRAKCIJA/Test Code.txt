@@ -1,0 +1,62 @@
+#include <iostream>
+using namespace std;
+
+char* GetNizKaraktera(const char* tekst) {
+	if (tekst == nullptr)
+		return nullptr;
+	int vel = strlen(tekst) + 1;
+	char* novi = new char[vel];
+	strcpy_s(novi, vel, tekst);
+	return novi;
+}
+
+class Osoba {
+public:
+	char* ImePrezime;
+
+	Osoba(const char * ime = "---") {
+		ImePrezime = GetNizKaraktera(ime);
+	}
+
+	~Osoba() {
+		delete[]ImePrezime;
+		ImePrezime = nullptr;
+	}
+	
+	virtual void Info() = 0; // ova klasa je sada apstraktna i mora imati identican Info u svakoj sub klasi
+};
+
+class Student:public Osoba {
+public:
+	char* index;
+	Student(const char* ime = "---",const char* indeks = "---"):Osoba(ime) {
+		index = GetNizKaraktera(indeks);
+	}
+
+	~Student() {
+		delete[]index;
+		index = nullptr;
+	}
+
+	void Info() {
+		cout << *this;
+	}
+
+	friend ostream& operator<< (ostream& COUT, const Student& obj) {
+		COUT <<obj.ImePrezime<<" "<< obj.index << endl;
+		return COUT;
+	}
+
+};
+
+
+
+void main() {
+
+	Osoba* osoba1 = new Student("Vedad","IB180079");
+
+	osoba1->Info();
+	
+
+	system("PAUSE>0");
+}

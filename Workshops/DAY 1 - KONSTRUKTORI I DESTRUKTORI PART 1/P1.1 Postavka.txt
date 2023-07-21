@@ -1,0 +1,47 @@
+#include <iostream>
+using namespace std;
+class Predmet {
+public:char* _naziv;
+public: int _ocjena;
+	  //Napraviti
+	  //1. Defaultni konstruktor
+	  //2. Konstruktor koji prima parametre:naziv i ocjena
+	  //3. Konstruktor kopije
+	  //4. Operator dodjele
+	  //4. Destruktor
+	  //5. Ispis
+	  //6. COUT
+
+
+	  
+
+
+};
+class Student{
+	Predmet* _polozeni;
+	int _trenutno;
+	int _max;
+public:
+	//konstruktor, 
+	//konstruktor kopije, 
+	//destruktor 
+	//potrebne funkcije
+
+	void AddPolozeniPredmet(Predmet& original) {
+		//Dodaje novi polozeni predmet u niz
+		//Voditi računa da se ne moze dodavati isti predmet (istog naziva)
+
+	}
+
+	void Ispis() {
+
+	}
+};
+
+
+
+void main() {
+
+	system("pause>0");
+}
+

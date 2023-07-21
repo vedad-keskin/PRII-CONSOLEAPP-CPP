@@ -1,0 +1,70 @@
+#include <iostream>
+using namespace std;
+
+template<class T>
+class Kolekcija
+{
+public:
+	T* niz;
+	int max;
+	int trenutno;
+
+	Kolekcija(int max = 10) {
+	}
+	~Kolekcija() {
+	}
+	bool ukloni() {
+		//uklanja zadnji element iz niza
+	}
+	bool ukloni(T el) {
+		//Uklanja element koji je jednak proslijeđenom
+	}
+	bool ukloni(int pozicija) {
+		//uklanja element na određenoj poziciji
+	}
+
+	void dodaj(T el) {
+	}
+	bool prazan() {
+		//vrši provjeru da li je niz prazan
+	}
+
+	T* GetNajmanjiElement() {
+		//vraća najmanji element iz niza i to kao pokazivač
+	}
+
+	//preklopiti operator <<
+};
+
+class Zivotinja
+{
+private:
+	char *vrsta;
+	int tezina;
+
+public:
+	Zivotinja() {
+	}
+
+	Zivotinja(char *_vrsta, int _tezina) {
+	}
+	~Zivotinja() {  }
+	
+	//konstruktor kopije
+
+	//operator < koji poredi dvije životinje po težini
+
+	//operator =
+
+	//operator ==
+
+	//operator<< koji ispisuje vrstu i težinu životinje
+
+	//operator>> koji učitava vrstu i težinu životinje
+};
+
+void main() {
+	
+	
+	system("pause>0");
+}

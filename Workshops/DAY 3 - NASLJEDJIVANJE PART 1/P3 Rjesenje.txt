@@ -1,0 +1,288 @@
+#include<iostream>
+using namespace std;
+
+char* GetNizKaraktera(const char* tekst) {
+	if (tekst == nullptr)
+		return nullptr;
+	int vel = strlen(tekst) + 1;
+	char* novi = new char[vel];
+	strcpy_s(novi, vel, tekst);
+	return novi;
+}
+
+class Osoba {
+protected:
+	char* _Imeprezime;
+	char* _JMBG;
+public:
+	Osoba() {
+		const char* temp = "NN";
+		_Imeprezime = GetNizKaraktera(temp);
+		_JMBG = GetNizKaraktera(temp);
+
+	}
+
+	Osoba(const char * ime,const char * jmbg) {
+		_Imeprezime = GetNizKaraktera(ime);
+		_JMBG = GetNizKaraktera(jmbg);
+	}
+
+	Osoba(const Osoba& obj) {
+		_Imeprezime = GetNizKaraktera(obj._Imeprezime);
+		_JMBG = GetNizKaraktera(obj._JMBG);
+	}
+
+	Osoba& operator = (const Osoba& obj) {
+		if (this != &obj) {
+			delete[]_Imeprezime;
+			delete[]_JMBG;
+
+			_Imeprezime = GetNizKaraktera(obj._Imeprezime);
+			_JMBG = GetNizKaraktera(obj._JMBG);
+
+		}
+		return *this;
+	}
+
+	~Osoba() {
+		delete[]_Imeprezime;
+		_Imeprezime = nullptr;
+		delete[]_JMBG;
+		_JMBG = nullptr;
+	}
+
+	void Ispis() {
+		cout << _Imeprezime << " (" << _JMBG << ")" << endl;
+	}
+		
+	
+
+};
+
+class Profesor: public Osoba {
+public:
+	char* _Titula;
+
+	Profesor():Osoba() {
+		const char* temp = "prof";
+		_Titula = GetNizKaraktera(temp);
+	}
+
+	Profesor(const char* ime, const char* jmbg,const char* id):Osoba(ime,jmbg) {
+		_Titula = GetNizKaraktera(id);
+	}
+
+	Profesor(const Profesor& obj):Osoba(obj) {
+		_Titula = GetNizKaraktera(obj._Titula);
+		
+	}
+
+	Profesor& operator = (const Profesor& obj) {
+		if (this != &obj) {
+			delete[]_Titula;
+
+			Osoba::operator=(obj);
+			_Titula = GetNizKaraktera(obj._Titula);
+
+		}
+		return *this;
+	}
+
+	~Profesor() {
+		delete[]_Titula;
+		_Titula = nullptr;
+	}
+	
+	void Ispis(){
+		//cout << _ProfesorID << " - ";
+		//Osoba::Ispis();
+		cout << _Titula << " " << _Imeprezime << " (" << _JMBG << ")" << endl;
+		
+	}
+
+};
+
+class Predmet {
+public:
+	char* _Naziv;
+	int* _ECTS;
+	Profesor* _ProfesorPredmeta;
+
+	Predmet() {
+		const char* temp = "Nema predmeta";
+		_Naziv = GetNizKaraktera(temp);
+		_ECTS = new int(0);
+		_ProfesorPredmeta = new Profesor();
+		
+
+	}
+
+	Predmet(const char* naziv, int ects, Profesor profesor) {
+		_Naziv = GetNizKaraktera(naziv);
+		_ECTS = new int(ects);
+		_ProfesorPredmeta = new Profesor(profesor);
+	}
+
+	Predmet(const Predmet& obj) {
+		_Naziv = GetNizKaraktera(obj._Naziv);
+		_ECTS = new int(*obj._ECTS);
+		_ProfesorPredmeta = new Profesor(*obj._ProfesorPredmeta);
+	}
+
+	Predmet& operator = (const Predmet& obj) {
+		if (this != &obj) {
+			delete[]_Naziv;
+			delete _ECTS;
+			delete _ProfesorPredmeta;
+
+			_Naziv = GetNizKaraktera(obj._Naziv);
+			_ECTS = new int(*obj._ECTS);
+			_ProfesorPredmeta = new Profesor(*obj._ProfesorPredmeta);
+
+		}
+		return *this;
+	}
+
+	~Predmet() {
+		delete[]_Naziv;
+		_Naziv = nullptr;
+		delete _ECTS;
+		_ECTS = nullptr;
+		delete _ProfesorPredmeta;
+		_ProfesorPredmeta = nullptr;
+	}
+
+	void Ispis() {
+		cout << _Naziv << " (" << *_ECTS << ") kojeg predaje ";
+	    _ProfesorPredmeta->Ispis();
+	}
+
+
+};
+
+class Student: public Osoba {
+public:
+	char* _BrojIndeksa;
+	Predmet* _PolozeniPredmeti;
+	int _trenutnoPredmeta;
+	int _maxPredmeta;
+
+	Student() :Osoba() {
+		const char* temp = "IB00000";
+		_BrojIndeksa = GetNizKaraktera(temp);
+		_trenutnoPredmeta = 0;
+		_maxPredmeta = 3;
+		_PolozeniPredmeti = new Predmet[_maxPredmeta];
+	}
+
+	Student(const char* ime, const char* jmbg, const char* index, int max) :Osoba(ime, jmbg) {
+		_BrojIndeksa = GetNizKaraktera(index);
+		_trenutnoPredmeta = 0;
+		_maxPredmeta = max;
+		_PolozeniPredmeti = new Predmet[_maxPredmeta];
+	}
+
+	Student(const Student& obj) :Osoba(obj) {
+		_BrojIndeksa = GetNizKaraktera(obj._BrojIndeksa);
+		_trenutnoPredmeta = obj._trenutnoPredmeta;
+		_maxPredmeta = obj._maxPredmeta;
+		_PolozeniPredmeti = new Predmet[_maxPredmeta];
+		for (int i = 0; i < _trenutnoPredmeta; i++)
+		{
+			_PolozeniPredmeti[i] = obj._PolozeniPredmeti[i];
+		}
+
+	}
+
+	Student& operator = (const Student& obj) {
+		if (this != &obj) {
+			delete[]_BrojIndeksa;
+			delete[]_PolozeniPredmeti;
+
+			Osoba::operator=(obj);
+			_BrojIndeksa = GetNizKaraktera(obj._BrojIndeksa);
+			_trenutnoPredmeta = obj._trenutnoPredmeta;
+			_maxPredmeta = obj._maxPredmeta;
+			_PolozeniPredmeti = new Predmet[_maxPredmeta];
+			for (int i = 0; i < _trenutnoPredmeta; i++)
+			{
+				_PolozeniPredmeti[i] = obj._PolozeniPredmeti[i];
+			}
+
+		}
+		return *this;
+	}
+	
+	void AddPolozeni(Predmet predmet) {
+		if (_maxPredmeta == _trenutnoPredmeta) {
+			cout << "Student ne moze primiti vise predmeta" << endl;
+			return;
+		}
+		for (int i = 0; i < _trenutnoPredmeta; i++)
+		{
+			if (strcmp(_PolozeniPredmeti[i]._Naziv, predmet._Naziv) == 0) {
+				cout << "Student vec ima unesen odabrani predmet" << endl;
+				return;
+			}
+		}
+
+
+		_PolozeniPredmeti[_trenutnoPredmeta] = predmet;
+		_trenutnoPredmeta++;
+	}
+
+	~Student() {
+		delete[]_BrojIndeksa;
+		_BrojIndeksa = nullptr;
+		delete[]_PolozeniPredmeti;
+		_PolozeniPredmeti = nullptr;
+	}
+
+	void Ispis() {
+		cout << _BrojIndeksa << " - ";
+		Osoba::Ispis();
+		cout << "===========POLOZENI PREDMETI===========" << endl;
+		for (int i = 0; i < _trenutnoPredmeta; i++)
+		{
+			cout << i + 1<<". ";
+			_PolozeniPredmeti[i].Ispis();
+		}
+		cout << "Student je polozio " << _trenutnoPredmeta <<" predmeta"<< endl;
+
+	}
+
+
+};
+
+
+void main() {
+	//Osoba osoba("Vedad Keskin","1212998150001");
+
+	Student student1("Vedad Keskin", "1212998150001","IB180079",4);
+	
+	Profesor profesor1("Denis Music","123123323","doc. dr. prof.");
+	Profesor profesor2("Elmir Babovic", "1312313", "babo.");
+	Profesor profesor3("Nina Bijedic", "23123", "...");
+
+	Predmet predmet1("Programiranje 2",7, profesor1);
+	Predmet predmet2("Programiranje 1", 7, profesor2);
+	Predmet predmet3("Matematika 1", 6, profesor3);
+
+
+	student1.AddPolozeni(predmet1);
+	student1.AddPolozeni(predmet2);
+	student1.AddPolozeni(predmet3);
+	student1.AddPolozeni(predmet3);
+
+
+	Student std=student1;
+	std.Ispis();
+
+	
+
+	
+	
+
+
+	system("PAUSE>0");
+}

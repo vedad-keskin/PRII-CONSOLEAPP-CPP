@@ -1,0 +1,20 @@
+Svaki ispit sadrzi 45 bodova
+
+------------------------------------------- 
+** 
+TEORIJA -> 4 
+** 
+KOLEKCIJA -> 7 
+** 
+GOST/BORAVAK -> 12 
+** 
+THREADING -> 4 
+** 
+FAJLOVI -> 6 
+** 
+PRETRAGA KOMENTARA -> 5 
+*** 
+DESTRUKTOR, DEALOKACIJA I USPJESNO IZVRSENJE MAIN-A -> 7
+
+--------------
+

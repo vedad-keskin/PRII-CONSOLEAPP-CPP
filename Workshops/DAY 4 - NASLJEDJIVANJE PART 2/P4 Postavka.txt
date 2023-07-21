@@ -1,0 +1,102 @@
+#include <iostream>
+using namespace std;
+
+class Media
+{
+public:
+    char* _naslov;
+    char* _zanr;
+    int _godinaObjavljivanja;
+    float _ocjena;
+
+    // Implementirati potrebne konstruktore i destruktor
+
+   
+
+
+
+  
+};
+
+class Serija : public Media
+{
+public:
+    int _brojEpizoda;
+    int* _brojSezona;
+
+    // Implementirati potrebne konstruktore i destruktor
+  
+
+    
+
+
+};
+
+class Film : public Media
+{
+public:
+    int _trajanje; // misli se na trajanje u minutama
+
+
+ 
+};
+
+class Korisnik
+{
+public:
+    char* _korisnickoIme;
+    char* _lozinka;
+
+    Film* _pregledaniFilmovi;
+    int _maxPregledanihFilmova;
+    int _trenutnoPregledanihFilmova;
+
+    Serija* _pregledaneSerije;
+    int _maxPregledanihSerija;
+    int* _trenutnoPregledanihSerija;
+
+    // Implementirati potrebne konstruktore i destruktor
+
+
+
+    bool IsUserDataValid(const char* username,const char* password)
+    {
+        // Funkcija vraca true false u ovisnosti od toga da li su proslijedjeni podaci tacni
+        // Odnosno da li se korisnik moze logirati ili ne
+    }
+
+    bool DodajFilm(Film film)
+    {
+        // Funkcija ima za cilj dodavanje novog filma u niz pregldanih.
+        // Voditi racuna da se ne mogu dodati dva ista filma (to su filmovi koji imaju isti naziv i godinu izdavanja)
+    }
+
+    bool DodajSeriju(Serija serija)
+    {
+        // Funkcija ima za cilj dodavanje nove serije u niz pregldanih.
+        // Voditi racuna da se ne mogu dodati dvije iste serije (to su serije koje imaju isti naziv i godinu izdavanja)
+    }
+
+    Film* GetNajnovijiFilm()
+    {
+        // Funkcija kao rezultat vraca pokazivac na najnoviji film kojeg je korisnik odgledao
+    }
+
+    Serija* GetNajboljaSerija()
+    {
+        // Funkcija kao rezultat vraca pokazivac na seriju sa najvecom ocjenu koju je korisnik odgledao
+
+    }
+};
+
+void main()
+{
+
+    
+
+
+
+
+
+
+}

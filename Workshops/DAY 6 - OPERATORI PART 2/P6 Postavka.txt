@@ -1,0 +1,82 @@
+1.
+#include<iostream>
+using namespace std;
+
+class Predmet
+{
+	char* _naziv;
+	int _godinaStudija;
+public:
+	//Potrebne konstruktor i destruktor funkcije
+
+	// operator =
+	// operator ==
+	//operator <<
+};
+class Prisustvo
+{
+	char* _student; //ne smije sadržavati brojeve, regex: [0-9]
+	char* _brojIndeksa;
+	int _brojSati;
+public:
+	//Potrebne konstruktor i destruktor funkcije
+
+	// operator =
+	//operator ==
+	// operator <<
+};
+class Nastava {
+	//Oznaka prostorije
+	char* _prostorija;
+	char *_datum;
+	char* _satnica;
+	char* _predavac;
+	//P, V ili W
+	Predmet* _predmet;
+	char _tipNastave;
+	int* _odrzanoSati;
+	Prisustvo _prisutni[50];
+public:
+	int _trenutnoPrisutnih;
+	//Potrebne konstruktor i destruktor funkcije
+
+	// operator <<
+
+	//Preklopljeni operator+= za dodavanje objekata tipa Prisustvo u niz _prisutni
+	//Onemogućiti dodavanje istog prisustva 
+	
+
+	//Preklopljeni operator-= za uklanjanje objekata tipa Prisustvo iz niza _prisutni
+	
+	//Preklopljeni operator [] koji na osnovu parametra broj indeksa  provjerava da li je 
+	//odreðeni student prisustvovao nastavi
+	bool operator [](const char brIndeksa[]) {
+		
+	}
+	
+};
+void main()
+{
+	Prisustvo p1("Test Test", "IB111", 2);
+	Prisustvo p2("Niko Nikic", "IB222", 4);
+	Prisustvo p3("Miro Miric", "IB333", 6);
+
+
+	Predmet predmet("Programiranje 3", 2);
+
+	Nastava n("AMF1", "15.02.2019", "14:00-17:00", "Denis Music", predmet, 'P', 3);
+	n += p1;
+	n += p2;
+	n += p1;
+	n -= p3;
+
+	bool daLiJePrisustvovao = n["IB4444"];
+	if (daLiJePrisustvovao)
+		cout << "IB4444 je prisustvovao nastavi\n";
+	else
+		cout << "IB4444 nije prisustvovao nastavi\n";
+
+	cout << n << endl;
+
+	system("pause>0");
+}

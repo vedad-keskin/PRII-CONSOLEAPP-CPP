@@ -1,0 +1,37 @@
+#include<iostream>
+using namespace std;
+
+class Vozilo
+{
+private:
+	char* markaVozila;
+	int godProizvodnje;
+public:
+	//potrebne konstruktor funkcije (uključujući konstruktor kopije), destruktor
+	void Ispis() {
+		
+	}
+};
+class Vozac
+{
+	char ime[20];
+	char* prezime;
+	Vozilo* NjegovoVozilo;
+	int BrVozacke;
+public:
+	//potrebne konstruktor funkcije (uključujući konstruktor kopije), destruktor
+	
+	void Ispis() {
+		
+	}
+	void DodajVozilo(Vozilo v) {
+		
+	}
+};
+
+
+void main() {
+
+
+	system("pause>0");
+}

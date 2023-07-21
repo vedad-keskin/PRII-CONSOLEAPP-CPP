@@ -1,0 +1,288 @@
+#include <iostream>
+using namespace std;
+
+
+
+class Predmet { // naziv predmeta i ocjene    Matematika 2 - 6   Nema predmeta - 5 
+public:char* _naziv; // Matematika 2 + enter 13 
+public: int _ocjena;
+public:
+	//Napraviti
+	//1. Defaultni konstruktor -
+	//2. Konstruktor koji prima parametre:naziv i ocjena
+	//3. Konstruktor kopije
+	//4. Operator dodjele
+	//4. Destruktor
+	//5. Ispis
+	//6. COUT
+
+	//const char* GetNaziv() { return _naziv; } // geter da bi mogli pristupiti nazivu bez da ga mozemo mijenjati
+
+	Predmet() {  // defaultni constructor 
+
+		const char* temp = "Nema predmeta"; // u dinamickoj memoriji 
+		//char temp[] = "Nema predmeta"; // u statickoj
+		int vel = strlen(temp) + 1; // 14  
+		_naziv = new char[vel];     // u dinamicko memoriji napravi naziv koji ce imat 14 charatera
+		strcpy_s(_naziv, vel, temp);  // kopiraj string 1. gdje ce kopirati 2.koliko karakera 3.sta ce kopirati 
+
+		_ocjena = 5;
+	}
+
+	Predmet(const char* NAZIV, int OCJENA) { // obicni constructor
+
+		int vel = strlen(NAZIV) + 1; // koliko karaktera ima taj naziv Programiranje  14 
+		_naziv = new char[vel]; // alocirati 14 karaktera 
+		strcpy_s(_naziv, vel, NAZIV);
+
+
+
+		_ocjena = OCJENA;
+	}
+
+	Predmet(const Predmet& obj) {  // COPY CONSTRUCTOR
+
+		int vel = strlen(obj._naziv) + 1; // koliko karaktera ima taj naziv Programiranje  14 
+		_naziv = new char[vel]; // alocirati 14 karaktera 
+		strcpy_s(_naziv, vel, obj._naziv);
+
+
+
+		_ocjena = obj._ocjena;
+
+	}
+
+	Predmet& operator = (const Predmet& obj) {  // = 
+		if (this != &obj) {
+
+			delete[]_naziv;
+
+			int vel = strlen(obj._naziv) + 1; // koliko karaktera ima taj naziv Programiranje  14 
+			_naziv = new char[vel]; // alocirati 14 karaktera 
+			strcpy_s(_naziv, vel, obj._naziv);
+
+
+			_ocjena = obj._ocjena;
+		}
+		return *this;
+
+	}
+
+
+
+
+
+
+
+
+
+	// ALT + 1 TILDA
+	~Predmet() {  // DEOALOKACIJA ILI DESTRUKTOR  char* _naziv;
+		//cout << "DESTRUKTOR" << endl;
+		delete[] _naziv;
+		_naziv = nullptr;
+		/*	  _naziv = NULL;*/
+	}
+
+
+	void Ispis() {  // Matematika 2 - 7 
+		cout << _naziv << " - " << _ocjena << endl;
+	}
+
+	friend ostream& operator <<(ostream& COUT, Predmet& obj) { // i ovo je ispis
+		cout << obj._naziv << " - " << obj._ocjena << endl;
+		return COUT;
+	}
+
+
+	// POKAVAZIVAC    *     ->   char* _naziv;   u memoriji na adresi A0153 nam napravi naziv 
+	// ALOCIRATI            ->   _naziv = new char[vel];  u adresi A0153 odvoji memorije da se moze pohraniti 14 karaktera
+	// UBACIVAT             ->   _naziv = "asdasd";
+	// DEALOCIRATI/DESTRUKTOR   ->    
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+class KolekcijaPolozenih { // 3  MATEMATIKU PROGRMIARNJE OPERATIVNE
+	Predmet* _polozeni;
+	int _trenutno; // brojac = 0  
+	int _max; // 30 
+public:
+	//konstruktor, 
+	//konstruktor kopije, 
+	//destruktor 
+	//potrebne funkcije
+
+	KolekcijaPolozenih() {  // defaultni constructor
+
+		_polozeni = nullptr;
+
+		_trenutno = 0;
+		_max = 0;
+	}
+
+	~KolekcijaPolozenih() {
+		delete []_polozeni;
+		_polozeni = nullptr;
+
+	}
+
+	KolekcijaPolozenih(int max) {  // obicni constructor
+		_max = max;
+		_trenutno = 0;
+
+		_polozeni = new Predmet[_max]; // 3 predmeta 
+
+	}
+
+	KolekcijaPolozenih(const KolekcijaPolozenih& obj) { // copy constuctor 
+		_max = obj._max;
+		_trenutno = obj._trenutno;
+
+		_polozeni = new Predmet[_max];
+
+		for (int i = 0; i < obj._trenutno; i++)
+		{
+			_polozeni[i] = obj._polozeni[i];
+		}
+	}
+
+	KolekcijaPolozenih& operator = (const KolekcijaPolozenih& obj) { // OPERATOR DODJELE
+		if (this != &obj)
+		{
+			delete[]_polozeni;
+
+			_max = obj._max;
+			_trenutno = obj._trenutno;
+
+			_polozeni = new Predmet[_max];
+
+			for (int i = 0; i < obj._trenutno; i++)
+			{
+				_polozeni[i] = obj._polozeni[i];
+			}
+		}
+		return *this;
+	}
+
+
+
+
+
+	void AddPolozeniPredmet(Predmet& noviPredmet) {
+		//Dodaje novi polozeni predmet u niz
+		//Voditi računa da se ne moze dodavati isti predmet (istog naziva)
+
+		if (_max == _trenutno) { // 3 trenutno 3 
+			cout << "Vec je ubaceno maksimalno " << _max << " predmeta" << endl;
+			return; // puca ovdje 
+		}
+
+		for (int i = 0; i < _trenutno; i++) // PR3 MAT2
+		{
+			if (strcmp(_polozeni[i]._naziv, noviPredmet._naziv) == 0) {  // INT == INT FLOAT == FLOAT KADA SU U PITANJU NIZOVI KARAKTERA
+				cout << "Vec postoji predmet s tim nazivom" << endl;  //   strcmp(1,2)==0
+				return;
+
+			}
+		}
+
+
+		_polozeni[_trenutno] = noviPredmet; // UBACILO PREDMET NA LOCKACIJI 0 
+		_trenutno++; // trenutno = 1 
+
+
+
+	}
+
+	void Ispis() {
+		//========POLOZENI PREDMETI STUDENTA============ trenutno = 2
+		//MATEMATIKA 2 - 6   ---- 0
+		//OPERATIVNI SISTEMI - 7  ------ 1
+		//PROGRMANJRAE 3 - 10   ------ 2
+		cout << "========POLOZENI PREDMETI STUDENTA============" << endl;
+		for (int i = 0; i < _trenutno; i++)
+		{
+			cout << _polozeni[i];
+			//_polozeni[i].Ispis();
+		}
+
+	}
+
+	friend ostream& operator <<(ostream& COUT, KolekcijaPolozenih& obj) { // i ovo je ispis
+		COUT << "========POLOZENI PREDMETI STUDENTA============" << endl;
+		for (int i = 0; i < obj._trenutno; i++)
+		{
+			cout << obj._polozeni[i];
+			//_polozeni[i].Ispis();
+		}
+		return COUT;
+	}
+};
+
+
+
+void main() {
+
+	Predmet p0;  // defaultni constructor
+
+	//p0.Ispis(); // ovo je ispis preko void Ispis();
+	////cout << p; // ovo je ispis preko friend ostreama
+
+	Predmet p1("Programiranje 3", 9); // obicni constructor
+	Predmet pISTI("Programiranje 3", 10); // obicni constructor
+	Predmet p2("Operativni sistemi", 7); // obicni constructor
+	Predmet p3("Matematika 2", 6); // obicni constructor
+
+
+	//cout << p1;
+	//cout << p2;
+	//cout << p3;
+
+	Predmet p4 = p3; // bit ce dvije mat2 COPY CONSTUCTOR
+
+	//cout << p4;
+
+	Predmet p5("Digitalna Logika", 7);
+
+	p5 = p4;  // OPERATOR DODJELE
+
+	//cout << p5;
+
+	KolekcijaPolozenih student0;  // ovdje se pozvao defaultni constructor
+	//student0.Ispis();
+	//cout << student0;
+
+	KolekcijaPolozenih student1(3);
+
+
+	student1.AddPolozeniPredmet(p1);
+	student1.AddPolozeniPredmet(pISTI);
+	student1.AddPolozeniPredmet(p2);
+	student1.AddPolozeniPredmet(p5);
+
+	/*cout << student1;*/
+
+	KolekcijaPolozenih student2;
+	student2 = student1;
+	cout << student2;
+
+	/*char* temp;
+	temp = new char[50];
+	cout <<"Adresa temp : "<< & temp;
+	cout << endl;
+	cout <<"Junk vrijednost temp : "<< temp;*/
+
+
+	system("pause>0");
+}

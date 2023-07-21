@@ -1,0 +1,242 @@
+#include <iostream>
+using namespace std;
+
+char* GetNizKaraktera(const char* tekst) {
+	if (tekst == nullptr)
+		return nullptr;
+	int vel = strlen(tekst) + 1;
+	char* novi = new char[vel];
+	strcpy_s(novi, vel, tekst);
+	return novi;
+}
+
+template<class T>
+class Kolekcija
+{
+public:
+	T* niz;
+	int max;
+	int trenutno;
+
+	Kolekcija(int MAX = 10) {
+		trenutno = 0;
+		max = MAX;
+		niz = new T[max];
+	}
+	~Kolekcija() {
+		delete[]niz;
+		niz = nullptr;
+	}
+	Kolekcija(const Kolekcija& obj) {
+		trenutno = obj.trenutno;
+		max = obj.max;
+		niz = new T[max];
+
+		for (int i = 0; i < trenutno; i++)
+		{
+			niz[i] = obj.niz[i];
+		}
+	}
+	Kolekcija& operator = (const Kolekcija& obj) {
+		if (this != &obj) {
+			delete[]niz;
+
+			trenutno = obj.trenutno;
+			max = obj.max;
+			niz = new T[max];
+
+			for (int i = 0; i < trenutno; i++)
+			{
+				niz[i] = obj.niz[i];
+			}
+
+		}
+		return *this;
+	}
+	bool ukloni() {
+		//uklanja zadnji element iz niza
+		if (trenutno == 0) {
+			return false;
+		}
+		trenutno--;
+		return true;
+	}
+	bool ukloni(T el) {
+		//Uklanja element koji je jednak proslijeđenom
+	
+
+		for (int i = 0; i < trenutno; i++)
+		{
+			if (niz[i] == el) {
+				for (int j = i; j < trenutno-1; j++)
+				{
+					niz[j] = niz[j+1];
+				}
+				trenutno--;
+				return true;
+			}
+		}
+
+		return false;
+
+	}
+	bool ukloni(int pozicija) {
+		//uklanja element na određenoj poziciji
+		if (trenutno == 0) {
+			return false;
+		}
+
+		if (pozicija < 0 || pozicija >= trenutno) {
+			return false;
+		}
+
+		for (int i = pozicija; i < trenutno-1; i++)
+		{
+			niz[i] = niz[i + 1];
+		}
+		trenutno--;
+		return true;
+
+	}
+
+	void dodaj(T el) {
+		if (max == trenutno) {
+			cout << "Niz je pun" << endl;
+		}
+		niz[trenutno] = el;
+		trenutno++;
+	}
+	bool prazan() {
+		//vrši provjeru da li je niz prazan
+		if (trenutno == 0) {
+			return true;
+		}
+		return false;
+	}
+
+	T* GetNajmanjiElement() {
+		//vraća najmanji element iz niza i to kao pokazivač
+		if (prazan()) {
+			return nullptr;
+		}
+
+		T* Najmanji = new T(niz[0]);
+
+		for (int i = 0; i < trenutno; i++)
+		{
+			if (*Najmanji > niz[i]) {
+				*Najmanji = niz[i];
+			}
+		}
+		return Najmanji;
+	}
+
+	//preklopiti operator <<
+	friend ostream& operator <<(ostream& COUT, const Kolekcija& obj) {
+		for (int i = 0; i < obj.trenutno; i++)
+		{
+			COUT << obj.niz[i]<<endl;
+		}
+		return COUT;
+	}
+
+
+};
+
+class Zivotinja
+{
+private:
+	char* vrsta;
+	int tezina;
+
+public:
+
+	Zivotinja(const char* _vrsta="---", int _tezina=0) {
+		vrsta = GetNizKaraktera(_vrsta);
+		tezina = _tezina;
+	}
+
+	~Zivotinja() {
+		delete[]vrsta;
+		vrsta = nullptr;
+	}
+
+	//konstruktor kopije
+	Zivotinja(const Zivotinja& obj) {
+		vrsta = GetNizKaraktera(obj.vrsta);
+		tezina = obj.tezina;
+	}
+
+
+	//operator > koji poredi dvije životinje po težinin
+
+	bool operator > (const Zivotinja& zivina) {
+		return tezina > zivina.tezina;
+	}
+
+	//operator =
+	Zivotinja& operator = (const Zivotinja& obj) {
+		if (this != &obj) {
+			delete[]vrsta;
+
+			vrsta = GetNizKaraktera(obj.vrsta);
+			tezina = obj.tezina;
+		}
+		return *this;
+	}
+
+	//operator ==
+	bool operator == (const Zivotinja& druga) {
+		return strcmp(vrsta,druga.vrsta) == 0;
+	}
+
+	//operator<< koji ispisuje vrstu i težinu životinje
+	friend ostream& operator <<(ostream& COUT, const Zivotinja& obj) {
+		COUT << obj.vrsta << " - " << obj.tezina << " KG";
+		return COUT;
+	}
+
+};
+
+void main() {
+
+	int vel = 65;
+	Kolekcija<char> kolekcija;
+
+	for (int i = 0; i < 9; i++)
+	{
+		kolekcija.dodaj(vel+i);
+	}
+	kolekcija.ukloni();
+	kolekcija.ukloni(0);
+	kolekcija.ukloni('B');
+
+
+
+	//cout << kolekcija;
+
+	//cout<<"Najmanji element je "<<*kolekcija.GetNajmanjiElement();
+
+	Zivotinja zivotinja1("Ker", 5);
+	Zivotinja zivotinja2("Maca", 2);
+	Zivotinja zivotinja3("Slon",1005);
+
+
+
+	Kolekcija<Zivotinja> zivotinje(3);
+	zivotinje.dodaj(zivotinja1);
+	zivotinje.dodaj(zivotinja2);
+	zivotinje.dodaj(zivotinja3);
+
+	zivotinje.ukloni(zivotinja2);
+
+	cout << zivotinje;
+	
+	cout << "Najmanji zivina je " << *zivotinje.GetNajmanjiElement();
+	
+
+
+
+
+	system("pause>0");
+}

@@ -1,0 +1,197 @@
+#include<iostream>
+using namespace std;
+
+class Vozilo
+{
+private:
+	char* markaVozila;
+	int godProizvodnje;
+public:
+	//potrebne konstruktor funkcije (uključujući konstruktor kopije), destruktor
+	Vozilo() {  // defaultni constructor 
+
+		const char* temp = "Nema auta"; // u dinamickoj memoriji 
+		//char temp[] = "Nema predmeta"; // u statickoj
+		int vel = strlen(temp) + 1; // 14  
+		markaVozila = new char[vel];     // u dinamicko memoriji napravi naziv koji ce imat 14 charatera
+		strcpy_s(markaVozila, vel, temp);  // kopiraj string 1. gdje ce kopirati 2.koliko karakera 3.sta ce kopirati 
+
+		godProizvodnje = 5;
+	}
+
+	Vozilo(const char* NAZIV, int GODINA) { // obicni constructor
+
+
+
+		int vel = strlen(NAZIV) + 1; // 14  
+		markaVozila = new char[vel];     // u dinamicko memoriji napravi naziv koji ce imat 14 charatera
+		strcpy_s(markaVozila, vel, NAZIV);  // kopiraj string 1. gdje ce kopirati 2.koliko karakera 3.sta ce kopirati 
+
+		godProizvodnje = GODINA;
+	}
+
+	Vozilo(const Vozilo& obj) {  // COPY CONSTRUCTOR
+
+		int vel = strlen(obj.markaVozila) + 1; // koliko karaktera ima taj naziv Programiranje  14 
+		markaVozila = new char[vel]; // alocirati 14 karaktera 
+		strcpy_s(markaVozila, vel, obj.markaVozila);
+
+
+
+		godProizvodnje = obj.godProizvodnje;
+
+	}
+
+	Vozilo& operator = (const Vozilo& obj) {  // = 
+		if (this != &obj) {
+
+			delete[]markaVozila;
+
+			int vel = strlen(obj.markaVozila) + 1; // koliko karaktera ima taj naziv Programiranje  14 
+			markaVozila = new char[vel]; // alocirati 14 karaktera 
+			strcpy_s(markaVozila, vel, obj.markaVozila);
+
+
+
+			godProizvodnje = obj.godProizvodnje;
+		}
+		return *this;
+
+	}
+
+
+
+
+
+
+
+
+
+	// ALT + 1 TILDA
+	~Vozilo() {  // DEOALOKACIJA ILI DESTRUKTOR  char* _naziv;
+		//cout << "DESTRUKTOR" << endl;
+		delete[] markaVozila;
+		markaVozila = nullptr;
+		/*	  _naziv = NULL;*/
+	}
+
+
+	void Ispis() {
+		cout << markaVozila << " - " << godProizvodnje << endl;
+	}
+
+	friend ostream& operator <<(ostream& COUT, Vozilo& obj) { // i ovo je ispis
+		cout << obj.markaVozila << " - " << obj.godProizvodnje << endl;
+		return COUT;
+	}
+};
+class Vozac
+{
+	char ime[20];
+	char* prezime;
+	Vozilo* NjegovoVozilo;
+	int BrVozacke;
+public:
+	//potrebne konstruktor funkcije (uključujući konstruktor kopije), destruktor
+
+	Vozac() {
+		strcpy_s(ime, 20, "---");
+		const char* temp = "---";
+		int vel = strlen(temp) + 1;
+		prezime = new char[vel];
+		strcpy_s(prezime, vel, temp);
+		NjegovoVozilo = new Vozilo;
+		BrVozacke = 000;
+	}
+
+	Vozac(const char* IME, const char* PREZIME, int brojvozacke) {
+
+
+		strcpy_s(ime, 20, IME);
+		int vel = strlen(PREZIME) + 1;
+		prezime = new char[vel];
+		strcpy_s(prezime, vel, PREZIME);
+		BrVozacke = brojvozacke;
+		NjegovoVozilo = new Vozilo();
+
+	}
+
+	Vozac(const Vozac& obj) {
+		strcpy_s(ime, 20, obj.ime);
+		int vel = strlen(obj.prezime) + 1;
+		prezime = new char[vel];
+		strcpy_s(prezime, vel, obj.prezime);
+		BrVozacke = obj.BrVozacke;
+		NjegovoVozilo = new Vozilo(*obj.NjegovoVozilo);
+
+	}
+
+	Vozac& operator = (const Vozac& obj) {
+		if (this != &obj) {
+			delete[]prezime;
+			delete NjegovoVozilo;
+
+			strcpy_s(ime, 20, obj.ime);
+			int vel = strlen(obj.prezime) + 1;
+			prezime = new char[vel];
+			strcpy_s(prezime, vel, obj.prezime);
+			BrVozacke = obj.BrVozacke;
+			NjegovoVozilo = new Vozilo(*obj.NjegovoVozilo);
+		}
+		return *this;
+	}
+
+	~Vozac() {
+		delete[]prezime;
+		prezime = nullptr;
+		delete NjegovoVozilo; // ovo nije niz sada 
+		NjegovoVozilo = nullptr;
+	
+	}
+
+	void Ispis() {
+		cout << "Korisnik : " << BrVozacke << " - " << ime << " " << prezime << endl;
+		cout << "Vozilo vlasnika : ";
+		cout << *NjegovoVozilo;
+	}
+	void DodajVozilo(Vozilo v) {
+
+		delete NjegovoVozilo;
+		NjegovoVozilo = new Vozilo();
+		*NjegovoVozilo = v;
+	}
+};
+
+
+void main() {
+
+
+	Vozilo v1("BMW", 2016);
+	Vozilo v2("Peugeot", 2004);
+	Vozilo v3("Audi", 2022);
+
+	/*v1.Ispis();
+	cout << v2;
+	cout << v3;*/
+
+	Vozac V0;
+	V0.Ispis();
+
+	Vozac k1("Vedad", "Keskin", 101);
+
+
+	k1.DodajVozilo(v1);
+	k1.Ispis();
+
+	cout << endl<<endl<<"========"<<endl<<endl<<endl;
+	k1.DodajVozilo(v2);
+	k1.Ispis();
+	cout << endl << endl << "========" << endl << endl << endl;
+
+	Vozac k2;
+	k2 = k1;
+	k2.Ispis();
+
+
+	system("pause>0");
+}

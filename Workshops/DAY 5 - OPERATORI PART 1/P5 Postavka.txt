@@ -1,0 +1,91 @@
+#include<iostream>
+using namespace std;
+
+class Artikal {
+	char* _sifra;
+	char* _naziv;
+	double _cijena;
+	int _kolicinaNaSkladistu;
+public:
+	//potrebne konstruktor i destruktor funkcije (imati na umu i konstruktor kopije)
+
+	//Operator -= na način da se stanje na skladištu artikla promijeni za proslijeđenu vrijednost
+
+	//Operator += na način da se stanje na skladištu artikla promijeni za proslijeđenu vrijednost
+
+
+	//Operator ++ na način da se cijena artikla uveća za 1
+
+	//Operator -- na način da se cijena artikla umanji za 1
+
+	//Operator == koji poredi artikle na osnovu sifre
+
+
+	int GetKolicinaNaSkladistu() { return _kolicinaNaSkladistu; }
+	double GetCijena() { return _cijena; }
+	char* GetSifra() { return _sifra; }
+};
+
+class StavkaRacuna {
+	Artikal *_artikal;
+	int* _kolicina;
+public:
+	//potrebne konstruktor i destruktor funkcije (imati na umu i konstruktor kopije)
+
+	//operator dodjele =
+
+	//operator += koji uvećava stanje na skladištu artikla
+
+	//operator -= koji umanjuje stanje na skladištu artikla (jeste da u artiklu imamo ovo već preklopljeno, ali artikal je 
+	//private atribut klase, ne možemo mu tek tako pristupati iz računa
+
+	//Operator poređenja== koji poredi stavke po sifri artikla
+
+	//operator ++ koji uvećava količinu stavke racuna
+
+
+	double GetCijena() {//vraća cijenu stavke racuna (kolicina * cijena artikla) 
+	}
+
+	double GetKolicina() { //vraća količinu stavke računa }
+
+	}
+	
+};
+int pom = 1000; // koristi se za broj racuna samo ga povecas ++ 
+
+	class Racun {
+		int _brojRacuna;
+		StavkaRacuna *stavke;
+		int _trenutno;
+                int _max;
+		double _iznosBezPDV;
+		double _iznosSaPDV;
+		bool _naplaceno;
+	public:
+		//potrebne konstruktor i destruktor funkcije (imati na umu i konstruktor kopije)
+
+		//operator dodjele =
+
+		//Operator() - dodaje nove artikle u stavke racuna (ulazni parametri su artikal i kolicina), kolicina nije obavezni parametar
+		//Voditi računa o tome da li je račun već naplaćen
+		//Prilikom svakog dodavanja artikla, azurirati vrijednosti iznosBezPDV i iznosSaPDV
+
+		//Operator -= uklanja artikal iz stavki na osnovu njegove sifre
+		//azurirati vrijednosti iznosBezPDV i iznosSaPDV
+
+
+		void PrintRacun() {
+			//Ispisuje sve stavke računa zajedno sa iznosom za plaćanje
+			
+		
+		}
+	};
+
+
+	void main() {
+		
+
+
+		system("pause>0");
+	}

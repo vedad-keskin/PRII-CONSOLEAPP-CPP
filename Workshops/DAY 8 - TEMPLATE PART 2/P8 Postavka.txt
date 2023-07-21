@@ -1,0 +1,151 @@
+#include <iostream>
+using namespace std;
+
+template<class T>
+class Kolekcija {
+public:
+    T* elementi;
+    int max;
+    int trenutno;
+
+    // Potrebne kontruktore, destruktor i operatore
+
+    // Operator += koji ima za cilj dodati novi element u kolekciju.
+    // Onemoguciti dodavanje istih elemenata. Baciti izuzetak tipa exception, ukoliko 
+    // nije moguce dodati vise elemenata ili element vec postoji.
+    // Nije potrebno raditi prosirivanje kolekcije.
+
+    // Operator -= koji ima za cilj ukloniti odredjeni element iz kolekcije.
+    // Ako element nije pronadjen, baciti izuzetak tipa exception.
+
+    // Operator [] dvije verzije
+    // Treba da pronadje i vrati trazeni element. Ako element ne postoji, baciti izuzetak tipa exception
+    T& operator[] (T el) {
+    }
+
+    T& operator[] (int pozicija) {
+       
+    }
+
+    // operator <<
+};
+
+class Artikal
+{
+public:
+    char* kod;
+    char* naziv;
+    float cijena;
+    int kolicinaNaSkladistu;
+
+    // Potrebne kontruktore, destruktor i operatore
+};
+
+class PrehrambeniArtikal : public Artikal
+{
+public:
+	float gramaza;
+    // Potrebne kontruktore, destruktor i operatore
+
+};
+
+class Odjeca : public Artikal
+{
+public:
+    char* velicina; // xs, s, m, l, xl ...
+    char* materijal;
+
+    // Potrebne kontruktore, destruktor i operatore
+
+};
+
+class Prodavnica
+{
+public:
+    char* naziv;
+    char* adresa;
+
+    Kolekcija<Odjeca> odjeca;
+    Kolekcija<PrehrambeniArtikal> prehrana;
+
+    // Konstruktore, destruktore
+
+    bool DodajOdjecu()
+    {
+        // Funkcija ima za cilj dodati novi komad odjece
+        // Onemoguciti dodavanje dva ista komada.
+    }
+
+    bool DodajPrehrambeniArtikal()
+    {
+        // Funkcija ima za cilj dodati novi prehrambeni artikl
+        // Onemoguciti dodavanje dva ista komada 
+    }
+
+    bool UvecajStanjeNaSkladistu(PrehrambeniArtikal a)
+    {
+        // Funkcija ima za cilj da uveca stanje na skladistu za proslijedjeni artikal
+        // Ako proslijedjeni artikal ne postoji funkcija vraca false, inace uvecava stanje na skladistu
+        // te vraca true
+    }
+
+    bool UvecajStanjeNaSkladistu(Odjeca o)
+    {
+        // Funkcija ima za cilj da uveca stanje na skladistu za proslijedjeni artikal
+        // Ako proslijedjeni artikal ne postoji funkcija vraca false, inace uvecava stanje na skladistu
+        // te vraca true
+    }
+
+    bool UmanjiStanjeNaSkladistu(PrehrambeniArtikal a)
+    {
+        // Funkcija ima za cilj da umanji stanje na skladistu za proslijedjeni artikal
+        // Ako proslijedjeni artikal ne postoji funkcija vraca false, inace uvecava stanje na skladistu
+        // te vraca true
+    }
+
+    bool UmanjiStanjeNaSkladistu(Odjeca o)
+    {
+        // Funkcija ima za cilj da umanji stanje na skladistu za proslijedjeni artikal
+        // Ako proslijedjeni artikal ne postoji funkcija vraca false, inace uvecava stanje na skladistu
+        // te vraca true
+    }
+};
+
+void main()
+{
+    Prodavnica p("Moja Prodavnica", "Adresa bb");
+
+    p.DodajOdjecu();
+    p.DodajOdjecu();
+    p.DodajOdjecu();
+    p.DodajOdjecu();
+    p.DodajOdjecu();
+    p.DodajOdjecu();
+
+    p.DodajPrehrambeniArtikal();
+    cin.ignore();
+    p.DodajPrehrambeniArtikal();
+    cin.ignore();
+
+    p.DodajPrehrambeniArtikal();
+    cin.ignore();
+    p.DodajPrehrambeniArtikal();
+
+    system("cls");
+
+    cout << p;
+
+    Odjeca o = p.odjeca[0];
+    p.UmanjiStanjeNaSkladistu(o);
+    p.UmanjiStanjeNaSkladistu(o);
+    p.UvecajStanjeNaSkladistu(o);
+
+    PrehrambeniArtikal pa = p.prehrana[1];
+    p.UmanjiStanjeNaSkladistu(pa);
+    p.UmanjiStanjeNaSkladistu(pa);
+    p.UvecajStanjeNaSkladistu(pa);
+
+    cout << endl
+        << "::::::::::::::::::: Nakon promjene stanja na skladistu :::::::::::::::::::::: " << endl;
+    cout << p << endl;
+}

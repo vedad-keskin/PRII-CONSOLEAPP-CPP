@@ -1,0 +1,94 @@
+#include <iostream>
+using namespace std;
+
+class Datum {
+public:
+	int* _dan, * _mjesec, * _godina;
+
+
+	// Kreirati i implementirati
+	// Konstruktor
+	// Konstruktor kopije
+	// Destruktor
+};
+
+class Kandidat {
+public:
+	char* _imePrezime;
+	char* _JMBG;
+	// Kreirati i implementirati
+// Konstruktor
+// Konstruktor kopije
+// Destruktor
+	
+};
+
+class Osoba {
+public:
+	Datum _datumRodjenja;
+	char* _imePrezime;
+	char* _JMBG;
+	char* _Prebivaliste;
+	// Kreirati i implementirati
+// Konstruktor
+// Konstruktor kopije
+// Destruktor
+	
+};
+
+class GlasackiListic {
+public:
+	Osoba* _glasac;
+	Kandidat* _glasZa;
+	// Kreirati i implementirati
+// Konstruktor
+// Konstruktor kopije
+// Destruktor
+};
+
+	
+class Izbori {	
+public:
+	char* _glasackoMjesto;
+	GlasackiListic* _glasovi;
+	int _trenutnoGlasova;
+	int _maxBrojGlasova;
+
+// Kreirati i implementirati
+// Konstruktor
+// Konstruktor kopije
+// Operator dodjele
+// Destruktor
+
+
+
+
+
+
+	bool AddGlas()
+	{
+		/*funkcija treba da omoguci dodavanje informacija o novom glasu i tom prilikom:
+		-     onemoguciti da ista osoba glasa vise puta
+		-     onemoguciti glasanje osobama mladjim od 18 godina (uzeti u obzir godinu rodjenja)
+		-     onemoguciti glasanje osobama iz drugih opstina
+		-     u zavisnosti od uspjesnosti operacije funkcija vraca true ili false
+		*/
+	}
+
+
+};
+
+
+void ProglasiPobjednika(Izbori izbor) {
+		/*
+	funkcija treba ispisati listu kandidata, a uz svakog kandidata je potrebno ispisati i osvojeni procenat glasova
+		*/
+}
+
+
+
+void main() {
+
+	system("pause>0");
+}
+

@@ -1,0 +1,80 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+
+char* GetNizKaraktera(const char * sadrzaj) {
+
+	int vel = strlen(sadrzaj) + 1;
+	char* novi = new char[vel];
+	strcpy_s(novi, vel, sadrzaj);
+	return novi;
+
+}
+
+
+class Osoba {
+public:
+	char* _imePrezime; 
+	char* _JMBG;       
+
+
+
+
+
+};
+
+
+
+
+
+
+
+
+class Student: public Osoba {
+public:
+	char* _brojIndeksa; 
+	Predmet* _PolozeniPredmeti;
+	int _max;
+	int _trenutno;
+
+
+
+
+
+};
+
+
+class Profesor: public Osoba {
+public:
+     char* _titula;
+
+
+	
+};
+
+class Predmet {
+public:
+	char* _naziv;
+	int _ECTS;
+	Profesor* _PredmetniProfesor; 
+	
+
+
+
+
+
+};
+
+
+
+void main() {
+
+
+
+
+
+
+
+	system("PAUSE>0");
+}
