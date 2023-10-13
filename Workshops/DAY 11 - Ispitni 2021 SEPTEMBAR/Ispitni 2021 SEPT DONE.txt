@@ -1,12 +1,14 @@
 #include<iostream>
-#include<fstream>
-#include<mutex>
-#include<regex>
-#include<memory>
-#include<vector>
 #include<string>
+#include<vector>
+#include<regex>
+#include<mutex>
 #include<thread>
+#include<fstream>
+#include<memory>
+
 using namespace std;
+
 
 const char* PORUKA = "\n-------------------------------------------------------------------------------\n"
 "0. PROVJERITE DA LI PREUZETI ZADACI PRIPADAJU VASOJ GRUPI (G1/G2)\n"
@@ -24,9 +26,17 @@ const char* PORUKA = "\n--------------------------------------------------------
 "-------------------------------------------------------------------------------\n";
 
 const char* crt = "\n-------------------------------------------\n";
-//             0       1        2         3         4   5        6
 enum Pojas { BIJELI, ZUTI, NARANDZASTI, ZELENI, PLAVI, SMEDJI, CRNI };
-const char* KopijaPojasa[]{ "BIJELI", "ZUTI", "NARANDZASTI", "ZELENI", "PLAVI", "SMEDJI", "CRNI" };
+
+
+ostream& operator<< (ostream& COUT, const Pojas& obj) {
+
+	const char* TekstPojaseva[]{ "BIJELI","ZUTI","NARANDZASTI","ZELENI","PLAVI","SMEDJI","CRNI" };
+	COUT << TekstPojaseva[obj];
+
+	return COUT;
+}
+
 
 
 const int brojTehnika = 6;
@@ -49,17 +59,22 @@ class Kolekcija {
 	T2* _elementi2[max] = { nullptr };
 	int* _trenutno;
 public:
-	Kolekcija() {
-		_trenutno = new int(0);
+	Kolekcija() 
+	{ 
+		_trenutno = new int(0); 
+
+		// ne radimo nista 
 	}
 	Kolekcija(const Kolekcija& obj) {
 		_trenutno = new int(*obj._trenutno);
+
 		for (int i = 0; i < *_trenutno; i++)
 		{
 			_elementi1[i] = new T1(*obj._elementi1[i]);
 			_elementi2[i] = new T2(*obj._elementi2[i]);
 		}
 	}
+
 	Kolekcija& operator = (const Kolekcija& obj) {
 		if (this != &obj) {
 			for (int i = 0; i < *_trenutno; i++)
@@ -69,7 +84,9 @@ public:
 			}
 			delete _trenutno;
 
+
 			_trenutno = new int(*obj._trenutno);
+
 			for (int i = 0; i < *_trenutno; i++)
 			{
 				_elementi1[i] = new T1(*obj._elementi1[i]);
@@ -80,24 +97,23 @@ public:
 	}
 
 	void AddElement(T1 el1, T2 el2) {
-
 		if (max == *_trenutno) {
 			throw exception("Niz je popunjen");
 		}
 
-
 		_elementi1[*_trenutno] = new T1(el1);
 		_elementi2[*_trenutno] = new T2(el2);
+
 		(*_trenutno)++;
 
 	}
 
+	//                    2
 	void RemoveAt(int lokacija) {
-		if (lokacija < 0 || lokacija >= *_trenutno) {
-			return;
-		}
 
-		for (int i = lokacija; i < *_trenutno - 1; i++)
+		
+
+		for (int i = lokacija; i < *_trenutno-1; i++)
 		{
 			_elementi1[i] = new T1(*_elementi1[i + 1]);
 			_elementi2[i] = new T2(*_elementi2[i + 1]);
@@ -105,35 +121,23 @@ public:
 		(*_trenutno)--;
 
 	}
-	//                  9       9          2
-	void AddElement(T1 el1, T2 el2, int pozicija) {
 
-		for (int i = *_trenutno; i > pozicija; i--)
+	void AddElement(T1 el1, T2 el2, int lokacija) {
+
+		for (int i = *_trenutno; i > lokacija; i--)
 		{
 			_elementi1[i] = new T1(*_elementi1[i - 1]);
 			_elementi2[i] = new T2(*_elementi2[i - 1]);
 		}
 
-		_elementi1[pozicija] = new T1(el1);
-		_elementi2[pozicija] = new T2(el2);
+		_elementi1[lokacija] = new T1(el1);
+		_elementi2[lokacija] = new T2(el2);
 
 		(*_trenutno)++;
 
 	}
-	/* npr.ako unutar kolekcije postoje elementi:
-0 0
-9 9
-1 1
-2 2
-3 3
-nakon promjene vrijednosti sadrzaj kolekcije ce biti sljedeci
-0 0
-9 2
-1 1
-2 2
-3 3
-*/
-//na osnovu vrijednosti T1 mijenja vrijednost T2. 
+
+
 	T2& operator [] (T1 el1) {
 
 		for (int i = 0; i < *_trenutno; i++)
@@ -143,13 +147,11 @@ nakon promjene vrijednosti sadrzaj kolekcije ce biti sljedeci
 			}
 		}
 
-
 	}
-
 
 	~Kolekcija() {
 
-		for (size_t i = 0; i < *_trenutno; i++) {
+		for (int i = 0; i < *_trenutno; i++) {
 			delete _elementi1[i]; _elementi1[i] = nullptr;
 			delete _elementi2[i]; _elementi2[i] = nullptr;
 		}
@@ -158,7 +160,7 @@ nakon promjene vrijednosti sadrzaj kolekcije ce biti sljedeci
 
 	T1& getElement1(int lokacija)const { return *_elementi1[lokacija]; }
 	T2& getElement2(int lokacija)const { return *_elementi2[lokacija]; }
-	int getTrenutno()const { return *_trenutno; }
+	int getTrenutno()const  { return *_trenutno; }
 
 
 	friend ostream& operator<< (ostream& COUT, const Kolekcija& obj) {
@@ -176,6 +178,7 @@ public:
 		_godina = new int(godina);
 	}
 
+
 	Datum(const Datum& obj) {
 		_dan = new int(*obj._dan);
 		_mjesec = new int(*obj._mjesec);
@@ -183,28 +186,26 @@ public:
 	}
 	Datum& operator = (const Datum& obj) {
 		if (this != &obj) {
-			if (_dan == nullptr)
-				_dan = new int;
-			*_dan = *obj._dan;
+			delete _dan;
+			delete _mjesec;
+			delete _godina;
 
-			if (_mjesec == nullptr)
-				_mjesec = new int;
-			*_mjesec = *obj._mjesec;
 
-			if (_godina == nullptr)
-				_godina = new int;
-			*_godina = *obj._godina;
+			_dan = new int(*obj._dan);
+			_mjesec = new int(*obj._mjesec);
+			_godina = new int(*obj._godina);
 		}
 		return *this;
 	}
 
-	int SumaDana() {
+	int SumaDana()const {
 		return *_dan + *_mjesec * 30 + *_godina * 365;
 	}
 
 	bool operator == (const Datum& obj) {
 		return *_dan == *obj._dan && *_mjesec == *obj._mjesec && *_godina == *obj._godina;
 	}
+
 
 	~Datum() {
 		delete _dan; _dan = nullptr;
@@ -216,6 +217,12 @@ public:
 		return COUT;
 	}
 };
+
+//  1. PARAMETAR
+//  KOLECIJA<2. PARAMETAR, 3. PARAMETAR> 
+
+// char*, int, enum, Datum 
+
 
 class Tehnika {
 	char* _naziv;
@@ -233,7 +240,7 @@ public:
 
 	Tehnika& operator = (const Tehnika& obj) {
 		if (this != &obj) {
-			delete[]_naziv;
+			delete[] _naziv;
 			delete _ocjene;
 
 			_naziv = GetNizKaraktera(obj._naziv);
@@ -242,7 +249,32 @@ public:
 		return *this;
 	}
 
-	float GetProsjek()const {
+	///*svaka tehnika moze imati vise ocjena tj. moze se polagati u vise navrata.
+//	-   razmak izmedju polaganja dvije tehnike mora biti najmanje 3 dana
+//	-   nije dozvoljeno dodati ocjenu sa ranijim datumom u odnosu na vec evidentirane (bez obzira sto je stariji od 3 dana)
+//*/
+
+	// danas ---> nakon 3 dana 
+	// prije 3 dana <---- danas 
+
+	// 12.12.1998 213131
+	// 14.12.1998 213133
+
+	bool AddOcjena(int ocjena, Datum datum) {
+
+		for (int i = 0; i < _ocjene->getTrenutno(); i++)
+		{
+			if (datum.SumaDana() < _ocjene->getElement2(i)->SumaDana() ||
+				 datum.SumaDana() - _ocjene->getElement2(i)->SumaDana() < 3  ) {
+				return false;
+			}
+		}
+
+		_ocjene->AddElement(ocjena,new Datum(datum));
+		return true;
+	}
+
+	float getProsjek()const {
 		float suma = 0;
 		float brojac = 0;
 
@@ -251,52 +283,40 @@ public:
 			suma += _ocjene->getElement1(i);
 			brojac++;
 		}
+
 		if (brojac == 0) {
 			return 0;
 		}
 
 		return suma / brojac;
-	}
 
-	bool AddOcjena(int ocjena, Datum datum) {
-
-		for (int i = 0; i < _ocjene->getTrenutno(); i++)
-		{
-			//      1.1.2003             5.1.2003                            5.1.2003          1.1.2003   4         
-			if (datum.SumaDana() < _ocjene->getElement2(i)->SumaDana() || datum.SumaDana() - _ocjene->getElement2(i)->SumaDana() < 3) {
-				return false;
-			}
-		}
-
-		_ocjene->AddElement(ocjena, new Datum(datum));
-		return true;
 	}
 
 	bool operator == (const Tehnika& obj) {
-		return strcmp(_naziv, obj._naziv) == 0;
+		return strcmp(_naziv, obj._naziv)==0;
+		// strcmp(naziv1,naziv2) == 0  nazivi isti
 	}
+
 
 	~Tehnika() {
 		delete[] _naziv; _naziv = nullptr;
 		delete _ocjene; _ocjene = nullptr;
 	}
-
 	char* GetNaziv() { return _naziv; }
 	Kolekcija<int, Datum*, brojTehnika>& GetOcjene() { return *_ocjene; }
 
-	friend ostream& operator << (ostream& COUT, const Tehnika& obj) {
-		COUT << obj._naziv << endl;
+	friend ostream& operator<< (ostream& COUT, const Tehnika& obj) {
+		
+		COUT << "Naziv tehnike : " << obj._naziv << endl;
 		for (int i = 0; i < obj._ocjene->getTrenutno(); i++)
 		{
 			COUT << "\t" << obj._ocjene->getElement1(i) << " -> " << *obj._ocjene->getElement2(i) << endl;
-			//if (i != obj._ocjene->getTrenutno() - 1) {  <--- ovo ne moras, nemoj se sekirat molim te 
-			//	COUT << endl;
-			//}
 		}
-		//COUT << crt<<"Prosjecna ocjena -> " << obj.GetProsjek() << endl;
-		COUT << "Prosjecna ocjena -> " << obj.GetProsjek() << endl;
+		COUT << "Prosjecna ocjena -> " << obj.getProsjek() << endl;
+
 		return COUT;
 	}
+
 };
 
 class Polaganje {
@@ -310,22 +330,22 @@ public:
 	Polaganje(const Polaganje& obj) {
 		_pojas = obj._pojas;
 
-		//             3  <--- dobro obrati paznju kada imas * u vectoru kada radis copy i operator da ides do obj.polozeni.size()
 		for (int i = 0; i < obj._polozeneTehnike.size(); i++)
 		{
 			_polozeneTehnike.push_back(new Tehnika(*obj._polozeneTehnike[i]));
 		}
-
 	}
+
 	Polaganje& operator = (const Polaganje& obj) {
 		if (this != &obj) {
-			for (int i = 0; i < _polozeneTehnike.size(); i++)
-			{
-				delete _polozeneTehnike[i];
+
+			for (int i = 0; i < _polozeneTehnike.size(); i++) {
+				delete _polozeneTehnike[i];			
 			}
 
 
 			_pojas = obj._pojas;
+
 			for (int i = 0; i < obj._polozeneTehnike.size(); i++)
 			{
 				_polozeneTehnike.push_back(new Tehnika(*obj._polozeneTehnike[i]));
@@ -334,14 +354,14 @@ public:
 		return *this;
 	}
 
-	float ProsjekPojasa()const {
+	float GetProsjekPojasa()const {
 		float suma = 0;
 		float brojac = 0;
-
+		
 
 		for (int i = 0; i < _polozeneTehnike.size(); i++)
 		{
-			suma += _polozeneTehnike[i]->GetProsjek();
+			suma += _polozeneTehnike[i]->getProsjek();
 			brojac++;
 		}
 		if (brojac == 0) {
@@ -351,28 +371,24 @@ public:
 		return suma / brojac;
 	}
 
-
 	~Polaganje() {
 		for (size_t i = 0; i < _polozeneTehnike.size(); i++) {
 			delete _polozeneTehnike[i];
 			_polozeneTehnike[i] = nullptr;
 		}
 	}
-
-
 	vector<Tehnika*>& GetTehnike() { return _polozeneTehnike; }
 	Pojas GetPojas() { return _pojas; }
-	
+
 
 	friend ostream& operator<< (ostream& COUT, const Polaganje& obj) {
-		COUT << KopijaPojasa[obj._pojas] << endl;
+		COUT << obj._pojas << endl;
 		for (size_t i = 0; i < obj._polozeneTehnike.size(); i++)
 			COUT << *obj._polozeneTehnike[i];
 		return COUT;
 	}
-
-
 };
+
 ///*
 //za autentifikaciju svaki korisnik mora posjedovati lozinku koja sadrzi:
 //-   najmanje 7 znakova
@@ -384,16 +400,15 @@ public:
 //postaviti je na podrazumijevanu vrijednost: <VRIJEDNOST_NIJE_VALIDNA>
 //*/
 
-// ALT + 3 ^ znaci negiraj sve sto se nalazi unutar [ ]
-// . bilo koji znak
-// [.]   ovo je bas tacka        vedad.keskin@gmail.com  [a-z]+.[a-z]+  --->  vkeskin   ,  [a-z]+[.][a-z]+  ---> vedad.keskin
+// kada negiramo nesto ^ alt + 3 
+// . znaci bilo koji znak
+// a ako hoces bas tacku pisemo je ovako [.]
 
+bool ValidirajLozinku(string lozinka) {
+	regex reg1("[0-9]"), reg2("[A-Z]"), reg3("[a-z]"), reg4("[^A-Za-z0-9]"), reg5(".{7,}");
 
-bool ValidirajLozinku(string sifra) {
-	regex reg1("[A-Z]"), reg2("[a-z]"), reg3("[0-9]"), reg4("[^A-Za-z0-9]"), reg5(".{7,}");
-	return regex_search(sifra, reg1) && regex_search(sifra, reg2) && regex_search(sifra, reg3) && regex_search(sifra, reg4) && regex_search(sifra, reg5);
+	return regex_search(lozinka, reg1) && regex_search(lozinka, reg2) && regex_search(lozinka, reg3) && regex_search(lozinka, reg4) && regex_search(lozinka, reg5);
 }
-
 
 class Korisnik {
 	char* _imePrezime;
@@ -404,59 +419,111 @@ public:
 	{
 		_imePrezime = GetNizKaraktera(imePrezime);
 		_emailAdresa = emailAdresa;
-		_lozinka = ValidirajLozinku(lozinka) ? lozinka : NIJE_VALIDNA;
-		//                  if uslov   ? true  :  false ;
-	}
+		// _lozinka = ValidirajLozinku(lozinka) ? lozinka : NIJE_VALIDNA;
 
+		// USLOV ? TRUE : FALSE;
+
+		if (ValidirajLozinku(lozinka) == true) {
+			_lozinka = lozinka;
+		}
+		else {
+			_lozinka = NIJE_VALIDNA;
+		}
+	}
 	Korisnik(const Korisnik& obj) {
 		_imePrezime = GetNizKaraktera(obj._imePrezime);
-		_emailAdresa = obj._emailAdresa;
 		_lozinka = obj._lozinka;
+		_emailAdresa = obj._emailAdresa;
 	}
+
 	Korisnik& operator = (const Korisnik& obj) {
 		if (this != &obj) {
-			delete[]_imePrezime;
+			delete[] _imePrezime;
+
 
 			_imePrezime = GetNizKaraktera(obj._imePrezime);
-			_emailAdresa = obj._emailAdresa;
 			_lozinka = obj._lozinka;
+			_emailAdresa = obj._emailAdresa;
 		}
 		return *this;
 	}
 
-	~Korisnik() { delete[] _imePrezime; _imePrezime = nullptr; }
 
-	virtual void Info() = 0;
+	virtual ~Korisnik() { delete[] _imePrezime; _imePrezime = nullptr; }
+
+	virtual void Info() = 0; // <--- kod starijih ispitnih kada imamo nasljedjivanje ne dodje nam virutal void info = 0 i ono se mora dodati u klasi koja se nasljedjuje 
 
 	string GetEmail() { return _emailAdresa; }
 	string GetLozinka() { return _lozinka; }
 	char* GetImePrezime() { return _imePrezime; }
 
-	friend ostream& operator << (ostream& COUT, const Korisnik& obj) {
-		COUT << obj._imePrezime << " " << obj._emailAdresa << " " << obj._lozinka << endl;
-		return COUT;
-	}
+
+
 };
 
+
 mutex m;
-class KaratePolaznik :public Korisnik {
+class KaratePolaznik: public Korisnik { // 1 KORAK KOD NASLJEDJIVANJA 
 	vector<Polaganje> _polozeniPojasevi;
 public:
-	KaratePolaznik(const char* imePrezime, string emailAdresa, string lozinka) :Korisnik(imePrezime, emailAdresa, lozinka) {
+	KaratePolaznik(const char* imePrezime, string emailAdresa, string lozinka)
+		:Korisnik(imePrezime,emailAdresa,lozinka) { // 2. KORAK SPOJITI SPOJENI KOSTR SA SPOJENIM KONT. OD KORISN.
+
 	}
-	KaratePolaznik(const KaratePolaznik& obj) :Korisnik(obj) {
+	KaratePolaznik(const KaratePolaznik& obj):Korisnik(obj) { //3 KORAK SPOJITI COPY SA COPYEM
 		_polozeniPojasevi = obj._polozeniPojasevi;
 	}
+
 	KaratePolaznik& operator = (const KaratePolaznik& obj) {
 		if (this != &obj) {
 
-			Korisnik::operator=(obj);
+			Korisnik::operator=(obj); // 4. KORAK KOD NASLJEDJIVANJA SPOJI OP SA OP 
+
 			_polozeniPojasevi = obj._polozeniPojasevi;
 		}
 		return *this;
 	}
-	~KaratePolaznik() {
-		cout << crt << "DESTRUKTOR -> KaratePolaznik" << crt;
+
+	void Info() { // 5. KORAK SPOJITI INFO
+		cout << *this;
+	}
+
+	float UKUPNIPROSJEK()const {
+		float suma = 0;
+		float brojac = 0;
+
+		for (int i = 0; i < _polozeniPojasevi.size(); i++)
+		{
+			suma += _polozeniPojasevi[i].GetProsjekPojasa();
+			brojac++;
+		}
+
+		if (brojac == 0) {
+			return 0;
+		}
+
+		return suma / brojac;
+	}
+
+///*nakon evidentiranja tehnike na bilo kojem pojasu kandidatu se salje email sa porukom:
+//FROM:info@karate.ba
+//TO: emailKorisnika
+//Postovani ime i prezime, evidentirana vam je thenika X za Y pojas. Dosadasnji uspjeh (prosjek ocjena)
+//na pojasu Y iznosi F, a ukupni uspjeh (prosjek ocjena) na svim pojasevima iznosi Z.
+//Pozdrav.
+//KARATE Team.
+//slanje email poruka implemenitrati koristeci zasebne thread-ove.
+//*/
+
+	void PosaljiMail(Tehnika tehnika, Pojas pojas, float ProsjekPojasa) {
+		m.lock();
+		cout << "FROM:info@karate.ba" << endl;
+		cout << "TO: "<< GetEmail() << endl;
+		cout << "Postovani "<<GetImePrezime()<<" , evidentirana vam je tehnika "<<tehnika.GetNaziv() << " " <<" za "<<pojas<<" pojas. Dosadasnji uspjeh (prosjek ocjena)"<< endl;
+		cout << "na pojasu " << pojas <<" iznosi "<< ProsjekPojasa <<", a ukupni uspjeh (prosjek ocjena) na svim pojasevima iznosi" <<UKUPNIPROSJEK()<< endl;
+		cout << "Pozdrav." << endl;
+		cout << "KARATE Team." << endl;
+		m.unlock();
 	}
 
 	///*
@@ -468,21 +535,23 @@ public:
 	//funkcija vraca true ili false u zavisnosti od (ne)uspjesnost izvrsenja
 	//*/
 
-		//                    ZUTI           kizami
+
 	bool AddTehniku(Pojas pojas, Tehnika tehnika) {
 
 		for (int i = 0; i < _polozeniPojasevi.size(); i++)
 		{
-			// NARANDZASTI  > ZUTI
-			if (pojas > _polozeniPojasevi[i].GetPojas() && (_polozeniPojasevi[i].GetTehnike().size() < 3 || _polozeniPojasevi[i].ProsjekPojasa() < 3.5)) {
+			// NARADASTI > ZUTOG
+			if (pojas > _polozeniPojasevi[i].GetPojas() &&
+				(_polozeniPojasevi[i].GetTehnike().size() < 3
+					|| _polozeniPojasevi[i].GetProsjekPojasa() < 3.5 )) {
 				return false;
 			}
 		}
 
+
 		for (int i = 0; i < _polozeniPojasevi.size(); i++)
 		{
-			//  ZUTI
-			if (pojas == _polozeniPojasevi[i].GetPojas()) {
+			if (_polozeniPojasevi[i].GetPojas() == pojas) { // ZUTI == ZUTI 
 
 				for (int j = 0; j < _polozeniPojasevi[i].GetTehnike().size(); j++)
 				{
@@ -492,76 +561,27 @@ public:
 				}
 
 
-
-
-
-
-
 				_polozeniPojasevi[i].GetTehnike().push_back(new Tehnika(tehnika));
-				thread t1(&KaratePolaznik::PosaljiMail, this, tehnika, pojas, _polozeniPojasevi[i].ProsjekPojasa());
+				thread t1(&KaratePolaznik::PosaljiMail, this, tehnika, pojas, _polozeniPojasevi[i].GetProsjekPojasa());
 				t1.join();
 				return true;
-
 			}
 		}
 
 
-
-
-
-
-		Polaganje polaganje(pojas);   // ZUTI POJAS
+		Polaganje polaganje(pojas);  // ZUTI 
 		polaganje.GetTehnike().push_back(new Tehnika(tehnika));
-		_polozeniPojasevi.push_back(polaganje);
-		thread t2(&KaratePolaznik::PosaljiMail, this, tehnika, pojas, polaganje.ProsjekPojasa());
+		thread t2(&KaratePolaznik::PosaljiMail,this,tehnika,pojas,polaganje.GetProsjekPojasa());
 		t2.join();
+
+		_polozeniPojasevi.push_back(polaganje);
 		return true;
-
-	}
-	///*nakon evidentiranja tehnike na bilo kojem pojasu kandidatu se salje email sa porukom:
-	//FROM:info@karate.ba
-	//TO: emailKorisnika
-	//Postovani ime i prezime, evidentirana vam je thenika  za Y pojas. Dosadasnji uspjeh (prosjek ocjena)
-	//na pojasu Y iznosi F, a ukupni uspjeh (prosjek ocjena) na svim pojasevima iznosi Z.
-	//Pozdrav.
-	//KARATE Team.
-	//slanje email poruka implemenitrati koristeci zasebne thread-ove.
-	//*/
-
-	void PosaljiMail(Tehnika tehnika, Pojas pojas, float prosjekPojasa) {
-		m.lock();
-		cout << "FROM:info@karate.ba" << endl;
-		cout << "TO: " << GetEmail() << endl;
-		cout << "Postovani " << GetImePrezime() << " evidentirana vam je tehnika " << tehnika.GetNaziv() << " za " << KopijaPojasa[pojas] << " pojas. Dosadasnji uspjeh (prosjek ocjena)" << endl;
-		cout << "na pojasu " << KopijaPojasa[pojas] << " iznosi " << prosjekPojasa << " , a ukupni uspjeh (prosjek ocjena) na svim pojasevima iznosi " << UKUPNIPROSJEK() << endl;
-		cout << "Pozdrav." << endl;
-		cout << "KARATE Team." << endl;
-		m.unlock();
 	}
 
 
-	float UKUPNIPROSJEK()const {
-		float suma = 0;
-		float brojac = 0;
-
-
-		for (int i = 0; i < _polozeniPojasevi.size(); i++)
-		{
-			suma += _polozeniPojasevi[i].ProsjekPojasa();
-			brojac++;
-		}
-		if (brojac == 0) {
-			return 0;
-		}
-
-		return suma / brojac;
+	~KaratePolaznik() {
+		cout << crt << "DESTRUKTOR -> KaratePolaznik" << crt;
 	}
-
-
-	void Info() {
-		cout << *this;
-	}
-
 	friend ostream& operator<< (ostream& COUT, KaratePolaznik& obj) {
 		COUT << obj.GetImePrezime() << " " << obj.GetEmail() << " " << obj.GetLozinka() << endl;
 		for (size_t i = 0; i < obj._polozeniPojasevi.size(); i++)
@@ -589,11 +609,13 @@ void main() {
 	cin.get();
 	cout << GetOdgovorNaDrugoPitanje() << endl;
 	cin.get();
-
+	
 	Datum   datum19062020(19, 6, 2020),
 		datum20062020(20, 6, 2020),
 		datum30062020(30, 6, 2020),
 		datum05072020(5, 7, 2020);
+
+	
 
 	int kolekcijaTestSize = 10;
 
@@ -631,7 +653,7 @@ void main() {
 
 	cout << kolekcija1 << crt;
 
-	kolekcija1.AddElement(9, 9, 2);
+	kolekcija1.AddElement(9, 9, 2); // InsertAt
 	/*funkciji AddElement se, kao treci parametar, moze proslijediti i lokacija na koju se dodaju
 	nove vrijednosti pri cemu treba zadrzati postojece vrijednosti pomjerene za jedno mjesto unaprijed
 	u odnosu na definisanu lokaciju npr. ako unutar kolekcije postoje elementi
@@ -674,11 +696,10 @@ void main() {
 		kizami_zuki("kizami_zuki"),
 		oi_zuki("oi_zuki");
 
-	/*svaka tehnika moze imati vise ocjena tj. moze se polagati u vise navrata.
-		-   razmak izmedju polaganja dvije tehnike mora biti najmanje 3 dana   1.1.2003 --> 2.1.2003
-		-   nije dozvoljeno dodati ocjenu sa ranijim datumom u odnosu na vec evidentirane (bez obzira sto je stariji od 3 dana)
-		 1.1.2003  ---> 1.1.2002
-	*/
+	///*svaka tehnika moze imati vise ocjena tj. moze se polagati u vise navrata.
+	//	-   razmak izmedju polaganja dvije tehnike mora biti najmanje 3 dana
+	//	-   nije dozvoljeno dodati ocjenu sa ranijim datumom u odnosu na vec evidentirane (bez obzira sto je stariji od 3 dana)
+	//*/
 	if (choku_zuki.AddOcjena(1, datum19062020))
 		cout << "Ocjena evidentirana!" << endl;
 	if (!choku_zuki.AddOcjena(5, datum20062020))
@@ -689,15 +710,6 @@ void main() {
 	/* ispisuje: naziv tehnike, ocjene (zajedno sa datumom) i prosjecnu ocjenu za tu tehniku
 	   ukoliko tehnika nema niti jednu ocjenu prosjecna treba biti 0*/
 	cout << choku_zuki << endl;
-
-
-	//Polaganje polaganje(BIJELI);  // <-- obnci contr.
-	//polaganje.GetTehnike().push_back(new Tehnika(choku_zuki));  // <---- dodavanje
-
-	//Polaganje polaganje2 = polaganje; <-- ovdje testiramo copy
-
-	//cout << polaganje2;
-
 
 	if (ValidirajLozinku("john4Do*e"))
 		cout << "OK" << crt;
@@ -734,7 +746,7 @@ void main() {
 	//funkcija vraca true ili false u zavisnosti od (ne)uspjesnost izvrsenja
 	//*/
 
-	//doraditi klase da nacin da omoguce izvrsenje naredne linije koda
+	////doraditi klase da nacin da omoguce izvrsenje naredne linije koda
 	KaratePolaznik* jasminPolaznik = dynamic_cast<KaratePolaznik*>(jasmin);
 
 	if (jasminPolaznik != nullptr) {
@@ -763,7 +775,7 @@ void main() {
 	//slanje email poruka implemenitrati koristeci zasebne thread-ove.
 	//*/
 
-	//osigurati da se u narednim linijama poziva i destruktor klase KaratePolaznik
+	////osigurati da se u narednim linijama poziva i destruktor klase KaratePolaznik
 	delete jasmin;
 	delete adel;
 	delete emailNijeValidan;

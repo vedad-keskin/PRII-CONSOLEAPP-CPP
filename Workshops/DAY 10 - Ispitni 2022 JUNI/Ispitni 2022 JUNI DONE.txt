@@ -1,35 +1,12 @@
 #include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
 #include <regex>
-#include <thread>
 #include <mutex>
+#include <thread>
 #include <fstream>
 #include <memory>
 using namespace std;
-
-
-char* GetNizKaraktera(const char* tekst) {
-	if (tekst == nullptr)
-		return nullptr;
-	int vel = strlen(tekst) + 1;
-	char* novi = new char[vel];
-	strcpy_s(novi, vel, tekst);
-	return novi;
-}
-
-
-
-unique_ptr<char[]> GetNizUniqueKaraktera(const char* tekst) {
-	if (tekst == nullptr)
-		return nullptr;
-	int vel = strlen(tekst) + 1;
-	unique_ptr<char[]> novi(new char[vel]);  // jedina razlika je sto ne stavljamo = nego unutar zagrade alociramo 
-	strcpy_s(novi.get(), vel, tekst);
-	return novi;
-}
-
-
 
 const char* PORUKA = "\n-------------------------------------------------------------------------------\n"
 "0. PROVJERITE DA LI PREUZETI ZADACI PRIPADAJU VASOJ GRUPI (G1/G2)\n"
@@ -49,7 +26,41 @@ const char* PORUKA = "\n--------------------------------------------------------
 "-------------------------------------------------------------------------------\n";
 const char* crt = "\n-------------------------------------------\n";
 enum Karakteristike { NARUDZBA, KVALITET, PAKOVANJE, ISPORUKA };
-const char* KopijeKarakterstika[]{ "NARUDZBA","KVALITET","PAKOVANJE","ISPORUKA" };
+
+
+ostream& operator<< (ostream& COUT, const Karakteristike& obj) {
+
+	const char* TekstKarakteristika[]{ "NARUDZBA","KVALITET","PAKOVANJE","ISPORUKA" };
+
+	COUT << TekstKarakteristika[obj];
+	return COUT;
+}
+
+
+
+
+
+
+
+
+
+char* GetNizKaraktera(const char* tekst) {
+	if (tekst == nullptr)
+		return nullptr;
+	int vel = strlen(tekst) + 1;
+	char* novi = new char[vel];
+	strcpy_s(novi, vel, tekst);
+	return novi;
+}
+
+unique_ptr<char[]> GetNizUniqueKaraktera(const char* tekst) {
+	if (tekst == nullptr)
+		return nullptr;
+	int vel = strlen(tekst) + 1;
+	unique_ptr<char[]> novi (new char[vel]);
+	strcpy_s(novi.get(), vel, tekst);
+	return novi;
+}
 
 template<class T1, class T2, int max>
 class Rijecnik {
@@ -60,19 +71,25 @@ class Rijecnik {
 
 public:
 	Rijecnik(bool omoguciDupliranje = true) {
-		_trenutno = new int(0); // alociramo i postavimo na 0 
+
+		_trenutno = new int(0);
 		_omoguciDupliranje = omoguciDupliranje;
-		// kada imamo niz pokazivaca ne radimo nista u spojenom konstruktoru
+
+		// KADA IMAMO ZADATAKE SA MAXOM OVDJE NE RADIMO NISTA
+
 	}
 	Rijecnik(const Rijecnik& obj) {
 		_trenutno = new int(*obj._trenutno);
 		_omoguciDupliranje = obj._omoguciDupliranje;
 
+		// KOD ZADATAKA SA MAXOM NE RADIMO ALOCIRANJE 
+
 		for (int i = 0; i < *_trenutno; i++)
 		{
-			_elementi1[i] = new T1(*obj._elementi1[i]); // znaci svaki element kada kopiramo moramo ga alocirati jer je svaki element pokazivac 
+			_elementi1[i] = new T1(*obj._elementi1[i]);
 			_elementi2[i] = new T2(*obj._elementi2[i]);
 		}
+
 	}
 
 	Rijecnik& operator = (const Rijecnik& obj) {
@@ -80,14 +97,15 @@ public:
 
 			for (int i = 0; i < *_trenutno; i++)
 			{
-				delete _elementi1[i];  // svaki element zato sto je pokzivac ima zasebni delete
+				delete _elementi1[i];
 				delete _elementi2[i];
 			}
-			delete _trenutno; // trenutno uvijek ide na kraju jer se trenutno koristi u for petlji iznad
-
+			delete _trenutno;
 
 			_trenutno = new int(*obj._trenutno);
 			_omoguciDupliranje = obj._omoguciDupliranje;
+
+			// KOD ZADATAKA SA MAXOM NE RADIMO ALOCIRANJE 
 
 			for (int i = 0; i < *_trenutno; i++)
 			{
@@ -99,51 +117,47 @@ public:
 	}
 
 	void AddElement(T1 el1, T2 el2) {
-
 		if (max == *_trenutno) {
-			throw exception("Niz je pun");
+			throw exception("Niz je popunjen");
 		}
+
 
 		if (_omoguciDupliranje == false) {
 			for (int i = 0; i < *_trenutno; i++)
 			{
-				if (el1 == *_elementi1[i] || el2 == *_elementi2[i]) { //'T1 *' to 'T1'	ako ti napise ovo zaboravila si negdje dereferencirati (*) neki element
+				if (el1 == *_elementi1[i] || el2 == *_elementi2[i]) {
 					throw exception("Dupliranje nije dozvoljeno");
 				}
+
 			}
 		}
-
 
 
 		_elementi1[*_trenutno] = new T1(el1);
 		_elementi2[*_trenutno] = new T2(el2);
 		(*_trenutno)++;
 	}
+/* metoda RemoveAt treba da ukloni i vrati (kao povratnu vrijednost) clanoverijecnika koji se nalaze na lokaciji definisanoj prvim parametrom.
+* Nakon izvrsenja metode RemoveAt, objekat rijecnik1 bi trebao posjedovati sljedeci sadrzaj:
+* 0  0
+* 1  1
+* 3  3
+* 4  4
+* ....
+*
+* a objekat rijecnik2 samo jedan par:
+*  2  2
+*/
 
-	//*Nakon izvrsenja metode RemoveAt, objekat rijecnik1 bi trebao posjedovati sljedeci sadrzaj :
-	// ORIGINALNI (elementi1,elementi2) :
-	//  * 0  0
-	//	* 1  1
-	//	* 3  3
-	//	* 4  4
-	//	* ....
-	//	*
-	//	* NOVI :  
-	//  * 2  2
-	//	* /
-
-	// kada kopiramo povratnu vrijednost uvijek prebacimo njegov riejcniktestsize u max jer je to nama max
-	//                                       2
 	Rijecnik<int, int, max> RemoveAt(int lokacija) {
 
-		Rijecnik<int, int, max> novi;
+
+		Rijecnik<int, int, max> novakolekcija; // prazna kolekcija 
+
+		novakolekcija.AddElement(*_elementi1[lokacija], *_elementi2[lokacija]);
 
 
-
-
-		novi.AddElement(*_elementi1[lokacija], *_elementi2[lokacija]);  // pohranili smo ono sto se nalazi na lokaciji 2 a to su elementi 2 i 2
-
-		for (int i = lokacija; i < *_trenutno - 1; i++)
+		for (int i = lokacija; i < *_trenutno-1; i++)
 		{
 			_elementi1[i] = new T1(*_elementi1[i + 1]);
 			_elementi2[i] = new T2(*_elementi2[i + 1]);
@@ -151,15 +165,18 @@ public:
 
 		(*_trenutno)--;
 
+		return novakolekcija;
 
-
-		return novi;
 	}
+
+
+
+
 
 	~Rijecnik() {
 		for (int i = 0; i < *_trenutno; i++)
 		{
-			delete _elementi1[i];  // svaki element zato sto je pokzivac ima zasebni delete
+			delete _elementi1[i];
 			_elementi1[i] = nullptr;
 			delete _elementi2[i];
 			_elementi2[i] = nullptr;
@@ -168,14 +185,13 @@ public:
 		_trenutno = nullptr;
 	}
 
-	T1& getElement1(int lokacija)const { return *_elementi1[lokacija]; } // zna ne staviti * ispred elemenata
+	T1& getElement1(int lokacija)const { return *_elementi1[lokacija]; } // 4. CAKA SAMO KOD ZADATAKA SA MAXOM 
 	T2& getElement2(int lokacija)const { return *_elementi2[lokacija]; }
-	int getTrenutno()const { return *_trenutno; }  // <--- ne stavi * na trenutno , nema const
-
+	int getTrenutno()const  { return *_trenutno; }  // 1. CAKA FALI CONST, 2. CAKA FALI * 
 
 
 	friend ostream& operator<< (ostream& COUT, const Rijecnik& obj) {
-		for (size_t i = 0; i < *obj._trenutno; i++)  // <--- ne stavi * ispred 
+		for (size_t i = 0; i < *obj._trenutno; i++)  // 3. CAKA FALI * NA TRENUTNO
 			COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
 		return COUT;
 	}
@@ -193,28 +209,27 @@ public:
 		_mjesec = new int(*obj._mjesec);
 		_godina = new int(*obj._godina);
 	}
-	Datum& operator=(const Datum& obj) {
+	Datum& operator = (const Datum& obj) {
 		if (this != &obj) {
-			delete _dan; _dan = nullptr;
-			delete _mjesec; _mjesec = nullptr;
-			delete _godina; _godina = nullptr;
+			delete _dan;
+			delete _mjesec;
+			delete _godina;
+
 			_dan = new int(*obj._dan);
 			_mjesec = new int(*obj._mjesec);
 			_godina = new int(*obj._godina);
 		}
 		return *this;
 	}
-
-	bool operator==(const Datum& obj) {
-		return *_godina == *obj._godina && *_mjesec == *obj._mjesec && *_dan == *obj._dan;
+	bool operator == (const Datum& obj) {
+		return *_dan == *obj._dan && *_mjesec == *obj._mjesec && *_godina == *obj._godina;
 	}
 
-
-
-	int SumaDana() const {
-		return *_godina * 365 + *_mjesec * 30 + *_dan;
+	int SumaDana() {
+		return *_dan + *_mjesec * 30 + *_godina * 365;
 	}
 
+	
 	~Datum() {
 		delete _dan; _dan = nullptr;
 		delete _mjesec; _mjesec = nullptr;
@@ -226,9 +241,10 @@ public:
 	}
 };
 
-// Datum, enum, int, char *
-// --> SAMOSTALNI PARAMETAR 
-// --> RIJECNIK(DVA PARAMETRA)
+// 1. PARAMETAR
+// RIJECNIK<2.PARAMTEAR,3.PARAMETAR>
+
+// char*, enum , Datum, int 
 
 class ZadovoljstvoKupca {
 	char* _komentar;
@@ -239,16 +255,22 @@ public:
 	ZadovoljstvoKupca(const char* komentar = "") {
 		//kreirajte funkciju GetNizKaraktera ili na drugi adekvatan nacin izvrsite inicijalizaciju pokazivaca
 		_komentar = GetNizKaraktera(komentar);
-		//_ocjeneKarakteristika = nullptr; // ovu caku stavi kad je rjcnik pokazivac
-		_ocjeneKarakteristika = new Rijecnik<Karakteristike, int, 4>;
+		_ocjeneKarakteristika = new Rijecnik<Karakteristike, int, 4>();
+
+		// AKO RIJECNIK NIJE POKAZIVAC OVDJE NE RADIMO NISTA
 	}
+
 	ZadovoljstvoKupca(const ZadovoljstvoKupca& obj) {
 		_komentar = GetNizKaraktera(obj._komentar);
 		_ocjeneKarakteristika = new Rijecnik<Karakteristike, int, 4>(*obj._ocjeneKarakteristika);
+
+		// AKO RICJENIK NIJE POKZIVAC ONDA IDEMO OVAKO
+		// _ocjeneKarakteristika = obj._ocjeneKarakteristika;
 	}
 
 	ZadovoljstvoKupca& operator = (const ZadovoljstvoKupca& obj) {
 		if (this != &obj) {
+
 			delete[]_komentar;
 			delete _ocjeneKarakteristika;
 
@@ -265,97 +287,101 @@ public:
 		delete _ocjeneKarakteristika; _ocjeneKarakteristika = nullptr;
 	}
 
-	void AddOcjenuKarakteristike(Karakteristike karaktersitika, int ocjena) {
-		for (int i = 0; i < _ocjeneKarakteristika->getTrenutno(); i++)
-		{
-			if (karaktersitika == _ocjeneKarakteristika->getElement1(i)) {
-				throw exception("Karakterstika je vec ocjenjena");
-			}
-		}
-
-		_ocjeneKarakteristika->AddElement(karaktersitika, ocjena);
-
-	}
-
-
 	char* GeKomentar() { return _komentar; }
 	Rijecnik<Karakteristike, int, 4>* GetOcjeneKarakteristika() { return _ocjeneKarakteristika; }
 
 
-	float getProsjek()const {
-		float suma = 0;
-		float brojac = 0;
+	void AddOcjenuKarakteristike(Karakteristike karaktersitka, int ocjena) {
 
 		for (int i = 0; i < _ocjeneKarakteristika->getTrenutno(); i++)
 		{
-			suma = suma + _ocjeneKarakteristika->getElement2(i);
-			//  suma+= isto pisanje
+			if (karaktersitka == _ocjeneKarakteristika->getElement1(i)) {
+				throw exception("Karakteristika je vec ocjejenja");
+			}
+		}
+
+		_ocjeneKarakteristika->AddElement(karaktersitka, ocjena);
+	}
+
+//   Nismo pretjerano zadovoljni kvalitetom, a ni pakovanjem.
+//		 NARUDZBA(7)
+//		 KVALITET(4)
+//		 PAKOVANJE(3)
+//		 ISPORUKA(6)
+//   -------------------------------------------
+//   Prosjecna ocjena -> 5
+
+	float getProsjek() const {
+		float suma = 0;  // 7+4+3+6  = 20
+		float brojac = 0; // 1 2 3 4         20/4 = 5 
+
+		for (int i = 0; i < _ocjeneKarakteristika->getTrenutno(); i++)
+		{
+			suma += _ocjeneKarakteristika->getElement2(i);
 			brojac++;
 		}
 		if (brojac == 0) {
 			return 0;
 		}
 
+
 		return suma / brojac;
+
 	}
 
-	//   Nismo pretjerano zadovoljni kvalitetom, a ni pakovanjem.
-	//		 NARUDZBA(7) 
-	//		 KVALITET(4)
-	//		 PAKOVANJE(3)
-	//		 ISPORUKA(6)
-	//   -------------------------------------------
-	//   Prosjecna ocjena -> 5
-	friend ostream& operator << (ostream& COUT, const ZadovoljstvoKupca& obj) {
+	friend ostream& operator<< (ostream& COUT, const ZadovoljstvoKupca& obj) {
 		COUT << obj._komentar << endl;
-		for (int i = 0; i < obj._ocjeneKarakteristika->getTrenutno(); i++) // ako ti nece da ispise dalje parametre pomocu tacke samo napises -> i radit ce 
-		{ // alt + q ova kosa \  --> razmak jednog TAB 
-			COUT << "\t" << KopijeKarakterstika[obj._ocjeneKarakteristika->getElement1(i)] << "(" << obj._ocjeneKarakteristika->getElement2(i) << ")" << endl;
+		for (int i = 0; i < obj._ocjeneKarakteristika->getTrenutno(); i++)
+		{
+			COUT <<"\t"<< obj._ocjeneKarakteristika->getElement1(i) << "(" << obj._ocjeneKarakteristika->getElement2(i) << ")" << endl;
 		}
-		COUT << crt << "Prosjecna ocjena -> " << obj.getProsjek() << endl; // da bi pozivali prosjek mora biti const
+		COUT << crt << "Prosjecna ocjena -> " << obj.getProsjek() << endl;
+
 		return COUT;
 	}
 
 };
 
-// +387 6
-// vedad.keskin@gmail.com
+///*
+//* za validaciju broja pasosa koristiti funkciju ValidirajBrojPasosa koja treba, koristeci regex, osigurati postivanje
+//sljedeceg formata:
+// 
+// 
+//- pocetak sadrzi jedan ili dva velika slova unutar uglastih zagrada
+//- nakon toga slijede tri ili cetiri broja
+//- nakon toga moze, a ne mora, doci znak crtica (-) ili razmak ( )
+//- nakon toga slijede dva mala slova unutar viticastih zagrada
 
-	///*
-	//* za validaciju broja pasosa koristiti funkciju ValidirajBrojPasosa koja treba, koristeci regex, osigurati postivanje
-	//sljedeceg formata:
-	//- pocetak sadrzi jedan ili dva velika slova unutar uglastih zagrada
-	//- nakon toga slijede tri ili cetiri broja
-	//- nakon toga moze, a ne mora, doci znak crtica (-) ili razmak ( )
-	//- nakon toga slijede dva mala slova unutar viticastih zagrada
+//pomenutu funkciju iskoristiti u konstruktoru klase Kupac, te ukoliko jedinstveni kod  nije u validnom formatu onda njegova vrijednost treba biti postavljena na NOT VALID
+//*/
 
-	//pomenutu funkciju iskoristiti u konstruktoru klase Kupac, te ukoliko jedinstveni kod  nije u validnom formatu onda njegova vrijednost treba biti postavljena na NOT VALID
-	//*/
-
-// [AD]2424
-
-// regex_match ---> kada se trazi de nesto bude u tacnom redosljedu 
-
-// 1. postoje specijalni znakovi ( ) [ ] { } / \  -----> ispred stavljamo \\ alt+q 
-// 2. range [A-Z] --> bar jedno veliko slovo
-// 3. velicina {1,2} --> 1 ili 2 {3,4} 3 ili 4 {3,6} od 3 do 6 {7,} najmanje 7 {,7} najvise 7 , {2} tacno 2
-// ? ako nesto ne mora samo stavimo iza tog asto ne mora ? 
-// 4. ( ) ---> kada tacno mora biti tako (gmail) , gmail ili yahoo  (gmail|yahoo)    | znaci ili 
-// @ ide samo 
-// tacka ----> [.] 
-// . ----> bilo koji znak
-// 6. neki znak [A-Za-z0-9] ---> ovo znaci ili veliko ili malo ili broj ---> [^A-Za-z0-9]  --> alt+3 ^
-// ^ negira se sto se nalazi unutar nekog izraza 
-// + znaci [a-z]+ koliko god hoces malih slova dok se ne pojavi iduci pravilo
+//1. SPECIJALNI ZNAKOVI ---->>  [ ]  {  }  ( ) / \  --> ako hocemo da ovaj znak nema fuckciju  \\[  <-- nije spec.
+//2. AKO HOCEMO NEKI RANGE  [ ] -- [A-Z] [a-z] [0-9]   <--- NAJMANJE JEDNO
+//3. PRAVILO VELICINE { }  --> {2,4}  {1,2}  {2}  {2,}  {,7}
+//4. AKO NESTO MOZE A NE MORA IZA USLOVA NAPISEMO [- ]? 
+//5. AKO NESTO TREBA BAS TAKO DA BUDE com, ba ili org   --> ( ) ---> ovako tacno mora bit napisano (ba|org|com)
+//6. AKO TI TREBA TACKA   .  ---> bilo koji znak
+//7.  BAS TACKA [.]
+//8. KADA HOCEMO NECEGA A NE ZNAMO KOLIKO STAVIMO + [a-z]+[.]  aid.
+//9. KADA TRAZE @ ONO SE PISE SAMO 
 
 
-// regex_search ---> kada ne mora biti u odredjenom redosljedu kao password kao username
-// mora imat vise od 7 znakova, mora imati malo slovo, veliko slovo, broj, znak ... 
+// regex_match
+// vedad.keskin@edu.fit.ba
+
+// regex_search
+// validiramo lozinke, username
+
+//   [AZ]233-{as}     <----- VALIDAN PASOS
 
 bool ValidirajJedinstveniKod(string pasos) {
+
 	regex reg("\\[[A-Z]{1,2}\\][0-9]{3,4}[- ]?\\{[a-z]{2}\\}");
+
 	return regex_match(pasos, reg);
+
 }
+
 
 class Kupac {
 	unique_ptr<char[]> _imePrezime;
@@ -371,17 +397,18 @@ public:
 		else {
 			_jedinstveniKod = "NOT VALID";
 		}
-
 	}
 	Kupac(const Kupac& obj) {
-		_imePrezime = GetNizUniqueKaraktera(obj._imePrezime.get());  // u copy i operatoru= trazi se da na pametni pokazivac stavimo .get() --> (tj da ga dereferenciramo) 
+		_imePrezime = GetNizUniqueKaraktera(obj._imePrezime.get());
 		_emailAdresa = obj._emailAdresa;
 		_jedinstveniKod = obj._jedinstveniKod;
 	}
 
 	Kupac& operator = (const Kupac& obj) {
 		if (this != &obj) {
-			_imePrezime.reset(); // reset znaci i delete i nullptr
+
+			_imePrezime.reset();
+
 
 			_imePrezime = GetNizUniqueKaraktera(obj._imePrezime.get());
 			_emailAdresa = obj._emailAdresa;
@@ -390,15 +417,12 @@ public:
 		return *this;
 	}
 
-	bool operator == (const Kupac& obj) {
-		if (_jedinstveniKod == obj._jedinstveniKod) {
-			return true;
-		}
-		return false;
+	~Kupac() {
+		_imePrezime.reset();
 	}
 
-	~Kupac() {
-		_imePrezime.reset(); // radi i delete i nullptr
+	bool operator == (Kupac obj) {
+		return _jedinstveniKod == obj._jedinstveniKod;
 	}
 
 	string GetEmail() { return _emailAdresa; }
@@ -411,110 +435,126 @@ public:
 	}
 };
 
-
 mutex m;
 class Kupovina {
 	Datum _datumKupovine;
 	//jedna kupovina moze podrazumjevati isporuku proizvoda vecem broju kupaca
 	//onemoguciti dodavanje kupaca sa istom email adresom ili jedinstvenim kodomu okviru jedne kupovine
-	vector<Kupac> _kupci;
+	vector<Kupac> _kupaci;
 	//za svaku kupovinu se moze ostaviti samo jedan komentar odnosno ocjena zadovoljstva, bez obzirana broj kupaca
 	ZadovoljstvoKupca _zadovoljstvoKupca;
 
 public:
 	Kupovina(Datum& datum, Kupac& kupac) : _datumKupovine(datum) {
-		_kupci.push_back(kupac);
+		_kupaci.push_back(kupac);
+		
 	}
 
 	Kupovina(const Kupovina& obj) {
 		_datumKupovine = obj._datumKupovine;
-		_kupci = obj._kupci;
+		_kupaci = obj._kupaci;
 		_zadovoljstvoKupca = obj._zadovoljstvoKupca;
-
 	}
+
 	Kupovina& operator = (const Kupovina& obj) {
 		if (this != &obj) {
 
 			_datumKupovine = obj._datumKupovine;
-			_kupci = obj._kupci;
+			_kupaci = obj._kupaci;
 			_zadovoljstvoKupca = obj._zadovoljstvoKupca;
 		}
 		return *this;
 	}
 
+
 	bool AddKupca(Kupac kupac) {
-		for (int i = 0; i < _kupci.size(); i++)
+
+		for (int i = 0; i < _kupaci.size(); i++)
 		{
-			if (kupac == _kupci[i]) {
+			if (kupac == _kupaci[i]) {
 				return false;
 			}
 		}
 
-
-		_kupci.push_back(kupac);
+		_kupaci.push_back(kupac);
 		return true;
 	}
 	////ukoliko se kupovini  doda zadovoljstvo koji sadrzi najmanje dvije karakteristike sa ocjenom manjom od 5, svim kupcima, 
 ////koji su dodati u kupovinu, u zasebnom thread-u, se salje email sa sljedecim sadrzajem:
+
+	//		 NARUDZBA(7)
+	//		 KVALITET(4)
+	//		 PAKOVANJE(3)
+	//		 ISPORUKA(6)
+
 	void SetZadovoljstvoKupca(ZadovoljstvoKupca zadovoljstvo) {
 		_zadovoljstvoKupca = zadovoljstvo;
 		int brojac = 0;
 
+
 		for (int i = 0; i < _zadovoljstvoKupca.GetOcjeneKarakteristika()->getTrenutno(); i++)
 		{
-			// NADRZBA 3
-			// ISPRUKA 4 
 			if (_zadovoljstvoKupca.GetOcjeneKarakteristika()->getElement2(i) < 5) {
 				brojac++;
 			}
 		}
 
 		if (brojac >= 2) {
-			thread t1(&Kupovina::PosaljiMail, this);
+			thread t1(&Kupovina::PosaljiMail,this,_zadovoljstvoKupca.getProsjek());
 			t1.join();
 		}
 
+
 	}
 
-	//   To: denis@fit.ba;jasmin@fit.ba;
-	//   Subject: Informacija
+	//  /*
+   //   To: denis@fit.ba;jasmin@fit.ba;
+   //   Subject: Informacija
 
-	//   Postovani,
+   //   Postovani,
 
-	//   Zaprimili smo Vase ocjene, a njihova prosjecna vrijednost je X.X.
-	//   Zao nam je zbog toga, te ce Vas u najkracem periodu kontaktirati nasa Sluzba za odnose sa kupcima.
+   //   Zaprimili smo Vase ocjene, a njihova prosjecna vrijednost je X.X.
+   //   Zao nam je zbog toga, te ce Vas u najkracem periodu kontaktirati nasa Sluzba za odnose sa kupcima.
 
-	//   Nadamo se da cete i dalje poslovati sa nama
-	//   Puno pozdrava
+   //   Nadamo se da cete i dalje poslovati sa nama
+   //   Puno pozdrava
+//  */
 
-	void PosaljiMail() {
+	void PosaljiMail(float prosjek) {
 		m.lock();
-		cout << "To: " << endl;
-		for (int i = 0; i < _kupci.size(); i++)
+		cout << "To: ";
+		for (int i = 0; i < _kupaci.size(); i++)
 		{
-			cout << _kupci[i].GetEmail() << ";";
+			cout << _kupaci[i].GetEmail() << ";";
 		}
 		cout << endl << "Subject: Informacija" << endl << endl;
 		cout << "Postovani," << endl << endl;
-		cout << "Zaprimili smo Vase ocjene, a njihova prosjecna vrijednost je " << _zadovoljstvoKupca.getProsjek() << endl;
-		cout << "Zao nam je zbog toga, te ce Vas u najkracem periodu kontaktirati nasa Sluzba za odnose sa kupcima." << endl << endl;
+		cout << "Zaprimili smo Vase ocjene, a njihova prosjecna vrijednost je "<< prosjek << endl;
+		cout << " Zao nam je zbog toga, te ce Vas u najkracem periodu kontaktirati nasa Sluzba za odnose sa kupcima." << endl << endl;
 		cout << "Nadamo se da cete i dalje poslovati sa nama" << endl;
 		cout << "Puno pozdrava" << endl;
-
-
 		m.unlock();
 	}
 
-	tuple<int, int, int> GetBrojZnakova(const char * lokacija) {
-		int brojacMalih = 0;
+	//pair<int, int> DvaParametra;
+	//tuple<int, int, int, int, int> TriIliViseParametara;
+
+	// red po red ---> radili prosli put 
+	// slovo po slovo ----> laksi nacin
+
+	tuple<int, int, int>  GetBrojZnakova(const char * nazivFajla) {
+
 		int brojacVelikih = 0;
-		int brojacZnakova = 0;
+		int brojacMalih = 0;
+		int brojacRazmaka = 0;
 		char znak;
 
-		ifstream fajl(lokacija);
+		ifstream fajl(nazivFajla);
 
-		while (fajl.get(znak))
+
+		while (fajl.get(znak)) // funckija ce se vritit dok god ima slovo u fajlu
 		{
+
 			if (znak >= 'A' && znak <= 'Z') {
 				brojacVelikih++;
 			}
@@ -522,24 +562,30 @@ public:
 				brojacMalih++;
 			}
 			if (znak == ' ') {
-				brojacZnakova++;
+				brojacRazmaka++;
 			}
 		}
 
 		fajl.close();
 
-		return { brojacVelikih,brojacMalih,brojacZnakova };
+
+		return { brojacVelikih,brojacMalih,brojacRazmaka };
+
+
 	}
 
-	vector<Kupac>& GetKupci() { return _kupci; }
+
+
+	vector<Kupac>& GetKupci() { return _kupaci; }
 	ZadovoljstvoKupca GetZadovoljstvoKupca() { return _zadovoljstvoKupca; }
+
 
 
 	friend ostream& operator<< (ostream& COUT, Kupovina& obj) {
 		COUT << crt << "Kupovina " << obj._datumKupovine << " za kupce: " << endl;
-		for (size_t i = 0; i < obj._kupci.size(); i++)
+		for (size_t i = 0; i < obj._kupaci.size(); i++)
 		{
-			COUT << "\t" << i + 1 << "." << obj._kupci[i];
+			COUT << "\t" << i + 1 << "." << obj._kupaci[i];
 		}
 		cout << crt << "Zadovoljstvo kupca: " << endl << obj._zadovoljstvoKupca << crt;
 		return COUT;
@@ -580,12 +626,11 @@ void main() {
 	catch (exception& err) {
 		cout << err.what() << crt;
 	}
-
 	rijecnik1.AddElement(9, 9);
 
 	try
 	{
-		//ukoliko je rijecnik popunje, metoda AddElement treba baciti objekat tipa exception
+		//ukoliko je rijecnik popunjen, metoda AddElement treba baciti objekat tipa exception
 		rijecnik1.AddElement(10, 10);
 	}
 	catch (exception& err) {
@@ -594,7 +639,7 @@ void main() {
 
 	cout << rijecnik1 << crt;
 
-	/* metoda RemoveAt treba da ukloni i vrati (kao povratnu vrijednost)clanoverijecnika koji se nalaze na lokaciji definisanoj prvim parametrom.
+	/* metoda RemoveAt treba da ukloni i vrati (kao povratnu vrijednost) clanoverijecnika koji se nalaze na lokaciji definisanoj prvim parametrom.
 	* Nakon izvrsenja metode RemoveAt, objekat rijecnik1 bi trebao posjedovati sljedeci sadrzaj:
 	* 0  0
 	* 1  1
@@ -605,11 +650,9 @@ void main() {
 	* a objekat rijecnik2 samo jedan par:
 	*  2  2
 	*/
-	Rijecnik<int, int, rijecnikTestSize> rijecnik2 = rijecnik1.RemoveAt(2); // moras pravili novakolekcija
-	//rijecnik1.RemoveAt(2); // da je ovaj slucaj u pitanju mi bi koristili origianlni rjecnik(elementi1,elementi2)
-
+	Rijecnik<int, int, rijecnikTestSize> rijecnik2 = rijecnik1.RemoveAt(2);
 	cout << rijecnik2 << crt;
-
+	cout << rijecnik1 << crt;
 
 
 	///*
@@ -642,7 +685,7 @@ void main() {
 	Kupac adel("Adel Handzic", "adel@edu.fit.ba", "[B]2356 {ih}");
 	Kupac jedinstveniKodNotValid("Ime Prezime", "korisnik@klix.ba", "BH2356{ih}");//_jedinstveniKod = NOT VALID
 
-
+	
 
 	//kupovini  se prilikom kreiranja mora dodijeliti kupac koji je kreator kupovine
 	Kupovina kupovina(datum30062022, denis);
@@ -665,7 +708,7 @@ void main() {
 
 	cout << zadovoljstvoKupca;
 
-	////u okviru kupovine postavlja vrijednost atributa _zadovoljstvoKupca
+	//u okviru kupovine postavlja vrijednost atributa _zadovoljstvoKupca
 	kupovina.SetZadovoljstvoKupca(zadovoljstvoKupca);
 
 	////ukoliko se kupovini  doda zadovoljstvo koji sadrzi najmanje dvije karakteristike sa ocjenom manjom od 5, svim kupcima, 

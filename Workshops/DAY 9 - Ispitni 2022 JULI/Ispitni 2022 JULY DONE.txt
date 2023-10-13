@@ -1,10 +1,11 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <thread>
+#include <regex>
 #include <mutex>
+#include <thread>
 #include <fstream>
-
+#include <memory>
 using namespace std;
 
 const char* PORUKA = "\n-------------------------------------------------------------------------------\n"
@@ -26,13 +27,21 @@ const char* PORUKA = "\n--------------------------------------------------------
 "-------------------------------------------------------------------------------\n";
 
 const char* crt = "\n-------------------------------------------\n";
+
+
+//                       0        1         2             3
 enum Karakteristike { NARUDZBA, KVALITET, PAKOVANJE, ISPORUKA };
-ostream& operator<<(ostream& COUT, Karakteristike kar)
-{
-	const char* karakterstikeSadrzaj[] = { "NARUDZBA","KVALITET", "PAKOVANJE", "ISPORUKA" };
-	COUT << karakterstikeSadrzaj[kar];
+
+
+ostream& operator<< (ostream& COUT, const Karakteristike& obj) {
+
+	const char* TekstKarakteristika[]{ "NARUDZBA","KVALITET","PAKOVANJE","ISPORUKA" };
+
+	COUT << TekstKarakteristika[obj];
 	return COUT;
 }
+
+
 char* GetNizKaraktera(const char* sadrzaj, bool dealociraj = false) {
 	if (sadrzaj == nullptr)return nullptr;
 	int vel = strlen(sadrzaj) + 1;
@@ -45,40 +54,50 @@ char* GetNizKaraktera(const char* sadrzaj, bool dealociraj = false) {
 
 template<class T1, class T2>
 class Rjecnik {
-	T1* _elementi1;
+	T1* _elementi1; // T1* _elementi1[max];  // T1 _elementi1;
 	T2* _elementi2;
-	int _trenutno;
+	int* _trenutno;
 	bool _omoguciDupliranje;
 public:
 	Rjecnik(bool omoguciDupliranje = true) {
 		_omoguciDupliranje = omoguciDupliranje;
-		_trenutno = 0;
-		_elementi1 = new T1[_trenutno];
-		_elementi2 = new T2[_trenutno];
+
+		_trenutno = new int(0); // trenutno = 0; <--- da trenutno nije pokazivac
+
+		_elementi1 = new T1[*_trenutno];
+		_elementi2 = new T2[*_trenutno];
+
 	}
-	Rjecnik(const Rjecnik& obj)
-	{
-		_trenutno = obj._trenutno;
+	Rjecnik(const Rjecnik& obj) {
 		_omoguciDupliranje = obj._omoguciDupliranje;
-		_elementi1 = new T1[_trenutno];
-		_elementi2 = new T2[_trenutno];
-		for (int i = 0; i < _trenutno; i++)
+		_trenutno = new int(*obj._trenutno);
+
+		_elementi1 = new T1[*_trenutno];
+		_elementi2 = new T2[*_trenutno];
+
+		for (int i = 0; i < *_trenutno; i++)
 		{
 			_elementi1[i] = obj._elementi1[i];
 			_elementi2[i] = obj._elementi2[i];
 		}
+
 	}
-	Rjecnik& operator=(const Rjecnik& obj)
-	{
-		if (this != &obj)
-		{
-			_trenutno = obj._trenutno;
+
+	Rjecnik& operator = (const Rjecnik& obj) {
+		if (this != &obj) {
+
+			delete _trenutno;
+			delete[]_elementi1;
+			delete[]_elementi2;
+
+
 			_omoguciDupliranje = obj._omoguciDupliranje;
-			delete[] _elementi1;
-			delete[] _elementi2;
-			_elementi1 = new T1[_trenutno];
-			_elementi2 = new T2[_trenutno];
-			for (int i = 0; i < _trenutno; i++)
+			_trenutno = new int(*obj._trenutno);
+
+			_elementi1 = new T1[*_trenutno];
+			_elementi2 = new T2[*_trenutno];
+
+			for (int i = 0; i < *_trenutno; i++)
 			{
 				_elementi1[i] = obj._elementi1[i];
 				_elementi2[i] = obj._elementi2[i];
@@ -86,49 +105,72 @@ public:
 		}
 		return *this;
 	}
-	~Rjecnik() {
-		delete[] _elementi1; _elementi1 = nullptr;
-		delete[] _elementi2; _elementi2 = nullptr;
-	}
-	T1& getElement1(int lokacija)const { return _elementi1[lokacija]; }
-	T2& getElement2(int lokacija)const { return _elementi2[lokacija]; }
-	int getTrenutno() const { return _trenutno; }
-	void AddElement(T1 e1, T2 e2)
-	{
-		if (!_omoguciDupliranje)
-			for (int i = 0; i < _trenutno; i++)
-				if (_elementi1[i] == e1 && _elementi2[i] == e2)
-					throw exception("Postoje isti elementi u kolekciji!");
-		T1* temp1 = _elementi1;
+
+	void AddElement(T1 el1, T2 el2) {
+		if (_omoguciDupliranje == false) // kada omoguci dupliranje je false
+		{
+			for (int i = 0; i < *_trenutno; i++)
+			{
+				if (el1 == _elementi1[i] || el2 == _elementi2[i]) {
+					throw exception("Dupliranje nije dozvoljeno"); // <-- kada imas try catch u kodu radi exception
+				}
+			}
+		}
+
+
+
+		T1* temp1 = _elementi1; // <--- prekopiramo sve elemente u neku privremenu vrijedost
 		T2* temp2 = _elementi2;
-		_elementi1 = new T1[_trenutno + 1];
-		_elementi2 = new T2[_trenutno + 1];
-		for (int i = 0; i < _trenutno; i++)
+
+		_elementi1 = new T1[*_trenutno + 1]; // prosirujemo da ima jedno dodatno mjesto
+		_elementi2 = new T2[*_trenutno + 1];
+
+		for (int i = 0; i < *_trenutno; i++)
 		{
 			_elementi1[i] = temp1[i];
 			_elementi2[i] = temp2[i];
 		}
-		_elementi1[_trenutno] = e1;
-		_elementi2[_trenutno] = e2;
-		_trenutno++;
-	}
-	Rjecnik<T1, T2> operator()(int from, int to)
-	{
-		Rjecnik<T1, T2>novi;
-		for (int i = from; i <= to; i++)
-			novi.AddElement(_elementi1[i], _elementi2[i]);
-		return novi;
-	}
-	friend ostream& operator<< (ostream& COUT, const Rjecnik& obj) {
-		for (size_t i = 0; i < obj._trenutno; i++)
-		{
-			COUT << obj.getElement1(i) << " " << obj.getElement2(i);
 
-			//ovaj if uslov sluzi da nemamo viska novih redova jer u main-u imamo crt nakon ispisa kolekcije,
-			//te dodatni endl rezultira praznim redom
-			if (i != obj.getTrenutno() - 1)
-				COUT << endl;
+		_elementi1[*_trenutno] = el1;
+		_elementi2[*_trenutno] = el2;
+
+		// _trenutno++; // <---- ako trenutno nije pokazivac
+
+		(* _trenutno)++; // <--- ako je pokzivac trenutno nemoj zaboravit u zagrade ga stavit prije ++ 
+
+	}
+
+	//                                     2         5
+	Rjecnik<int, int> operator () (int pocetak, int kraj) {
+
+		Rjecnik<int, int> novakolekcija;  // prazna kolekcija koja u sebi nema nista
+
+
+		for (int i = pocetak; i <= kraj; i++)
+		{
+			novakolekcija.AddElement(_elementi1[i], _elementi2[i]);
 		}
+
+		return novakolekcija;
+
+	}
+
+
+	~Rjecnik() {
+		delete _trenutno; _trenutno = nullptr;
+		delete[] _elementi1; _elementi1 = nullptr;
+		delete[] _elementi2; _elementi2 = nullptr;
+	}
+
+
+	T1& getElement1(int lokacija)const { return _elementi1[lokacija]; }
+	T2& getElement2(int lokacija)const { return _elementi2[lokacija]; }
+	int getTrenutno() const { return *_trenutno; } // 1. CAKA FALI OVDJE CONST  , 2. FALI * ISPRED TRENUTNO
+
+
+	friend ostream& operator<< (ostream& COUT, const Rjecnik& obj) {
+		for (size_t i = 0; i < *obj._trenutno; i++)  // 3. FALI * NA OBJ.TRENUTNO
+			COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
 		return COUT;
 	}
 };
@@ -136,36 +178,64 @@ class Datum {
 	int* _dan, * _mjesec, * _godina;
 public:
 	Datum(int dan = 1, int mjesec = 1, int godina = 2000) {
-		_dan = new int(dan);
+		// _dan = &dan;   // <---- CAKA 2 bude u nekih 10% ispita
+		_dan = new int(dan);   // <---- 
 		_mjesec = new int(mjesec);
 		_godina = new int(godina);
 	}
-	Datum(const Datum& obj)
-	{
+
+	// & znaci da koristimo original 
+	// const znaci da je vrijednsot konstantna i da se ne moze mijenjati 
+	Datum(const Datum& obj) { // <----  kada nema & napravi se kopija datum u memoriji
+
 		_dan = new int(*obj._dan);
 		_mjesec = new int(*obj._mjesec);
 		_godina = new int(*obj._godina);
+		
 	}
-	Datum& operator=(const Datum& obj)
-	{
-		if (this != &obj)
-		{
-			*_dan = *obj._dan;
-			*_mjesec = *obj._mjesec;
-			*_godina = *obj._godina;
+
+	Datum& operator = (const Datum& obj) {
+		if (this != &obj) {
+			delete _dan;
+			delete _mjesec;
+			delete _godina;
+
+
+			_dan = new int(*obj._dan);
+			_mjesec = new int(*obj._mjesec);
+			_godina = new int(*obj._godina);
 		}
 		return *this;
 	}
+
+	// 12 12 1998
+	// 12 12 1998
+	bool operator == (const Datum obj) { // radi se za svaku klasu osim klekcije i zadnje klase
+		return *_dan == *obj._dan && *_mjesec == *obj._mjesec && *_godina == *obj._godina;
+	}
+
+	// datum1 == 12312321 > datum2 = 213123
+	int SumaDana() {  // racuna koliko svaki datum u sebi ima dana
+		return *_dan + *_mjesec * 30 + *_godina + 365;
+	}
+
+
+
 	~Datum() {
 		delete _dan; _dan = nullptr;
 		delete _mjesec; _mjesec = nullptr;
 		delete _godina; _godina = nullptr;
 	}
 	friend ostream& operator<< (ostream& COUT, const Datum& obj) {
-		COUT << *obj._dan << "." << *obj._mjesec << "." << *obj._godina;
+		COUT << *obj._dan << "." << *obj._mjesec << "." << *obj._godina;  // <--- CAKA 1 fale * 
 		return COUT;
 	}
 };
+
+
+// char *, int , Datum , enum 
+// 1. PARAMETAR
+// KOLEKCIJA<2.PARAMETAR, 3.PARAMETAR>
 
 class ZadovoljstvoKupca {
 	int _ocjena; //za svaku kupovinu kupac moze ostaviti jednu ocjenu
@@ -175,52 +245,64 @@ class ZadovoljstvoKupca {
 public:
 	ZadovoljstvoKupca(int ocjena = 0) {
 		_ocjena = ocjena;
+
+		// za rijecnik ne radimo nista jer on nije pokazivac  *
+
+		// ako je rijecnik pokazivac 
+		// _komentariKarakteristika = new Rjecnik<Karakteristike, const char*>();
 	}
-	ZadovoljstvoKupca(const ZadovoljstvoKupca& obj)
-	{
+
+	ZadovoljstvoKupca(const ZadovoljstvoKupca& obj) {
 		_ocjena = obj._ocjena;
+
 		_komentariKarakteristika = obj._komentariKarakteristika;
+
+		// da je komentarikar pokazivac
+		// _komentariKarakteristika = new Rjecnik<Karakteristike, const char*>(*obj._komentariKarakteristika);
 	}
-	ZadovoljstvoKupca& operator=(const ZadovoljstvoKupca& obj)
-	{
-		if (this != &obj)
-		{
+
+	ZadovoljstvoKupca& operator = (const ZadovoljstvoKupca& obj) {
+		if (this != &obj) {
+
+
+
 			_ocjena = obj._ocjena;
 			_komentariKarakteristika = obj._komentariKarakteristika;
 		}
 		return *this;
 	}
-	void DodajKomentarKarakteristike(Karakteristike karakteristika, const char* komentar)
-	{
-		for (int i = 0; i < _komentariKarakteristika.getTrenutno(); i++)
-			if (_komentariKarakteristika.getElement1(i) == karakteristika)
-				throw exception("Vec je komentarisana data karatkeristika!");
-		_komentariKarakteristika.AddElement(karakteristika, komentar);
+	bool operator == (const ZadovoljstvoKupca obj) {
+		return _ocjena == obj._ocjena;
 	}
-	bool operator==(ZadovoljstvoKupca& obj)
-	{
-		if (_ocjena != obj._ocjena)
-			return false;
+
+	//                                                  KVALITET
+	void DodajKomentarKarakteristike(Karakteristike karakteristika, const char * komentar) {
 		for (int i = 0; i < _komentariKarakteristika.getTrenutno(); i++)
 		{
-			if (!(_komentariKarakteristika.getElement1(i) == obj._komentariKarakteristika.getElement1(i) &&
-				strcmp(_komentariKarakteristika.getElement2(i), obj._komentariKarakteristika.getElement2(i)) == 0))
-				return false;
+			if (karakteristika == _komentariKarakteristika.getElement1(i)) {
+				throw exception("Karakteristika je vec ocjenjena");
+			}
 		}
-		return true;
+
+		_komentariKarakteristika.AddElement(karakteristika, komentar);
 	}
+
+
 	int GetOcjena() { return _ocjena; }
 	Rjecnik<Karakteristike, const char*>& GetKomentareKarakteristika() { return _komentariKarakteristika; }
-	friend ostream& operator<<(ostream& COUT, ZadovoljstvoKupca& obj)
-	{
+
+	    //zadovoljstvo kupca : 7
+		//			NARUDZBA - Nismo mogli odabrati sve potrebne opcije
+		//			KVALITET - Kvalitet je ocekivan
+		//			PAKOVANJE - Pakovanje je bio osteceno
+		//			ISPORUKA - Mada su najavili da ce proizvod biti isporucen u roku od 2 dana, cekali smo 5 dana
+
+	friend ostream& operator<< (ostream& COUT, const ZadovoljstvoKupca& obj) {
 		COUT << obj._ocjena << endl;
 		for (int i = 0; i < obj._komentariKarakteristika.getTrenutno(); i++)
 		{
-			COUT << "\t" << obj.GetKomentareKarakteristika().getElement1(i) << " - " << obj.GetKomentareKarakteristika().getElement2(i);
-
-			//razlog dodavanja if uslova je isti kao kod ispisa kolekcije (linija 129)
-			if (i != obj._komentariKarakteristika.getTrenutno() - 1)
-				COUT << endl;
+			//   alt + q
+			COUT <<"\t"<< obj._komentariKarakteristika.getElement1(i) << " - " << obj._komentariKarakteristika.getElement2(i) << endl;
 		}
 		return COUT;
 	}
@@ -228,178 +310,268 @@ public:
 
 class Osoba {
 protected:
-	char* _imePrezime;
+	char* _imePrezime;  // VEDAD 
 	Datum _datumRodjenja;
 public:
 	Osoba(const char* imePrezime = "", Datum datumRodjenja = Datum()) : _datumRodjenja(datumRodjenja) {
 		_imePrezime = GetNizKaraktera(imePrezime);
 	}
-	Osoba(const Osoba& obj)
-	{
+	Osoba(const Osoba& obj) {
 		_imePrezime = GetNizKaraktera(obj._imePrezime);
 		_datumRodjenja = obj._datumRodjenja;
 	}
-	Osoba& operator=(const Osoba& obj)
-	{
-		if (this != &obj)
-		{
-			delete[] _imePrezime;
+	Osoba& operator = (const Osoba& obj) {
+		if (this != &obj) {
+			delete[]_imePrezime;
+
+
 			_imePrezime = GetNizKaraktera(obj._imePrezime);
 			_datumRodjenja = obj._datumRodjenja;
 		}
 		return *this;
 	}
-	~Osoba() {
+
+	
+
+
+	virtual ~Osoba() { // u klasi koja se nasljejduje treba se staviti virtual prije destruktora
 		delete[] _imePrezime; _imePrezime = nullptr;
 	}
 	char* GetImePrezime() { return _imePrezime; }
 	Datum& GetDatumRodjenja() { return _datumRodjenja; }
 
-	virtual void Info() = 0;
+
+
+	virtual void Info() = 0; // klasa osoba postaje apstraktna sto znaci da ona vise nije klasa nego samo neki pomagac da neko drugi pravi neku drugu klasu 
+
+
+
 	friend ostream& operator<< (ostream& COUT, const Osoba& obj) {
 		COUT << obj._imePrezime << " " << obj._datumRodjenja << endl;
 		return COUT;
 	}
 };
-mutex mjuteks;
-class Kupac :public Osoba {
+
+
+// KADA otkomentarises zadnju klasu i ona u ispisu pokusava da ispise parametar koji joj ne pripada onda znamo da se mora nasljediti klasa iznad
+mutex m;
+class Kupac:public Osoba {  // 1. KORAK U NASLJEDJIVANJU stavit   :public Osoba
 	char* _emailAdresa;
 	//float se odnosi na iznos racuna za odredjenu kupovinu
 	Rjecnik<float, ZadovoljstvoKupca>* _kupovine;
 	vector<int> _bodovi; // bodovi sakupljeni tokom kupovine, svakih potrosenih 10KM donosi po 1 bod.
-	void posaljiMail(int zadnjiBodovi)
-	{
-		mjuteks.lock();
-		cout << "To: " << _emailAdresa << ";\n" << "Subject: Ostvareni bodovi\n\n" << "Postovani,\n\n";
-		cout << "Prilikom posljednje kupovine ste ostvarili " << zadnjiBodovi << " bodova, tako da trenutno vas ukupan broj bodova iznosi " << GetBodoviUkupno() << ".\n\n";
-		cout << "Zahvaljujemo vam na kupovini.\nPuno pozdrava\n";
-		mjuteks.unlock();
-	}
 public:
-	Kupac(const char* imePrezime = "", Datum datumRodjenja = Datum(), const char* emailAdresa = "") :
-		Osoba(imePrezime, datumRodjenja)
-	{
+	Kupac(const char* imePrezime = "", Datum datumRodjenja = Datum(), const char* emailAdresa = "")
+		:Osoba(imePrezime,datumRodjenja) { // 2. KORAK SPOJITI SPOJENI KONSTRUKTOR KLASE OSOBA SA KLASOM KUPAC
 		_emailAdresa = GetNizKaraktera(emailAdresa);
 		_kupovine = new Rjecnik<float, ZadovoljstvoKupca>(false);
 	}
-	Kupac(const Kupac& obj) :
-		Osoba(obj._imePrezime, obj._datumRodjenja)
-	{
+
+	Kupac(const Kupac& obj):Osoba(obj) { // 3. KORAK SPOJITI COPY KUPCA SA COPY OSOBE
 		_emailAdresa = GetNizKaraktera(obj._emailAdresa);
 		_kupovine = new Rjecnik<float, ZadovoljstvoKupca>(*obj._kupovine);
 		_bodovi = obj._bodovi;
 	}
-	Kupac& operator=(const Kupac& obj)
-	{
-		if (this != &obj)
-		{
-			delete[] _emailAdresa;
+
+	Kupac& operator = (const Kupac& obj) {
+		if (this != &obj) {
+
+			delete[]_emailAdresa;
 			delete _kupovine;
-			_bodovi.clear();
+
+			 
+			Osoba::operator=(obj);  // 4. KORAK SPOJITI OPERAOTR KUPCA SA OPERAOTORM OSOBE
+
 			_emailAdresa = GetNizKaraktera(obj._emailAdresa);
 			_kupovine = new Rjecnik<float, ZadovoljstvoKupca>(*obj._kupovine);
 			_bodovi = obj._bodovi;
 		}
 		return *this;
 	}
+
+	void Info() { // 5. KORAK SPOJITI INFO KUPCA SA INFO OSOBE
+		cout << *this;
+	}
+
+
 	~Kupac()
 	{
 		delete[] _emailAdresa; _emailAdresa = nullptr;
 		delete _kupovine; _kupovine = nullptr;
 	}
+
+
 	char* GetEmail() { return _emailAdresa; }
 	Rjecnik<float, ZadovoljstvoKupca>& GetKupovine() { return *_kupovine; }
 	vector<int> GetBodovi() { return _bodovi; }
+
+
+
+	///*prilikom svake kupovine, ukoliko je kupac ostvario vise od 5 bodova, potrebno je, u zasebnom thread-u (nakon 3 sekunde), poslati email sa sljedecim sadrzajem:
+
+
+	void DodajKupovinu(float IznosRacuna, ZadovoljstvoKupca zadovoljstvo) {
+
+		_kupovine->AddElement(IznosRacuna, zadovoljstvo);
+
+		if (IznosRacuna > 9) {
+			int bod = IznosRacuna / 10;   // 128 / 10  = 12  --- 81/ 10 = 8 
+
+
+			// KADA IMAMO VECTOR IMAMO DVIJE MOGUCNSOTI
+			// 1. KADA HOCEMO NESTO DA UBACIMO U VECTOR
+			_bodovi.push_back(bod); // <---- UBACIVANJE U VECTOR
+
+			// 2. KADA TI TREBA VELICINA VECOTRA (SIZE.() )
+			//for (int i = 0; i < _bodovi.size(); i++)
+			//{
+
+			//}
+			if (bod > 5) {
+				// OVDJE RADIMO THREAD 
+				// THREAD POZIVA MUTEX
+
+				// AKO NAM KAZE NAKON 3 SEKUNDE , 300 MILISEKUNDI
+				// this_thread::sleep_for(chrono::seconds(3));
+				// this_thread::sleep_for(chrono::milliseconds(300));
+				thread t1(&Kupac::PosaljiMail, this,bod);
+				t1.join();
+
+			}
+
+		}
+
+	}
+
+//  To: denis@fit.ba;
+//  Subject: Osvareni bodovi
+
+//  Postovani,
+
+//  Prilikom posljednje kupovine ste ostvarili 8 bodova, tako da trenutno vas ukupan broj bodova iznosi 20.
+
+//  Zahvaljujemo vam na kupovini.
+//  Puno pozdrava
+
+	void PosaljiMail(int bodovi) {
+		m.lock();
+		cout << "To: " << _emailAdresa << endl;
+		cout << "Subject: Osvareni bodovi" << endl << endl;
+		cout << "Postovani," << endl << endl;
+		cout << "Prilikom posljednje kupovine ste ostvarili " << bodovi << " bodova, tako da trenutno vas ukupan broj bodova iznosi " << GetBodoviUkupno() << endl << endl;
+		cout << "Zahvaljujemo vam na kupovini." << endl;
+		cout << "Puno pozdrava" << endl;
+		m.unlock();
+	}
+
+//  */
+ //  /* 
+ // metoda SacuvajBodove treba sve clanove vector-a _bodovi upisati u fajl(ignorisuci ranije dodate/postojece vrijednosti u fajlu) pod nazivom emailKorisnika.txt npr. denis@fit.ba.txt.
+ //  na osnovu trenutnog stanja objekta, sadrzaj fajla denis@fit.ba.txt bi trebao biti sljedeci:
+ //  12
+ //  8
+
+ //  nakon spasavanja u fajl, sadrzaj vector-a ostaje nepromijenjen.
+ //  */
+
+		//ofstream fajl;  // pravimo neki fajl
+		//ifstream fajl;  // ucitavamo iz nekog fajla 
+	void SacuvajBodove() {
+
+		string naziv = _emailAdresa; // denis@fit.ba
+		naziv += ".txt";  // denis@fit.ba.txt
+
+		ofstream fajl(naziv);  // 
+
+		for (int i = 0; i < _bodovi.size(); i++)
+		{
+			fajl << _bodovi[i];
+
+			if (i != _bodovi.size()-1 ) {
+				fajl << endl;
+			}
+		}
+
+		fajl.close();
+
+	}
+
+	////metoda UcitajBodove ucitava sadrzaj fajla pod nazivom emailKorisnika.txt i njegove vrijednosti pohranjuje/dodaje u vector _bodovi (zadrzavajuci postojece bodove). 
+
+	// 12 
+	// 8
+
+	//     RED char[10]   ----->   STRING   -----> INT 
+
+	void UcitajBodove() {
+
+		string naziv = _emailAdresa; // denis@..
+		naziv += ".txt";   //denis@fit.ba.txt
+
+		ifstream fajl(naziv);
+
+		char Red[20]; // neki pomocniRed
+		string string; // neki pomocniString
+		int broj;      // pomocni intager
+
+		while (!fajl.eof())  //  vrti se while dok god imamo redova u fajlu
+		{
+			fajl.getline(Red, 20);  // sad smo 12 napisali u neki red
+			string = Red;           // sada smo napisali 12 u neki string
+			broj = stoi(string);    // sada smo napisali 12 kao neki int 
+
+
+			_bodovi.push_back(broj);
+		}
+
+
+		fajl.close();
+
+	}
+
+	///*Ocekivani ispis:
+//	-------------------------------------------
+//	Rezultat pretrage ->
+//	-------------------------------------------
+//	PAKOVANJE Pakovanje je bio osteceno
+//	KVALITET Jako lose, proizvod ostecen
+//	-------------------------------------------
+//*/
+
+
+	//                                                                        ostecen
+	Rjecnik<Karakteristike, const char*>  GetKupovineByKomentar(const char * komentar ) {
+
+		Rjecnik<Karakteristike, const char*> novakolekcija; // prazna kolekciaj 
+		string trazenaRijec = komentar; // ostecen kao string
+
+
+		for (int i = 0; i < _kupovine->getTrenutno(); i++)
+		{
+			for (int j = 0; j < _kupovine->getElement2(i).GetKomentareKarakteristika().getTrenutno(); j++)
+			{
+				string komentar = _kupovine->getElement2(i).GetKomentareKarakteristika().getElement2(j);
+
+				if (komentar.find(trazenaRijec) != -1) { // trazena rijec postoji u nekoj recenici
+
+					novakolekcija.AddElement(_kupovine->getElement2(i).GetKomentareKarakteristika().getElement1(j), _kupovine->getElement2(i).GetKomentareKarakteristika().getElement2(j));
+
+
+				}
+
+			}
+		}
+		return novakolekcija;
+
+	}
+
+
 	int GetBodoviUkupno() {
 		int ukupno = 0;
 		for (size_t i = 0; i < _bodovi.size(); i++) ukupno += _bodovi[i];
 		return ukupno;
 	}
-	void Info() {
-		cout << *this;
-	}
-	void DodajKupovinu(float iznos, ZadovoljstvoKupca zadovoljstvo)
-	{
-		_kupovine->AddElement(iznos, zadovoljstvo);
-		if (iznos >= 10) //ne zelimo dodati 0 bodova u vector pa stavljamo ovaj uslov
-			_bodovi.push_back(iznos / 10);
-		if (_bodovi.size() != 0)
-		{
-			int zadnjiBodovi = _bodovi[_bodovi.size() - 1];
-			if (zadnjiBodovi > 5)
-			{
-				this_thread::sleep_for(chrono::seconds(3));
-				thread t1(&Kupac::posaljiMail, this, zadnjiBodovi);
-				t1.join();
-			}
-		}
-	}
-	/*metoda SacuvajBodove treba sve clanove vector-a _bodovi upisati u fajl(ignorisuci ranije dodate/postojece vrijednosti u fajlu) pod nazivom emailKorisnika.txt npr. denis@fit.ba.txt.
-	na osnovu trenutnog stanja objekta, sadrzaj fajla denis@fit.ba.txt bi trebao biti sljedeci:
-	12
-	8
 
-	nakon spasavanja u fajl, sadrzaj vector-a ostaje nepromijenjen.
-	*/
-	void SacuvajBodove() {
-		string naziv = _emailAdresa;
-		naziv += ".txt";
-		ofstream fajl(naziv);
-		if (!fajl.fail())
-		{
-			for (int i = 0; i < _bodovi.size(); i++)
-			{
-				fajl << _bodovi[i];
-				//dodajemo ovaj uslov jer ne zelimo imati dodatan red koji je ustvari jednak "" jer cemo kasnije citati podatke iz tog fajla
-				if (i != _bodovi.size() - 1)
-					fajl << endl;
-			}
-		}
-		fajl.close();
-	}
-	//metoda UcitajBodove ucitava sadrzaj fajla pod nazivom emailKorisnika.txt i njegove vrijednosti pohranjuje/dodaje u vector _bodovi (zadrzavajuci postojece bodove).  
-	void UcitajBodove() {
-		string naziv = _emailAdresa;
-		naziv += ".txt";
-		ifstream fajl(naziv);
-		const int max = 20;
-		char red[max]; //ovo je niz karaktera u koji pohranjujemo vrijednost jednog reda iz fajla
-		string brojStr;
-		int broj;
-		while (!fajl.eof())
-		{
-			fajl.getline(red, max);
-			brojStr = red; //radi lakoce rada sa stringom u string pohranjujemo sadrzaj iz reda
-			broj = stoi(brojStr); //stoi funkcija konvertuje string u integer, uzrokuje runtime error ako string nije broj te smo zbog toga na 354. liniji provjeravali da ne dodamo viska novi red koji je ustvari "" (odnosno nije broj)
-			_bodovi.push_back(broj);
-			/*
-				ako ne zelimo dodati if uslov na 354. liniji onda bi ovdje samo dodali uslov:
-					if(brojStr=="") 
-					{
-						broj=stoi(brojStr);
-						_bodovi.push_back(broj);
-					}
-				bez ovog uslova i uslova na 354. liniji desio bi se runtime error
-			*/
-		}
-		fajl.close();
-	}
-	Rjecnik<Karakteristike, const char*> GetKupovineByKomentar(const char* kljucnaRijec)
-	{
-		Rjecnik<Karakteristike, const char*> rjecnik;
-		string trazeni = kljucnaRijec;
-		for (int i = 0; i < _kupovine->getTrenutno(); i++)
-		{
-			for (int j = 0; j < _kupovine->getElement2(i).GetKomentareKarakteristika().getTrenutno(); j++)
-			{
-				string tekst = _kupovine->getElement2(i).GetKomentareKarakteristika().getElement2(j);
-				if (tekst.find(trazeni) != -1) //metoda find vraca lokaciju na kojoj pocinje trazeni substring u stringu, vraca -1 ako nije pronadjen substring, moguce koristiti string::npos umjesto -1 : if (tekst.find(trazeni) != string::npos)
-					rjecnik.AddElement(_kupovine->getElement2(i).GetKomentareKarakteristika().getElement1(j),
-						_kupovine->getElement2(i).GetKomentareKarakteristika().getElement2(j));
-			}
-		}
-		return rjecnik;
-	}
 	friend ostream& operator<< (ostream& COUT, const Kupac& obj) {
 		COUT << crt << obj._imePrezime << " " << obj._datumRodjenja << " " << obj._emailAdresa << " " << endl;
 		COUT << "KUPOVINE -> " << crt;
@@ -432,6 +604,19 @@ void main() {
 	cout << GetOdgovorNaDrugoPitanje() << endl;
 	cin.get();
 
+
+	//Datum datum1(12, 12, 1998);
+
+	//Datum datum2 = datum1; // <---- copy constructor 
+
+	//Datum datum3;
+
+	//datum3 = datum1;  // <--- operator dodjele 
+
+	// ako neka funckija ima ime VOID 
+	// ako je neka funckija u ifu BOOL
+	// ako nema ime OPERATOR 
+
 	const int rjecnikTestSize = 9;
 	Rjecnik<int, int> rjecnik1(false);
 	for (int i = 0; i < rjecnikTestSize - 1; i++)
@@ -444,6 +629,7 @@ void main() {
 	catch (exception& err) {
 		cout << err.what() << crt;
 	}
+
 	rjecnik1.AddElement(9, 9);
 
 	cout << rjecnik1 << crt;
@@ -452,6 +638,8 @@ void main() {
 	* metoda prihvata indekse lokacije, te vraća elemente koji se u rjecniku nalaze na proslijedjenim lokacijama (ukljucujuci i te lokacije)
 	*/
 	Rjecnik<int, int> rjecnik2 = rjecnik1(2, 5);
+
+
 	/*clanovi objekta rjecnik2 bi trebali biti:
 	2 2
 	3 3
@@ -482,83 +670,78 @@ void main() {
 	zadovoljstvoKupca.DodajKomentarKarakteristike(PAKOVANJE, "Pakovanje je bio osteceno");
 	zadovoljstvoKupca.DodajKomentarKarakteristike(ISPORUKA, "Mada su najavili da ce proizvod biti isporucen u roku od 2 dana, cekali smo 5 dana");
 
+	//cout << zadovoljstvoKupca;
+
 
 	Kupac* denis = dynamic_cast<Kupac*>(kupci[0]);
 	/*za svakih 10KM kupcu se dodaje 1 bod, pa ce tako kupovina od 128KM kupcu donijeti 12 bodova*/
 	denis->DodajKupovinu(128, zadovoljstvoKupca);
-	cout << "Ukupno bodova -> " << denis->GetBodoviUkupno() << endl;//12 bodova
+	cout << "Ukupno bodova -> " << denis->GetBodoviUkupno();//12 bodova
 
 
 	ZadovoljstvoKupca zadovoljstvoKupca2(4);
 	zadovoljstvoKupca2.DodajKomentarKarakteristike(KVALITET, "Jako lose, proizvod ostecen");
 	denis->DodajKupovinu(81, zadovoljstvoKupca2);
 
-	cout << "Ukupno bodova -> " << denis->GetBodoviUkupno() << endl; //20 bodova
+	cout << "Ukupno bodova -> " << denis->GetBodoviUkupno();//20 bodova
 
-	 /*prilikom svake kupovine, ukoliko je kupac ostvario vise od 5 bodova, potrebno je, u zasebnom thread-u (nakon 3 sekunde), poslati email sa sljedecim sadrzajem:
+	///*prilikom svake kupovine, ukoliko je kupac ostvario vise od 5 bodova, potrebno je, u zasebnom thread-u (nakon 3 sekunde), poslati email sa sljedecim sadrzajem:
 
-	   To: denis@fit.ba;
-	   Subject: Osvareni bodovi
+	//  To: denis@fit.ba;
+	//  Subject: Osvareni bodovi
 
-	   Postovani,
+	//  Postovani,
 
-	   Prilikom posljednje kupovine ste ostvarili 8 bodova, tako da trenutno vas ukupan broj bodova iznosi 20.
+	//  Prilikom posljednje kupovine ste ostvarili 8 bodova, tako da trenutno vas ukupan broj bodova iznosi 20.
 
-	   Zahvaljujemo vam na kupovini.
-	   Puno pozdrava
-   */
+	//  Zahvaljujemo vam na kupovini.
+	//  Puno pozdrava
+ // */
 
 
-   //ispisuje sve podatke o kupcu i njegovim kupovinama.
+ // //ispisuje sve podatke o kupcu i njegovim kupovinama.
+	denis->Info();
+	///* Primjer ispisa:
+	//	-------------------------------------------
+	//	Denis Music 12.1.1980 denis@fit.ba
+	//	KUPOVINE ->
+	//	-------------------------------------------
+	//	Iznos racuna: 128KM, zadovoljstvo kupca: 7
+	//			NARUDZBA - Nismo mogli odabrati sve potrebne opcije
+	//			KVALITET - Kvalitet je ocekivan
+	//			PAKOVANJE - Pakovanje je bio osteceno
+	//			ISPORUKA - Mada su najavili da ce proizvod biti isporucen u roku od 2 dana, cekali smo 5 dana
+	//	-------------------------------------------
+	//	Iznos racuna: 81KM, zadovoljstvo kupca: 4
+	//			KVALITET - Jako lose, proizvod ostecen
+	//	-------------------------------------------
+	//	BODOVI -> 12, 8,
+	//	-------------------------------------------
+ //  */
+ //  /*metoda SacuvajBodove treba sve clanove vector-a _bodovi upisati u fajl(ignorisuci ranije dodate/postojece vrijednosti u fajlu) pod nazivom emailKorisnika.txt npr. denis@fit.ba.txt.
+ //  na osnovu trenutnog stanja objekta, sadrzaj fajla denis@fit.ba.txt bi trebao biti sljedeci:
+ //  12
+ //  8
 
+ //  nakon spasavanja u fajl, sadrzaj vector-a ostaje nepromijenjen.
+ //  */
+	denis->SacuvajBodove();
+	////metoda UcitajBodove ucitava sadrzaj fajla pod nazivom emailKorisnika.txt i njegove vrijednosti pohranjuje/dodaje u vector _bodovi (zadrzavajuci postojece bodove).  
+	denis->UcitajBodove();
 	denis->Info();
 
-	/* Primjer ispisa:
-		-------------------------------------------
-		Denis Music 12.1.1980 denis@fit.ba
-		KUPOVINE ->
-		-------------------------------------------
-		Iznos racuna: 128KM, zadovoljstvo kupca: 7
-				NARUDZBA - Nismo mogli odabrati sve potrebne opcije
-				KVALITET - Kvalitet je ocekivan
-				PAKOVANJE - Pakovanje je bio osteceno
-				ISPORUKA - Mada su najavili da ce proizvod biti isporucen u roku od 2 dana, cekali smo 5 dana
-		-------------------------------------------
-		Iznos racuna: 81KM, zadovoljstvo kupca: 4
-				KVALITET - Jako lose, proizvod ostecen
-		-------------------------------------------
-		BODOVI -> 12, 8,
-		-------------------------------------------
-   */
-   /*metoda SacuvajBodove treba sve clanove vector-a _bodovi upisati u fajl(ignorisuci ranije dodate/postojece vrijednosti u fajlu) pod nazivom emailKorisnika.txt npr. denis@fit.ba.txt.
-   na osnovu trenutnog stanja objekta, sadrzaj fajla denis@fit.ba.txt bi trebao biti sljedeci:
-   12
-   8
-
-   nakon spasavanja u fajl, sadrzaj vector-a ostaje nepromijenjen.
-   */
-
-	denis->SacuvajBodove();
-
-	//metoda UcitajBodove ucitava sadrzaj fajla pod nazivom emailKorisnika.txt i njegove vrijednosti pohranjuje/dodaje u vector _bodovi (zadrzavajuci postojece bodove).  
-
-	denis->UcitajBodove();
-
 	//metoda GetKupovineByKomentar treba da pronadje i vrati sve karakteristike proizvoda i komentare kupaca koji sadrze vrijednost proslijedjenog parametra
-
 	Rjecnik<Karakteristike, const char*> osteceniProizvodi = denis->GetKupovineByKomentar("ostecen");
 	cout << crt << "Rezultat pretrage -> " << crt << osteceniProizvodi << crt;
 
-	/*Ocekivani ispis:
-		-------------------------------------------
-		Rezultat pretrage ->
-		-------------------------------------------
-		PAKOVANJE Pakovanje je bio osteceno
-		KVALITET Jako lose, proizvod ostecen
-		-------------------------------------------
-	*/
-
-
+	///*Ocekivani ispis:
+	//	-------------------------------------------
+	//	Rezultat pretrage ->
+	//	-------------------------------------------
+	//	PAKOVANJE Pakovanje je bio osteceno
+	//	KVALITET Jako lose, proizvod ostecen
+	//	-------------------------------------------
+	//*/
 
 	for (size_t i = 0; i < maxKupaca; i++)
 		delete kupci[i], kupci[i] = nullptr;
