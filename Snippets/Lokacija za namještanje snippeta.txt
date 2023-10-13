@@ -1,1 +1,3 @@
+Kopirajte snippete na ovu lokaciju 
+
 C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\VC\Snippets\1033\Visual C++
