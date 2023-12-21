@@ -1,0 +1,31 @@
+Svaki ispit sadrzi 45 bodova
+
+------------------------------------------- 
+** 
+TEORIJA -> 4 
+** 
+KOLEKCIJA -> 7 
+** 
+GOST/BORAVAK -> 12 
+** 
+THREADING -> 4 
+** 
+FAJLOVI -> 6 
+** 
+PRETRAGA KOMENTARA -> 5 
+*** 
+DESTRUKTOR, DEALOKACIJA I USPJESNO IZVRSENJE MAIN-A -> 7
+
+--------------
+
+-- ONAJ DRUGI NOVI
+
+TOERIJA -> 4  --> 0 
+KOLEKCIJA -> 7  --> 3
+KUPOVINA -> 12  --> 10
+THREADING -> 4  --> 1
+FAJL -> 4       --> 0
+DESTR -> 7      --> 7
+
+38 --> 21 PROLAZ
+

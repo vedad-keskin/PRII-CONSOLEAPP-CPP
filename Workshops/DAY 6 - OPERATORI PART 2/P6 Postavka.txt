@@ -1,69 +1,26 @@
 #include<iostream>
 using namespace std;
 
-char* GetNizKaraktera(const char* tekst) {
-	if (tekst == nullptr)
-		return nullptr;
-	int vel = strlen(tekst) + 1;
-	char* novi = new char[vel];
-	strcpy_s(novi, vel, tekst);
-	return novi;
-}
+
 
 class Datum
 {
 	int* _dan, * _mjesec, * _godina;
 public:
-	Datum(int dan = 1, int mjesec = 1, int godina = 2000) {
-		_dan = new int(dan);
-		_mjesec = new int(mjesec);
-		_godina = new int(godina);
-	}
 
-
-	Datum(const Datum& obj) {
-		_dan = new int(*obj._dan);
-		_mjesec = new int(*obj._mjesec);
-		_godina = new int(*obj._godina);
-	}
 
 	// operator =
 
-	Datum& operator = (const Datum& obj) {
-		if (this != &obj) {
-			delete _dan;
-			delete _mjesec;
-			delete _godina;
-
-
-			_dan = new int(*obj._dan);
-			_mjesec = new int(*obj._mjesec);
-			_godina = new int(*obj._godina);
-		}
-		return *this;
-	}
 
 
 
 	// operator ==
 
-	bool operator == (const Datum& obj) {
-		return *_dan == *obj._dan && *_mjesec == *obj._mjesec && *_godina == *obj._godina;
-	}
 
-
-	~Datum() {
-		delete _dan; _dan = nullptr;
-		delete _mjesec; _mjesec = nullptr;
-		delete _godina; _godina = nullptr;
-	}
 
 	// operator <<
 
-	friend ostream& operator<< (ostream& COUT, const Datum& obj) {
-		COUT << *obj._dan << "." << *obj._mjesec << "." << *obj._godina;
-		return COUT;
-	}
+
 public:
 	//Potrebne konstruktor i destruktor funkcije
 

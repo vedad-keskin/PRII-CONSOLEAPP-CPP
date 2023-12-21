@@ -1,0 +1,29 @@
+Svaki ispit sadrzi 42 boda
+
+------------------------------------------- 
+** 
+TEORIJA -> 4 
+** 
+RIJECNIK -> 7 
+** 
+KUPOVINA/KUPCI -> 12 
+** 
+THREADING -> 4 
+** 
+FAJLOVI -> 6 
+** 
+PRETRAGA KOMENTARA -> 5 
+*** 
+DEALOKACIJA I USPJESNO IZVRSENJE MAIN-A -> 4 
+
+--------------
+
+24 boda prolaz 
+
+Rjecnik --> 7             16%
+Kupovina --> + 12 = 19    45%
+Dealokacija --> + 4 = 23  54%
+Threading --> + 4 = 27    64%
+Teorija --> + 4 = 31      73%
+Fajlovi --> + 6 = 37      88%
+Pretraga --> + 5 = 42     100%
