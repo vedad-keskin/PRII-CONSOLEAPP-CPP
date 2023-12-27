@@ -2,28 +2,30 @@
 using namespace std;
 class Predmet {
 public:char* _naziv;
-public: int _ocjena;
+public:int _ocjena;
 	  //Napraviti
 	  //1. Defaultni konstruktor
 	  //2. Konstruktor koji prima parametre:naziv i ocjena
 	  //3. Konstruktor kopije
 	  //4. Operator dodjele
 	  //4. Destruktor
-	  //5. Ispis
-	  //6. COUT
+	  //5. Ispis ili COUT 
+	
 
 
-	  
+
 
 
 };
-class Student{
+class Student {
 	Predmet* _polozeni;
 	int _trenutno;
 	int _max;
 public:
-	//konstruktor, 
+	//defaultni konstruktor, 
+	//konstruktor,
 	//konstruktor kopije, 
+	//operator dodjele
 	//destruktor 
 	//potrebne funkcije
 
@@ -41,6 +43,9 @@ public:
 
 
 void main() {
+
+
+
 
 	system("pause>0");
 }
