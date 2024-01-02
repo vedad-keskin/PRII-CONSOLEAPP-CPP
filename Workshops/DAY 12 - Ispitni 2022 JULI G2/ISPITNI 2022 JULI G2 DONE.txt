@@ -1,10 +1,10 @@
 #include <iostream>
+#include <string>
 #include <regex>
 #include <thread>
+#include <mutex>
 #include <fstream>
 #include <memory>
-#include <mutex>
-#include <string>
 #include <vector>
 using namespace std;
 
@@ -27,18 +27,21 @@ const char* PORUKA = "\n--------------------------------------------------------
 "-------------------------------------------------------------------------------\n";
 
 const char* crt = "\n-------------------------------------------\n";
+
+//                 0       1       2          3 
 enum Kriteriji { CISTOCA, USLUGA, LOKACIJA, UDOBNOST };
 
 ostream& operator << (ostream& COUT, const Kriteriji& obj) {
 
-	// drzis shift i oznacavas kod i kada oznacis citav samo kliknes shift+2 za navodinike i ono navodnike stavi kako treba
-	const char* KopijaKriteriji[]{ "CISTOCA","USLUGA", "LOKACIJA", "UDOBNOST" };
+	//                                 [0]    [1]        [2]       [3]
+	const char* KopijaKriterija[]{ "CISTOCA","USLUGA","LOKACIJA","UDOBNOST" };
 
-	COUT << KopijaKriteriji[obj];
 
+	COUT << KopijaKriterija[obj];
 
 	return COUT;
 }
+
 
 char* GetNizKaraktera(const char* tekst) {
 	if (tekst == nullptr)
@@ -53,51 +56,60 @@ unique_ptr<char[]> GetUniqueNizKaraktera(const char* tekst) {
 	if (tekst == nullptr)
 		return nullptr;
 	int vel = strlen(tekst) + 1;
-	unique_ptr<char[]> novi(new char[vel]);
+
+	unique_ptr<char[]> novi (new char[vel]);
 	strcpy_s(novi.get(), vel, tekst);
 	return novi;
 }
+
 
 template<class T1, class T2>
 class Kolekcija {
 	T1* _elementi1;
 	T2* _elementi2;
 	int* _trenutno;
-	bool _omoguciDupliranje;
+	bool* _omoguciDupliranje;
 public:
 	Kolekcija(bool omoguciDupliranje = true) {
 		_trenutno = new int(0);
-		_omoguciDupliranje = omoguciDupliranje;
+		_omoguciDupliranje = new bool(omoguciDupliranje);
+
 		_elementi1 = new T1[*_trenutno];
 		_elementi2 = new T2[*_trenutno];
+
 	}
+
 	Kolekcija(const Kolekcija& obj) {
 		_trenutno = new int(*obj._trenutno);
-		_omoguciDupliranje = obj._omoguciDupliranje;
+		_omoguciDupliranje = new bool(*obj._omoguciDupliranje);
 
 		_elementi1 = new T1[*_trenutno];
 		_elementi2 = new T2[*_trenutno];
 
-		for (int i = 0; i < *_trenutno; i++) {
+		for (int i = 0; i < *_trenutno; i++)
+		{
 			_elementi1[i] = obj._elementi1[i];
 			_elementi2[i] = obj._elementi2[i];
 		}
+
 	}
 
 	Kolekcija& operator = (const Kolekcija& obj) {
 		if (this != &obj) {
-			delete _trenutno;
-			delete[]_elementi1;
-			delete[]_elementi2;
 
+			delete[]_elementi1;
+			delete[]_elementi2; 
+			delete _trenutno;
+			delete _omoguciDupliranje;
 
 			_trenutno = new int(*obj._trenutno);
-			_omoguciDupliranje = obj._omoguciDupliranje;
+			_omoguciDupliranje = new bool(*obj._omoguciDupliranje);
 
 			_elementi1 = new T1[*_trenutno];
 			_elementi2 = new T2[*_trenutno];
 
-			for (int i = 0; i < *_trenutno; i++) {
+			for (int i = 0; i < *_trenutno; i++)
+			{
 				_elementi1[i] = obj._elementi1[i];
 				_elementi2[i] = obj._elementi2[i];
 			}
@@ -106,7 +118,8 @@ public:
 	}
 
 	void AddElement(T1 el1, T2 el2) {
-		if (_omoguciDupliranje == false) {
+
+		if (*_omoguciDupliranje == false) {
 			for (int i = 0; i < *_trenutno; i++)
 			{
 				if (el1 == _elementi1[i] || el2 == _elementi2[i]) {
@@ -116,10 +129,9 @@ public:
 		}
 
 
-
-
 		T1* temp1 = _elementi1;
 		T2* temp2 = _elementi2;
+
 
 		_elementi1 = new T1[*_trenutno + 1];
 		_elementi2 = new T2[*_trenutno + 1];
@@ -132,14 +144,15 @@ public:
 
 		_elementi1[*_trenutno] = el1;
 		_elementi2[*_trenutno] = el2;
-
 		(*_trenutno)++;
+
 	}
 
-	//                                 0          10       10
+
+	//                                    0      10     10
 	Kolekcija<int, int> InsertAt(int lokacija, T1 el1, T2 el2) {
 
-		T1* temp1 = _elementi1;
+		T1* temp1 = _elementi1; // 0 - 9 
 		T2* temp2 = _elementi2;
 
 		_elementi1 = new T1[*_trenutno + 1];
@@ -162,27 +175,28 @@ public:
 
 		(*_trenutno)++;
 
-		Kolekcija<int, int> novi;
+		Kolekcija<int, int> novakolekcija; // prazan niz 
 
 		for (int i = 0; i < *_trenutno; i++)
 		{
-			novi.AddElement(_elementi1[i], _elementi2[i]);
+			novakolekcija.AddElement(_elementi1[i], _elementi2[i]);
 		}
 
-		return novi;
+		return novakolekcija;
 
 	}
+
 
 
 	~Kolekcija() {
 		delete[]_elementi1; _elementi1 = nullptr;
 		delete[]_elementi2; _elementi2 = nullptr;
 		delete _trenutno; _trenutno = nullptr;
+		delete _omoguciDupliranje; _omoguciDupliranje = nullptr;
 	}
 	T1& getElement1(int lokacija)const { return _elementi1[lokacija]; }
 	T2& getElement2(int lokacija)const { return _elementi2[lokacija]; }
-	int getTrenutno() const { return *_trenutno; }
-
+	int getTrenutno()const { return *_trenutno; }
 	friend ostream& operator<< (ostream& COUT, const Kolekcija& obj) {
 		for (size_t i = 0; i < *obj._trenutno; i++)
 			COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
@@ -234,6 +248,12 @@ public:
 	}
 };
 
+//, , , Datum
+
+//  char*
+// Kolekcija<enum, int>
+
+
 class Komentar {
 	char* _sadrzajKomentara;
 	//uz komentar, gosti mogu ocijeniti svaki od kriterija zasebno, a int se odnosi na ocjenu u rasponu od 1 - 10.
@@ -248,72 +268,84 @@ public:
 
 	Komentar(const Komentar& obj) {
 		_sadrzajKomentara = GetNizKaraktera(obj._sadrzajKomentara);
+
 		_ocjeneKriterija = new Kolekcija<Kriteriji, int>(*obj._ocjeneKriterija);
+
 	}
 
 	Komentar& operator = (const Komentar& obj) {
 		if (this != &obj) {
-			delete[]_sadrzajKomentara;
+
+			delete[] _sadrzajKomentara;
 			delete _ocjeneKriterija;
 
 			_sadrzajKomentara = GetNizKaraktera(obj._sadrzajKomentara);
+
 			_ocjeneKriterija = new Kolekcija<Kriteriji, int>(*obj._ocjeneKriterija);
 		}
 		return *this;
 	}
 
-	void AddOcjenuKriterija(Kriteriji kriteriji, int ocjena) {
-		for (int i = 0; i < _ocjeneKriterija->getTrenutno(); i++)
-		{
-			if (kriteriji == _ocjeneKriterija->getElement1(i)) {
-				throw exception("Kriteriji je vec ocjenjen");
-			}
-		}
-
-		_ocjeneKriterija->AddElement(kriteriji, ocjena);
-	}
 
 	~Komentar() {
 		delete[] _sadrzajKomentara; _sadrzajKomentara = nullptr;
 		delete _ocjeneKriterija; _ocjeneKriterija = nullptr;
 	}
-
 	char* GetSadrzajKomentara() { return _sadrzajKomentara; }
-	Kolekcija<Kriteriji, int>* GetOcjeneKriterija() { return _ocjeneKriterija; }
+	Kolekcija<Kriteriji, int>*  GetOcjeneKriterija() { return _ocjeneKriterija; }
 
-	float Getprosjek()const {
+
+	float GetProsjek()const {
+
 		float suma = 0;
 		float brojac = 0;
 
-		for (int i = 0; i < _ocjeneKriterija->getTrenutno(); i++) {
+		for (int i = 0; i < _ocjeneKriterija->getTrenutno(); i++)
+		{
 			suma += _ocjeneKriterija->getElement2(i);
 			brojac++;
 		}
+
 		if (brojac == 0) {
 			return 0;
 		}
 
 		return suma / brojac;
 
-
 	}
 
-	//   Nismo pretjerano zadovoljni uslugom, a ni lokacijom.
-	//		   CISTOCA(7)
-	//		   USLUGA(4)
-	//		   LOKACIJA(3)
-	//		   UDOBNOST(6)
-	// 
-	//   -------------------------------------------
-	//   Prosjecna ocjena -> 5
+	void AddOcjenuKriterija(Kriteriji kriterij, int ocjena) {
 
-	friend ostream& operator << (ostream& COUT, const Komentar& obj) {
+		for (int i = 0; i < _ocjeneKriterija->getTrenutno(); i++)
+		{
+			if (kriterij == _ocjeneKriterija->getElement1(i)) {
+				throw exception("kriterij udobnosti je vec ocijenjen!");
+			}
+		}
+
+		_ocjeneKriterija->AddElement(kriterij, ocjena);
+	}
+
+
+//   Nismo pretjerano zadovoljni uslugom, a ni lokacijom.
+//		   CISTOCA(7)
+//		   USLUGA(4)
+//		   LOKACIJA(3)
+//		   UDOBNOST(6)
+//   -------------------------------------------
+//   Prosjecna ocjena -> 5
+
+
+	friend ostream& operator<< (ostream& COUT, const Komentar& obj) {
+		
 		COUT << obj._sadrzajKomentara << endl;
 		for (int i = 0; i < obj._ocjeneKriterija->getTrenutno(); i++)
 		{
 			COUT << "\t" << obj._ocjeneKriterija->getElement1(i) << "(" << obj._ocjeneKriterija->getElement2(i) << ")" << endl;
 		}
-		COUT << crt << "Prosjecna ocjena -> " << obj.Getprosjek();
+		COUT << "-------------------------------------------"<<endl;
+		COUT << "Prosjecna ocjena -> " << obj.GetProsjek() << endl;
+
 		return COUT;
 	}
 
@@ -323,11 +355,8 @@ public:
 //* za validaciju broja pasosa koristiti funkciju ValidirajBrojPasosa koja treba, koristeci regex, osigurati postivanje
 //sljedeceg formata:
 //- pocetak sadrzi jedan ili dva velika slova
-// 
 //- nakon toga slijede tri ili cetiri broja
-// 
 //- nakon toga moze, a ne mora, doci znak crtica (-) ili razmak ( )
-// 
 //- nakon toga slijede dva do cetiri broja
 
 //pomenutu funkciju iskoristiti u konstruktoru klase Gost, te ukoliko broj pasosa nije u validnom formatu onda njegova vrijednost treba biti postavljena na NOT VALID
@@ -338,7 +367,7 @@ bool ValidirajBrojPasosa(string pasos) {
 
 	regex reg("[A-Z]{1,2}[0-9]{3,4}[- ]?[0-9]{2,4}");
 
-	return regex_match(pasos, reg);
+	return regex_match(pasos,reg);
 
 }
 
@@ -350,39 +379,44 @@ public:
 	Gost(const char* imePrezime, string emailAdresa, string brojPasosa) {
 		_imePrezime = GetUniqueNizKaraktera(imePrezime);
 		_emailAdresa = emailAdresa;
-		if (ValidirajBrojPasosa(brojPasosa) == true) {
+		if (ValidirajBrojPasosa(brojPasosa)) {
 			_brojPasosa = brojPasosa;
 		}
 		else {
 			_brojPasosa = "NOT VALID";
 		}
+
+		//                 neki if ? true : false;
+		// _brojPasosa = ValidirajBrojPasosa(brojPasosa) ? brojPasosa : "NOT VALID";
+
 	}
 
 	Gost(const Gost& obj) {
 		_imePrezime = GetUniqueNizKaraktera(obj._imePrezime.get());
 		_emailAdresa = obj._emailAdresa;
 		_brojPasosa = obj._brojPasosa;
+
 	}
 
 	Gost& operator = (const Gost& obj) {
 		if (this != &obj) {
+
 			_imePrezime.reset();
+
+
 			_imePrezime = GetUniqueNizKaraktera(obj._imePrezime.get());
 			_emailAdresa = obj._emailAdresa;
 			_brojPasosa = obj._brojPasosa;
-		} return *this;
+		}
+		return *this;
 	}
 
 	bool operator == (const Gost& obj) {
-		//kada poredimo dva string ne koristimo strcmp jer strcmp korismo samo kada je u pitanju char * 
-		// a kada je u pitanju string poredimo kao da poredimo dva broja == 
+		return _brojPasosa == obj._brojPasosa;
+	}
 
-		if (_brojPasosa == obj._brojPasosa) {
-			return true;
-		}
-		else {
-			return false;
-		}
+	~Gost() {
+		_imePrezime.reset();
 	}
 
 	string GetEmail() { return _emailAdresa; }
@@ -395,7 +429,6 @@ public:
 	}
 };
 
-
 mutex m;
 class Rezervacija {
 	Datum _OD;
@@ -405,8 +438,11 @@ class Rezervacija {
 	//za svaku rezervaciju se moze ostaviti samo jedan komentar, bez obzira na broj gostiju
 	Komentar _komentar;
 public:
-	Rezervacija(Datum& OD, Datum& DO, Gost& gost) : _OD(OD), _DO(DO) {
+	Rezervacija(Datum & OD, Datum & DO, Gost & gost) :_OD(OD), _DO(DO) {
 		_gosti.push_back(gost);
+		
+
+
 	}
 
 	Rezervacija(const Rezervacija& obj) {
@@ -419,15 +455,19 @@ public:
 	Rezervacija& operator = (const Rezervacija& obj) {
 		if (this != &obj) {
 
+
+
 			_OD = obj._OD;
 			_DO = obj._DO;
 			_gosti = obj._gosti;
 			_komentar = obj._komentar;
+
 		}
 		return *this;
 	}
 
 	bool AddGost(Gost gost) {
+
 		for (int i = 0; i < _gosti.size(); i++)
 		{
 			if (gost == _gosti[i]) {
@@ -435,45 +475,57 @@ public:
 			}
 		}
 
+
 		_gosti.push_back(gost);
 		return true;
+
 	}
 
-	//ukoliko se rezervaciji doda komentar koji sadrzi najmanje dvije ocjene kriterija sa vrijednoscu manjom od 5, svim gostima, 
-////koji su dodati u rezervaciju, u zasebnom thread-u, se salje email sa sljedecim sadrzajem:
+
+	////ukoliko se rezervaciji doda komentar koji sadrzi najmanje dvije ocjene kriterija sa vrijednoscu manjom od 5, svim gostima, 
+	////koji su dodati u rezervaciju, u zasebnom thread-u, se salje email sa sljedecim sadrzajem:
+ //  /*
+
+
+	/*  CISTOCA(7)
+		USLUGA(4)
+		LOKACIJA(3)
+		UDOBNOST(6)*/
 	void SetKomentar(Komentar komentar) {
 		_komentar = komentar;
 		int brojac = 0;
 
-
 		for (int i = 0; i < _komentar.GetOcjeneKriterija()->getTrenutno(); i++)
 		{
 			if (_komentar.GetOcjeneKriterija()->getElement2(i) < 5) {
-				brojac++;  // 2
+				brojac++;  // 0 -> 1 -> 2
 			}
 		}
 
+
 		if (brojac >= 2) {
 			// this_thread::sleep_for(chrono::seconds(3));
-			thread t1(&Rezervacija::PosaljiMail, this); // iza this idu parametri mutexa
+			thread t1(&Rezervacija::PosaljiMail,this);
 			t1.join();
 		}
 
 
+
+
 	}
 
-	//  /*
-   //   To: denis@fit.ba;jasmin@fit.ba;
-   //   Subject: Informacija
 
-   //   Postovani,
+//   To: denis@fit.ba;jasmin@fit.ba;
+//   Subject: Informacija
 
-   //   Zaprimili smo Vase ocjene, a njihova prosjecna vrijednost je X.X.
-   //   Zao nam je zbog toga, te ce Vas u najkracem periodu kontaktirati nasa Sluzba za odnose sa gostima.
+//   Postovani,
 
-   //   Ugodan boravak Vam zelimo
-   //   Puno pozdrava
-//  */
+//   Zaprimili smo Vase ocjene, a njihova prosjecna vrijednost je X.X.
+//   Zao nam je zbog toga, te ce Vas u najkracem periodu kontaktirati nasa Sluzba za odnose sa gostima.
+
+//   Ugodan boravak Vam zelimo
+//   Puno pozdrava
+
 
 	void PosaljiMail() {
 		m.lock();
@@ -482,46 +534,57 @@ public:
 		{
 			cout << _gosti[i].GetEmail() << ";";
 		}
-		cout << endl << "Subject: Informacija" << endl << endl;
-		cout << "Postovani," << endl << endl;
-		cout << "Zaprimili smo Vase ocjene, a njihova prosjecna vrijednost je " << _komentar.Getprosjek() << endl;
-		cout << "Zao nam je zbog toga, te ce Vas u najkracem periodu kontaktirati nasa Sluzba za odnose sa gostima." << endl << endl;
+		cout <<endl<< "Subject: Informacija" << endl<<endl;
+		cout << "Postovani," << endl<<endl;
+		cout << "Zaprimili smo Vase ocjene, a njihova prosjecna vrijednost je "<<_komentar.GetProsjek() << endl;
+		cout << "Zao nam je zbog toga, te ce Vas u najkracem periodu kontaktirati nasa Sluzba za odnose sa gostima." <<endl<< endl;
 		cout << "Ugodan boravak Vam zelimo" << endl;
 		cout << "Puno pozdrava" << endl;
+
+
 		m.unlock();
 	}
 
-	pair<int, int> GetBrojZnakova(const char* lokacija, const char* trazeniZnakovi) {
+	/*metoda GetBrojZnakova treba prebrojati koliko se unutar fajla, cije ime je proslijedjeno kao prvi parametar (relativna putanja), nalazi ukupno znakova, te koliko
+se unutar pomenutog fajla nalazi trazenih znakova koji su proslijedjeni kao drugi parametar. Vrijednosti brojaca se vracaju kao par.*/
+
+	/*
+	ako se u fajlu rezervacije.txt nalazi sadrzaj "denis+music*_" onda povratna vrijednost metode GetBrojZnakova treba biti par 13 i 3. za potrebe testiranja kreirajte
+	fajl sa zeljenim sadrzajem na istoj lokaciji kao i vas .exe fajl. vodite racuna o tome da se zeljeni naziv fajla definise vrijednoscu parametra.*/
+
+
+		// ifsteam --> ucitavanja iz nekog fajla
+		// ofsteam --> kada kreiramo neki fajli
+
+	//                                          rezervacije.txt        *_+
+	pair<int, int> GetBrojZnakova(const char * lokacija, const char* trazeniZnakovi) {
+
 		int brojacUkupno = 0;
-		int broajcZnakova = 0;
+		int brojacZnakova = 0;
 		char znak;
 
 		ifstream fajl(lokacija);
 
 		while (fajl.get(znak))
 		{
+			//                           * _ + 
 			for (int i = 0; i < strlen(trazeniZnakovi); i++)
 			{
 				if (trazeniZnakovi[i] == znak) {
-					broajcZnakova++;
+					brojacZnakova++;
 				}
-
 			}
-			brojacUkupno++;
 
+			brojacUkupno++;
 		}
 
-		fajl.close();
-
-		return { brojacUkupno,broajcZnakova };
-
+		return { brojacUkupno, brojacZnakova };
 
 	}
 
-	vector<Gost>& GetGosti() { return _gosti; }
+
+	vector<Gost> & GetGosti() { return _gosti; }
 	Komentar GetKomentar() { return _komentar; }
-
-
 	friend ostream& operator<< (ostream& COUT, Rezervacija& obj) {
 		COUT << crt << "Rezervacija " << obj._OD << " - " << obj._DO << " za goste: " << endl;
 		for (size_t i = 0; i < obj._gosti.size(); i++)
@@ -567,6 +630,7 @@ void main() {
 	catch (exception& err) {
 		cout << err.what() << crt;
 	}
+
 	cout << kolekcija1 << crt;
 
 	/* metoda InsertAt treba da doda vrijednosti drugog i treceg parametra na lokaciju koja je definisana prvim parametrom. Povratna vrijednost metode
@@ -579,7 +643,6 @@ void main() {
 	* ....
 	*/
 	Kolekcija<int, int> kolekcija2 = kolekcija1.InsertAt(0, 10, 10);
-
 	cout << kolekcija2 << crt;
 
 
@@ -593,6 +656,10 @@ void main() {
 
 	//pomenutu funkciju iskoristiti u konstruktoru klase Gost, te ukoliko broj pasosa nije u validnom formatu onda njegova vrijednost treba biti postavljena na NOT VALID
 	//*/
+
+	// void --> ako funkcija ima ime 
+	// bool --> ako funkcija ima ime i nalazi se u ifu
+	// operator --> ako funkcija nema ime
 
 	if (ValidirajBrojPasosa("BH235-532"))
 		cout << "Broj pasosa validan" << endl;
@@ -611,7 +678,7 @@ void main() {
 	Gost adel("Adel Handzic", "adel@edu.fit.ba", "B1252 521");
 	Gost gostPasosNotValid("Ime Prezime", "korisnik@klix.ba", "H4521");//_brojPasosa = NOT VALID
 
-
+	// cout << gostPasosNotValid;
 
 	//rezervaciji se prilikom kreiranja mora dodijeliti gost koji je nosilac rezervacije
 	Rezervacija rezervacija(datum19062022, datum20062022, denis);
@@ -625,18 +692,18 @@ void main() {
 	komentarRezervacija.AddOcjenuKriterija(UDOBNOST, 6);
 
 	try {
-		komentarRezervacija.AddOcjenuKriterija(UDOBNOST, 6);//kriterij udobnosti je vec ocijenjen!
+		komentarRezervacija.AddOcjenuKriterija(UDOBNOST, 6); //kriterij udobnosti je vec ocijenjen!
 	}
 	catch (exception& err) {
 		cout << err.what() << crt;
 	}
 
-
+	// cout << komentarRezervacija;
 
 
 	//u okviru rezervacije postavlja vrijednost atributa _komentar 
 	rezervacija.SetKomentar(komentarRezervacija);
-	//ukoliko se rezervaciji doda komentar koji sadrzi najmanje dvije ocjene kriterija sa vrijednoscu manjom od 5, svim gostima, 
+	////ukoliko se rezervaciji doda komentar koji sadrzi najmanje dvije ocjene kriterija sa vrijednoscu manjom od 5, svim gostima, 
 	////koji su dodati u rezervaciju, u zasebnom thread-u, se salje email sa sljedecim sadrzajem:
  //  /*
 	//   To: denis@fit.ba;jasmin@fit.ba;
