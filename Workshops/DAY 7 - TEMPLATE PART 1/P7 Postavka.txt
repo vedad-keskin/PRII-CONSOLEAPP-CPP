@@ -1,55 +1,90 @@
 #include <iostream>
 using namespace std;
 
+char* GetNizKaraktera(const char* tekst) {
+	if (tekst == nullptr)
+		return nullptr;
+	int vel = strlen(tekst) + 1;
+	char* novi = new char[vel];
+	strcpy_s(novi, vel, tekst);
+	return novi;
+}
+
+
 template<class T>
 class Kolekcija
 {
 public:
-	T* niz;
-	int max;
-	int trenutno;
+	T* _niz;
+	int _max;
+	int _trenutno;
 
 	Kolekcija(int max = 10) {
+	
 	}
+
+	
+
+	
+
+
 	~Kolekcija() {
+		
 	}
+
+	friend ostream& operator << (ostream& COUT, const Kolekcija& obj) {
+		
+		return COUT;
+	}
+
+	void AddElement(T el) {
+	}
+
+
 	bool ukloni() {
 		//uklanja zadnji element iz niza
 	}
-	bool ukloni(T el) {
-		//Uklanja element koji je jednak proslijeđenom
-	}
-	bool ukloni(int pozicija) {
+
+
+	bool RemoveAt(int lokacija) {
 		//uklanja element na određenoj poziciji
 	}
 
-	void dodaj(T el) {
+	bool RemoveAt(T el) {
+		//Uklanja element koji je jednak proslijeđenom
 	}
+
+
 	bool prazan() {
 		//vrši provjeru da li je niz prazan
 	}
+
+
 
 	T* GetNajmanjiElement() {
 		//vraća najmanji element iz niza i to kao pokazivač
 	}
 
-	//preklopiti operator <<
+
+
+
+
 };
 
 class Zivotinja
 {
 private:
-	char *vrsta;
-	int tezina;
-
+	char* _vrsta;
+	int _tezina;
 public:
-	Zivotinja() {
+
+
+	Zivotinja(const char* vrsta = "---", int tezina = 0) {
+		_vrsta = GetNizKaraktera(vrsta);
+		_tezina = tezina;
 	}
 
-	Zivotinja(char *_vrsta, int _tezina) {
-	}
-	~Zivotinja() {  }
-	
+
 	//konstruktor kopije
 
 	//operator < koji poredi dvije životinje po težini
@@ -60,11 +95,13 @@ public:
 
 	//operator<< koji ispisuje vrstu i težinu životinje
 
-	//operator>> koji učitava vrstu i težinu životinje
 };
 
 void main() {
-	
-	
+    
+
+
+
+
 	system("pause>0");
 }
