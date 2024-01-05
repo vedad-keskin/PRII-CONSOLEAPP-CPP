@@ -65,7 +65,7 @@ public:
 
 
 
-	bool AddGlas()
+	bool AddGlasackiListic()
 	{
 		/*funkcija treba da omoguci dodavanje informacija o novom glasu i tom prilikom:
 		-     onemoguciti da ista osoba glasa vise puta
