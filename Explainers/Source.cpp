@@ -1,1 +1,298 @@
-﻿
+﻿#include <iostream>
+using namespace std;
+
+const char* crt = "\n-------------------------------------------\n";
+
+template<class T1, class T2>
+class Rjecnik {
+	T1* _elementi1;
+	T2* _elementi2;
+	int _trenutno;
+	bool _omoguciDupliranje;
+public:
+	Rjecnik(bool omoguciDupliranje = true) {
+		_omoguciDupliranje = omoguciDupliranje;
+		_trenutno = 0;
+		_elementi1 = new T1[_trenutno];
+		_elementi2 = new T2[_trenutno];
+		
+	}
+
+	Rjecnik(const Rjecnik& obj)
+	{
+		_omoguciDupliranje = obj._omoguciDupliranje;
+		_trenutno = obj._trenutno;
+		_elementi1 = new T1[_trenutno];
+		_elementi2 = new T2[_trenutno];
+		for (int i = 0; i < _trenutno; i++)
+		{
+			_elementi1[i] = obj._elementi1[i];
+			_elementi2[i] = obj._elementi2[i];
+		}
+	}
+
+	Rjecnik& operator=(const Rjecnik& obj)
+	{
+		if (this != &obj)
+		{
+			delete[] _elementi1;
+			delete[] _elementi2;
+
+			_omoguciDupliranje = obj._omoguciDupliranje;
+			_trenutno = obj._trenutno;
+			_elementi1 = new T1[_trenutno];
+			_elementi2 = new T2[_trenutno];
+			for (int i = 0; i < _trenutno; i++)
+			{
+				_elementi1[i] = obj._elementi1[i];
+				_elementi2[i] = obj._elementi2[i];
+			}
+		}
+		return *this;
+	}
+
+	~Rjecnik() {
+		delete[] _elementi1; _elementi1 = nullptr;
+		delete[] _elementi2; _elementi2 = nullptr;
+	}
+
+	T1& getElement1(int lokacija)const { return _elementi1[lokacija]; }
+	T2& getElement2(int lokacija)const { return _elementi2[lokacija]; }
+	int getTrenutno() const { return _trenutno; }
+
+	void AddElement(T1 el1, T2 el2)
+	{
+		if (!_omoguciDupliranje) {
+			for (int i = 0; i < _trenutno; i++) {
+				//      Zadovoljstvo == Zadovljtsvo
+				if (_elementi1[i] == el1 && _elementi2[i] == el2) {
+					throw exception("Dupliranje nije dozvoljeno");
+				}
+			}
+		}
+
+		T1* temp1 = _elementi1;
+		T2* temp2 = _elementi2;
+
+		_elementi1 = new T1[_trenutno + 1];
+		_elementi2 = new T2[_trenutno + 1];
+
+		for (int i = 0; i < _trenutno; i++)
+		{
+			_elementi1[i] = temp1[i];
+			_elementi2[i] = temp2[i];
+		}
+
+		_elementi1[_trenutno] = el1;
+		_elementi2[_trenutno] = el2;
+		_trenutno++;
+	}
+
+	//                   2
+	void RemoveAt(int pozicija) {
+
+		for (int i = pozicija; i < _trenutno-1; i++)
+		{
+			_elementi1[i] = _elementi1[i + 1];
+			_elementi2[i] = _elementi2[i + 1];
+		}
+		_trenutno--;
+
+
+	}
+
+	Rjecnik<int, int> RemoveAt2(int pozicija) {
+
+		Rjecnik<int, int> novakolekcija;
+
+
+		for (int i = pozicija; i < _trenutno - 1; i++)
+		{
+			_elementi1[i] = _elementi1[i + 1];
+			_elementi2[i] = _elementi2[i + 1];
+		}
+		_trenutno--;
+
+		for (int i = 0; i < _trenutno; i++)
+		{
+			novakolekcija.AddElement(_elementi1[i], _elementi2[i]);
+		}
+
+		return novakolekcija;
+
+	}
+
+
+	Rjecnik<int, int> RemoveAt3(int pozicija) {
+
+		Rjecnik<int, int> novakolekcija;
+
+		novakolekcija.AddElement(_elementi1[pozicija], _elementi2[pozicija]); //  0 0
+
+		for (int i = pozicija; i < _trenutno - 1; i++)
+		{
+			_elementi1[i] = _elementi1[i + 1];
+			_elementi2[i] = _elementi2[i + 1];
+		}
+		_trenutno--;
+
+		return novakolekcija;
+
+	}
+
+	void InsertAt(int pozicija, T1 el1, T2 el2) {
+
+		T1* temp1 = _elementi1;
+		T2* temp2 = _elementi2;
+
+		_elementi1 = new T1[_trenutno + 1];
+		_elementi2 = new T2[_trenutno + 1];
+
+		for (int i = 0; i < _trenutno; i++)
+		{
+			_elementi1[i] = temp1[i];
+			_elementi2[i] = temp2[i];
+		}
+
+		for (int i = _trenutno; i > pozicija; i--)
+		{
+			_elementi1[i] = _elementi1[i - 1];
+			_elementi2[i] = _elementi2[i - 1];
+		}
+		_elementi1[pozicija] = el1;
+		_elementi2[pozicija] = el2;
+		_trenutno++;
+
+
+	}
+
+
+	Rjecnik<int, int> operator() (int pocetak, int kraj) {
+		Rjecnik<int, int> novakolekcija;
+		for (int i = pocetak; i <= kraj; i++) {
+			novakolekcija.AddElement(_elementi1[i], _elementi2[i]);
+		}
+		return novakolekcija;
+	}
+
+	T2& operator [] (T1 el1) {
+
+		for (int i = 0; i < _trenutno; i++)
+		{
+			if (el1 == _elementi1[i]) {
+				return _elementi2[i];
+			}
+		}
+
+	}
+
+
+
+
+
+
+
+
+
+	friend ostream& operator<< (ostream& COUT, const Rjecnik& obj) {
+		for (size_t i = 0; i < obj._trenutno; i++)
+			COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
+		return COUT;
+	}
+};
+
+
+void main() {
+
+
+
+	const int rjecnikTestSize = 9;
+
+	cout << "---------------1. ADD ELEMENT-----------------" <<endl<< endl;
+
+
+	Rjecnik<int, int> rjecnik1(false);
+	for (int i = 0; i < rjecnikTestSize - 1; i++)
+		rjecnik1.AddElement(i, i);//dodaje vrijednosti u rjecnik
+
+	cout << rjecnik1 << crt;
+
+
+	cout << "---------------2. REMOVE AT ORIGINAL (2)-----------------" << endl << endl;
+
+	rjecnik1.RemoveAt(2);
+	// 0 0 
+	// 1 1
+	// 3 3
+	// 4 4
+
+	cout << rjecnik1 << crt;
+
+	cout << "---------------3. REMOVE AT KADA IMAMO NOVAKOLEKCIJA -- (1)-----------------" << endl << endl;
+
+	// Hocemo novukolkciju i da i ona i stara izgube poziciju 1
+	// 0 0
+	// 3 3
+	// 4 4
+
+	// 0 0
+	// 3 3
+	// 4 4
+	Rjecnik<int, int> rjecnik2 = rjecnik1.RemoveAt2(1);
+
+	cout << rjecnik1 << crt;
+	cout << rjecnik2 << crt;
+
+	cout << "---------------4. REMOVE AT KADA IMAMO NOVAKOLEKCIJA -- (0)-----------------" << endl << endl;
+
+	// Hocemo da jedna kolekcija ima samo 0 0 a da druga to isto samo izgubi
+        // 0 0
+
+	// 3 3
+	// 4 4
+	//...
+	Rjecnik<int, int> rjecnik3 = rjecnik1.RemoveAt3(0);
+
+	cout << rjecnik1 << crt;
+	cout << rjecnik3 << crt;
+
+	cout << "---------------5. INSERT AT ORIGINAL (0,9,9)-----------------" << endl << endl;
+
+	rjecnik1.InsertAt(0,9,9);
+	// 9 9 
+	// 3 3 
+	// 4 4
+	//...
+
+	cout << rjecnik1 << crt;
+
+
+	cout << "---------------6. OPERATOR  ( ) NOVAKOLEKCIJA (2,5) -----------------" << endl << endl;
+
+
+	Rjecnik<int, int> rjecnik4 = rjecnik1(2,5);
+
+	// Novakolekcija ce imati elemente od 2 do 5
+	// 4 4
+	// 5 5
+	// 6 6
+	// 7 7 
+
+	cout << rjecnik4 << crt;
+
+	
+	cout << "---------------7. OPERATOR [ ] NA OSNOVU T1 mijenja T2 -----------------" << endl << endl;
+
+
+	rjecnik1[9] = 2;
+	// 9 2
+	// 3 3 
+	// 4 4
+
+	cout << rjecnik1 << crt;
+
+
+
+	cin.get();
+	system("pause>0");
+}
