@@ -9,24 +9,8 @@ class Datum
 public:
 
 
-	// operator =
 
 
-
-
-	// operator ==
-
-
-
-	// operator <<
-
-
-public:
-	//Potrebne konstruktor i destruktor funkcije
-
-	// operator =
-	// operator ==
-	//operator <<
 };
 
 
@@ -42,11 +26,6 @@ public:
 
 
 	// operator =
-	
-
-
-	// operator =
-
 
 
 	//operator ==
@@ -64,7 +43,6 @@ public:
 
 };
 class Tim {
-	//Oznaka prostorije
 	char* _naziv;
 	Fudbaler *_momcad;
 	int *_trenutno;

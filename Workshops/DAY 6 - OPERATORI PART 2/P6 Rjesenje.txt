@@ -64,18 +64,12 @@ public:
 		COUT << *obj._dan << "." << *obj._mjesec << "." << *obj._godina;
 		return COUT;
 	}
-public:
-	//Potrebne konstruktor i destruktor funkcije
-
-	// operator =
-	// operator ==
-	//operator <<
 };
 
 
 class Fudbaler
 {
-	char* _imePrezime; //ne smije sadržavati brojeve, regex: [0-9]
+	char* _imePrezime; 
 	char* _pozicija;
 	int _brojDresa;
 	Datum *_datumRodjenja;
