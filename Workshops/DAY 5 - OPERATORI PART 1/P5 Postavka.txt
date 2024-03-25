@@ -71,9 +71,6 @@ int pom = 1000; // koristi se za broj racuna samo ga povecas ++
 		//Voditi računa o tome da li je račun već naplaćen
 		//Prilikom svakog dodavanja artikla, azurirati vrijednosti iznosBezPDV i iznosSaPDV
 
-		//Operator -= uklanja artikal iz stavki na osnovu njegove sifre
-		//azurirati vrijednosti iznosBezPDV i iznosSaPDV
-
 
 		void PrintRacun() {
 			//Ispisuje sve stavke računa zajedno sa iznosom za plaćanje

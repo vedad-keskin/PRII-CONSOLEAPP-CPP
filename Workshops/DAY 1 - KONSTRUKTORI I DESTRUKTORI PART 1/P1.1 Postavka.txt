@@ -3,6 +3,7 @@ using namespace std;
 class Predmet {
 public:char* _naziv;
 public:int _ocjena;
+public:int* _ECTS;
 	  //Napraviti
 	  //1. Defaultni konstruktor
 	  //2. Konstruktor koji prima parametre:naziv i ocjena
@@ -18,6 +19,7 @@ public:int _ocjena;
 
 };
 class Student {
+	char* _ImePrezime;
 	Predmet* _polozeni;
 	int _trenutno;
 	int _max;
@@ -29,7 +31,7 @@ public:
 	//destruktor 
 	//potrebne funkcije
 
-	void AddPolozeniPredmet(Predmet& original) {
+	void AddPolozeniPredmet(Predmet predmet){
 		//Dodaje novi polozeni predmet u niz
 		//Voditi računa da se ne moze dodavati isti predmet (istog naziva)
 
