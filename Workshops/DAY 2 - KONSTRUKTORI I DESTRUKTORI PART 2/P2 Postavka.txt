@@ -79,13 +79,6 @@ public:
 };
 
 
-void ProglasiPobjednika(Izbori izbor) {
-		/*
-	funkcija treba ispisati listu kandidata, a uz svakog kandidata je potrebno ispisati i osvojeni procenat glasova
-		*/
-}
-
-
 
 void main() {
 

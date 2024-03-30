@@ -1,9 +1,8 @@
 #include <iostream>
-#include <string>
 using namespace std;
 
 
-char* GetNizKaraktera(const char * sadrzaj) {
+char* GetNizKaraktera(const char* sadrzaj) {
 
 	int vel = strlen(sadrzaj) + 1;
 	char* novi = new char[vel];
@@ -14,10 +13,10 @@ char* GetNizKaraktera(const char * sadrzaj) {
 
 
 class Osoba {
+protected:
+	char* _imePrezime;
+	char* _JMBG;
 public:
-	char* _imePrezime; 
-	char* _JMBG;       
-
 
 
 
@@ -26,45 +25,45 @@ public:
 
 
 
-
-
-
-
-
-class Student: public Osoba {
+class Profesor  {
 public:
-	char* _brojIndeksa; 
-	Predmet* _PolozeniPredmeti;
-	int _max;
-	int _trenutno;
-
-
+	char* _titula;
 
 
 
 };
 
-
-class Profesor: public Osoba {
-public:
-     char* _titula;
-
-
-	
-};
 
 class Predmet {
 public:
 	char* _naziv;
 	int _ECTS;
-	Profesor* _PredmetniProfesor; 
-	
+	Profesor* _PredmetniProfesor;
+
 
 
 
 
 
 };
+
+
+
+class Student  {
+public:
+	char* _brojIndeksa;
+	Predmet* _PolozeniPredmeti;
+	int _max;
+	int *_trenutno;
+
+
+
+
+
+};
+
+
+
 
 
 
