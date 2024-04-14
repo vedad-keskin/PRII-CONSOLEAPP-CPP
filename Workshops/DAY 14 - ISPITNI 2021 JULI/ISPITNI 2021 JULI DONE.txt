@@ -26,11 +26,15 @@ const char* crt = "\n-------------------------------------------\n";
 enum Predmet { UIT, PRI, PRII, PRIII, RSI, RSII };
 
 ostream& operator << (ostream& COUT, const Predmet& obj) {
+	
+	const char* KopijaPredmeta[]{ "UIT","PRI","PRII","PRIII","RSI","RSII" };
 
-	const char* KopijaPredmeta[]{ "UIT", "PRI", "PRII", "PRIII", "RSI", "RSII" };
-	COUT << KopijaPredmeta[obj] << endl;
+	COUT << KopijaPredmeta[obj];
+
+
 	return COUT;
 }
+
 
 const int brojRjesenja = 6;
 const char* NIJE_VALIDNA = "<VRIJEDNOST_NIJE_VALIDNA>";
@@ -52,7 +56,9 @@ public:
 	Kolekcija() {
 		_trenutno = new int(0);
 	}
+
 	Kolekcija(const Kolekcija& obj) {
+
 		_trenutno = new int(*obj._trenutno);
 
 		for (int i = 0; i < *_trenutno; i++)
@@ -60,16 +66,18 @@ public:
 			_elementi1[i] = new T1(*obj._elementi1[i]);
 			_elementi2[i] = new T2(*obj._elementi2[i]);
 		}
+
 	}
+
 	Kolekcija& operator = (const Kolekcija& obj) {
 		if (this != &obj) {
+
 			for (int i = 0; i < *_trenutno; i++)
 			{
-				delete _elementi1[i]; 
-				delete _elementi2[i]; 
+				delete _elementi1[i];
+				delete _elementi2[i];
 			}
-			delete _trenutno;
-			
+
 
 			_trenutno = new int(*obj._trenutno);
 
@@ -81,17 +89,23 @@ public:
 		}
 		return *this;
 	}
-	void AddElement(T1 el1,T2 el2) {
+
+	void AddElement(T1 el1, T2 el2) {
+
 		if (max == *_trenutno) {
 			throw exception("Niz je popunjen");
 		}
 
 		_elementi1[*_trenutno] = new T1(el1);
 		_elementi2[*_trenutno] = new T2(el2);
+
 		(*_trenutno)++;
+
 	}
-	
+
 	void RemoveAt(int lokacija) {
+
+		// ako ne radimo sa maxom nemamo new 
 
 		for (int i = lokacija; i < *_trenutno-1; i++)
 		{
@@ -102,39 +116,75 @@ public:
 
 	}
 
+	// ovo vazi samo ako je povratna vrijednost Kolekcija<int, int>
+
+	//Kolekcija<int, int> AddElement(T1 el1, T2 el2, int lokacija) {
+
+	//	Kolekcija<int, int> kolekcija1; // prazna kolekcija
+
+
+	//	for (int i = 0; i < *_trenutno; i++)
+	//	{
+	//		if (lokacija == i) {
+	//			kolekcija1.AddElement(el1, el2);
+	//		}
+
+	//		//kolekcija1.AddElement(*_elementi1[i], *_elementi2[i]);
+
+
+	//	}
+
+
+	//	return kolekcija1;
+
+	//}
+
 	void AddElement(T1 el1, T2 el2, int lokacija) {
 
+	
 		for (int i = *_trenutno; i > lokacija; i--)
 		{
 			_elementi1[i] = new T1(*_elementi1[i - 1]);
 			_elementi2[i] = new T2(*_elementi2[i - 1]);
 		}
+
 		_elementi1[lokacija] = new T1(el1);
 		_elementi2[lokacija] = new T2(el2);
 
 		(*_trenutno)++;
+
 	}
 
-	T2& operator [](T1 el1) {
+	T2& operator [] (T1 el1) {
+
 		for (int i = 0; i < *_trenutno; i++)
 		{
 			if (el1 == *_elementi1[i]) {
 				return *_elementi2[i];
 			}
 		}
+
 	}
+
+
 
 	~Kolekcija() {
 		for (int i = 0; i < *_trenutno; i++)
 		{
-			delete _elementi1[i]; _elementi1[i] = nullptr;
-			delete _elementi2[i]; _elementi2[i] = nullptr;
+			delete _elementi1[i];
+			_elementi1[i] = nullptr;
+			delete _elementi2[i];
+			_elementi2[i] = nullptr;
 		}
+
 		delete _trenutno; _trenutno = nullptr;
 	}
-	T1 getElement1(int lokacija)const { return *_elementi1[lokacija]; }
+
+	T1 getElement1(int lokacija)const { return *_elementi1[lokacija]; } // 2. caka
 	T2 getElement2(int lokacija)const { return *_elementi2[lokacija]; }
-	int getTrenutno()const { return *_trenutno; }
+	int getTrenutno() const { return *_trenutno; } // 1. const
+
+
 	friend ostream& operator<< (ostream& COUT, const Kolekcija& obj) {
 		for (size_t i = 0; i < *obj._trenutno; i++)
 			COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
@@ -192,19 +242,21 @@ svako biti ocijenjeno*/
 class Pitanje {
 	char* _sadrzaj;
 	//int se odnosi na ocjenu u opsegu 1 – 5, a Datum na datum kada je odgovor / rjesenje ocijenjeno
-	Kolekcija<int, Datum, brojRjesenja>*_ocjeneRjesenja;
+	Kolekcija<int, Datum, brojRjesenja> *_ocjeneRjesenja;
 public:
 	Pitanje(const char* sadrzaj) {
 		_sadrzaj = GetNizKaraktera(sadrzaj);
 		_ocjeneRjesenja = new Kolekcija<int, Datum, brojRjesenja>();
 	}
+
 	Pitanje(const Pitanje& obj) {
 		_sadrzaj = GetNizKaraktera(obj._sadrzaj);
 		_ocjeneRjesenja = new Kolekcija<int, Datum, brojRjesenja>(*obj._ocjeneRjesenja);
 	}
+
 	Pitanje& operator = (const Pitanje& obj) {
 		if (this != &obj) {
-			delete[] _sadrzaj; 
+			delete[] _sadrzaj;
 			delete _ocjeneRjesenja;
 
 			_sadrzaj = GetNizKaraktera(obj._sadrzaj);
@@ -213,10 +265,55 @@ public:
 		return *this;
 	}
 
-	bool operator == (const Pitanje& obj) {
-		return strcmp(_sadrzaj,obj._sadrzaj) == 0;
+	///*svako pitanje moze imati vise ocjena tj. razlicita rjesenja/odgovori se
+//  mogu postaviti u vise navrata.Drugim rijecima, ocjena, rjesenje i odgovor se
+//  mogu posmatrati kao sinonimi.
+   //- razmak izmedju postavljanja dva rjesenja mora biti najmanje 3
+//  dana
+   //- nije dozvoljeno dodati ocjenu sa ranijim datumom u odnosu na vec
+//  evidentirane (bez obzira sto je stariji od 3 dana)
+   //*/
+
+	bool AddOcjena(int ocjena, Datum datum) {
+
+		for (int i = 0; i < _ocjeneRjesenja->getTrenutno(); i++)
+		{
+			if (_ocjeneRjesenja->getElement2(i).SumaDana() > datum.SumaDana() ||
+				datum.SumaDana() - _ocjeneRjesenja->getElement2(i).SumaDana() < 3) {
+				return false;
+			}
+		}
+
+
+		_ocjeneRjesenja->AddElement(ocjena, datum);
+
+		// ako je datum pokazivac
+		// _ocjeneRjesenja->AddElement(ocjena, new Datum(datum));
+		return true;
+
 	}
-	float GetProsjek()const {
+
+	//bool AddOcjena( Datum datum, int ocjena) {
+
+	//	for (int i = 0; i < _ocjeneRjesenja->getTrenutno(); i++)
+	//	{
+	//		if (_ocjeneRjesenja->getElement2(i).SumaDana() > datum.SumaDana() ||
+	//			datum.SumaDana() - _ocjeneRjesenja->getElement2(i).SumaDana() < 3) {
+	//			return false;
+	//		}
+	//	}
+
+	//	// ako je zamjenjena mjesta ovdje ostaje isto jer u glavnoj kolekciji int je prvi a datum je drugi
+	//	_ocjeneRjesenja->AddElement(ocjena, datum);
+
+	//	// ako je datum pokazivac
+	//	// _ocjeneRjesenja->AddElement(ocjena, new Datum(datum));
+	//	return true;
+
+	//}
+
+	float GetProsjek() const{
+
 		float suma = 0;
 		float brojac = 0;
 
@@ -225,45 +322,46 @@ public:
 			suma += _ocjeneRjesenja->getElement1(i);
 			brojac++;
 		}
+
 		if (brojac == 0) {
 			return 0;
 		}
 
 		return suma / brojac;
+
 	}
 
-	//- razmak izmedju postavljanja dva rjesenja mora biti najmanje 3 dana
-	//	- nije dozvoljeno dodati ocjenu sa ranijim datumom u odnosu na vec evidentirane(bez obzira sto je stariji od 3 dana)
-
-	bool AddOcjena(int ocjena, Datum datum) {
-
-		for (int i = 0; i < _ocjeneRjesenja->getTrenutno(); i++)
-		{
-			if (_ocjeneRjesenja->getElement2(i).SumaDana() > datum.SumaDana() || datum.SumaDana() - _ocjeneRjesenja->getElement2(i).SumaDana() < 3 ) {
-				return false;
-			}
-		}
-
-		_ocjeneRjesenja->AddElement(ocjena, datum);
-		return true;
-	}
 
 	~Pitanje() {
 		delete[] _sadrzaj; _sadrzaj = nullptr;
 		delete _ocjeneRjesenja; _ocjeneRjesenja = nullptr;
 	}
+
+	bool operator == (const Pitanje& obj) {
+		return strcmp(_sadrzaj,obj._sadrzaj) == 0;
+	}
+
+
 	char* GetSadrzaj() { return _sadrzaj; }
-	Kolekcija<int, Datum, brojRjesenja>& GetOcjene() { return *_ocjeneRjesenja; }
+	Kolekcija<int, Datum, brojRjesenja>& GetOcjene() {
+		return
+			*_ocjeneRjesenja;
+	}
 
 	friend ostream& operator << (ostream& COUT, const Pitanje& obj) {
+		
 		COUT << obj._sadrzaj << endl;
 		for (int i = 0; i < obj._ocjeneRjesenja->getTrenutno(); i++)
 		{
+			// ako je datum pokazivac --> morala bi dereferencirati element2
 			COUT << "\t" << obj._ocjeneRjesenja->getElement1(i) << " - " << obj._ocjeneRjesenja->getElement2(i) << endl;
 		}
 		COUT << "Prosjecna ocjena -> " << obj.GetProsjek() << endl;
+
 		return COUT;
 	}
+
+
 };
 class Ispit {
 	Predmet _predmet;
@@ -271,36 +369,46 @@ class Ispit {
 public:
 	Ispit(Predmet predmet = UIT) {
 		_predmet = predmet;
+
 	}
+
 	Ispit(const Ispit& obj) {
+
 		_predmet = obj._predmet;
+
+		// ako nije u vectoru pokazivac
+
+		// _pitanjaOdgovori = obj._pitanjaOdgovori;
+
 
 		for (int i = 0; i < obj._pitanjaOdgovori.size(); i++)
 		{
 			_pitanjaOdgovori.push_back(new Pitanje(*obj._pitanjaOdgovori[i]));
 		}
+
 	}
 
 	Ispit& operator = (const Ispit& obj) {
 		if (this != &obj) {
-			for (size_t i = 0; i < _pitanjaOdgovori.size(); i++) {
+
+			for (int i = 0; i < _pitanjaOdgovori.size(); i++)
+			{
 				delete _pitanjaOdgovori[i];
 			}
 
 			_predmet = obj._predmet;
-
 			for (int i = 0; i < obj._pitanjaOdgovori.size(); i++)
 			{
 				_pitanjaOdgovori.push_back(new Pitanje(*obj._pitanjaOdgovori[i]));
 			}
 		}
 		return *this;
-	}	
-	
-	float ProsjekPredmeta()const {
+	}
+
+	float GetProsjekPredmeta() const {
+
 		float suma = 0;
 		float brojac = 0;
-
 
 		for (int i = 0; i < _pitanjaOdgovori.size(); i++)
 		{
@@ -310,10 +418,9 @@ public:
 		if (brojac == 0) {
 			return 0;
 		}
-
 		return suma / brojac;
-	}
 
+	}
 
 
 	~Ispit() {
@@ -322,8 +429,12 @@ public:
 			_pitanjaOdgovori[i] = nullptr;
 		}
 	}
+
+
 	vector<Pitanje*>& GetPitanjaOdgovore() { return _pitanjaOdgovori; }
 	Predmet GetPredmet() { return _predmet; }
+
+
 	friend ostream& operator<< (ostream& COUT, const Ispit& obj) {
 		COUT << obj._predmet << endl;
 		for (size_t i = 0; i < obj._pitanjaOdgovori.size(); i++)
@@ -331,7 +442,8 @@ public:
 		return COUT;
 	}
 };
-/*
+
+///*
 //za autentifikaciju svaki korisnik mora posjedovati lozinku koja sadrzi:
 //- najmanje 7 znakova
 //- velika i mala slova
@@ -342,12 +454,13 @@ public:
    //validacija lozinke se vrsi unutar konstruktora klase Korisnik, a u
 //  slucaju da nije validna
    //postaviti je na podrazumijevanu vrijednost: <VRIJEDNOST_NIJE_VALIDNA>
-   //*/
 
 bool ValidirajLozinku(string lozinka) {
-	regex reg1("[A-Z]"), reg2("[a-z]"), reg3("[0-9]"), reg4("[^A-Za-z0-9]"), reg5(".{7,}");
+
+	regex reg1("[A-Z]"), reg2("[a-z]"), reg3("[0-9]"), reg4(".{7,}"), reg5("[^A-Za-z0-9]");
 
 	return regex_search(lozinka, reg1) && regex_search(lozinka, reg2) && regex_search(lozinka, reg3) && regex_search(lozinka, reg4) && regex_search(lozinka, reg5);
+
 }
 
 class Korisnik {
@@ -359,16 +472,27 @@ public:
 	{
 		_imePrezime = GetNizKaraktera(imePrezime);
 		_emailAdresa = emailAdresa;
-		ValidirajLozinku(lozinka) ? _lozinka = lozinka : _lozinka = NIJE_VALIDNA;
+		
+		if (ValidirajLozinku(lozinka) == true) {
+			_lozinka = lozinka;
+		}
+		else {
+			_lozinka = NIJE_VALIDNA;
+		}
+
+		// _lozinka = ValidirajLozinku(lozinka) ? lozinka : NIJE_VALIDNA;
+
 	}
+
 	Korisnik(const Korisnik& obj) {
 		_imePrezime = GetNizKaraktera(obj._imePrezime);
 		_emailAdresa = obj._emailAdresa;
 		_lozinka = obj._lozinka;
 	}
+
 	Korisnik& operator = (const Korisnik& obj) {
 		if (this != &obj) {
-			delete[]_imePrezime;
+			delete[] _imePrezime;
 
 			_imePrezime = GetNizKaraktera(obj._imePrezime);
 			_emailAdresa = obj._emailAdresa;
@@ -377,37 +501,39 @@ public:
 		return *this;
 	}
 
+
 	virtual ~Korisnik() { delete[] _imePrezime; _imePrezime = nullptr; }
 	string GetEmail() { return _emailAdresa; }
 	string GetLozinka() { return _lozinka; }
 	char* GetImePrezime() { return _imePrezime; }
-	virtual void Info() = 0;
 
-	friend ostream& operator << (ostream& COUT, const Korisnik& obj) {
-		COUT << obj._imePrezime<<" - "<<obj._emailAdresa<<" - "<<obj._lozinka << endl;
-		return COUT;
-	}
+
+	virtual void Info() = 0;
 };
 
 mutex m;
-class Kandidat:public Korisnik {
+class Kandidat : public Korisnik { // 1. korak
 	vector<Ispit> _polozeniPredmeti;
 public:
-	Kandidat(const char* imePrezime, string emailAdresa, string lozinka):Korisnik(imePrezime,emailAdresa,lozinka) {
+	Kandidat(const char* imePrezime, string emailAdresa, string lozinka):Korisnik(imePrezime,emailAdresa,lozinka) { // 2. korak
 	}
-	Kandidat(const Kandidat& obj):Korisnik(obj) {
+
+	Kandidat(const Kandidat& obj):Korisnik(obj) { // 3. korak
+
 		_polozeniPredmeti = obj._polozeniPredmeti;
 	}
+
 	Kandidat& operator = (const Kandidat& obj) {
 		if (this != &obj) {
 
-			Korisnik::operator=(obj);
+			Korisnik::operator=(obj); // 4. korak
+
 			_polozeniPredmeti = obj._polozeniPredmeti;
 		}
 		return *this;
 	}
 
-	void Info() {
+	void Info() { // 5. korak
 		cout << *this;
 	}
 
@@ -415,83 +541,125 @@ public:
 		float suma = 0;
 		float brojac = 0;
 
-
 		for (int i = 0; i < _polozeniPredmeti.size(); i++)
 		{
-			suma += _polozeniPredmeti[i].ProsjekPredmeta();
+			suma += _polozeniPredmeti[i].GetProsjekPredmeta();
 			brojac++;
 		}
 		if (brojac == 0) {
 			return 0;
 		}
-
 		return suma / brojac;
 	}
-
-   //FROM:info@kursevi.ba
-   //TO: emailKorisnika
-   //Postovani ime i prezime, evidentirana vam je ocjena X za odgovor na pitanje Y.Dosadasnji uspjeh (prosjek ocjena)
-   //za pitanje Y iznosi F, a ukupni uspjeh (prosjek ocjena) na svim predmetima iznosi Z.
+//FROM:info@kursevi.ba
+//TO: emailKorisnika
+//Postovani ime i prezime, evidentirana vam je ocjena X za odgovor na
+//  pitanje Y. Dosadasnji uspjeh (prosjek ocjena)
+   //za pitanje Y iznosi F, a ukupni uspjeh (prosjek ocjena) na svim
+//  predmetima iznosi Z.
    //Pozdrav.
    //EDUTeam.
-	void PosaljiMail(int ocjena,Pitanje pitanje, float prosjekPitanja) {
+
+	void PosaljiMail(int ocjena, Pitanje pitanje, float prosjekPitanja) {
 		m.lock();
 		cout << "FROM:info@kursevi.ba" << endl;
 		cout << "TO: "<< GetEmail() << endl;
-		cout << "Postovani "<< GetImePrezime() <<", evidentirana vam je ocjena "<< ocjena <<" za odgovor na pitanje " << pitanje.GetSadrzaj() <<" .Dosadasnji uspjeh (prosjek ocjena)"<< endl;
-		cout << "za pitanje "<< pitanje.GetSadrzaj()<<" iznosi "<< prosjekPitanja <<" , a ukupni uspjeh (prosjek ocjena) na svim predmetima iznosi "<< UKUPNIPROSJEK() << endl;
+		cout << "Postovani "<<GetImePrezime()<<" , evidentirana vam je ocjena "<<ocjena<<" za odgovor na pitanje "<< pitanje.GetSadrzaj()<<" . Dosadasnji uspjeh (prosjek ocjena)" << endl;
+		cout << "za pitanje "<<pitanje.GetSadrzaj()<<" iznosi "<< prosjekPitanja<<" , a ukupni uspjeh (prosjek ocjena) na svim predmetima iznosi "<< UKUPNIPROSJEK()<<"." << endl;
 		cout << "Pozdrav." << endl;
 		cout << "EDUTeam." << endl;
 		m.unlock();
 	}
 
+	//svi odgovori na nivou jednog predmeta (PRI, PRII... ) se evidentiraju
+//  unutar istog objekta tipa Ispit tj. pripadajuceg objekta tipa Pitanje,
+   //tom prilikom onemoguciti:
+   //- dodavanje istih (moraju biti identicne vrijednosti svih atributa)
+//  odgovora na nivou jednog predmeta,
+   //- dodavanje odgovora za viši predmet ako prethodni predmet nema
+//  evidentirana najmanje 3 pitanja ili nema prosjecnu ocjenu svih pitanja vecu
+//  od 3.5
+   //(onemoguciti dodavanje pitanja za PRII ako ne postoje najmanje 3 pitanja
+//  za predmet PRI ili njihov prosjek nije veci od 3.5)
+   //funkcija vraca true ili false u zavisnosti od (ne)uspjesnost izvrsenja
+   //*/
+
 	bool AddPitanje(Predmet predmet, Pitanje pitanje) {
-		
+
 		for (int i = 0; i < _polozeniPredmeti.size(); i++)
 		{
-			if (predmet > _polozeniPredmeti[i].GetPredmet() && (_polozeniPredmeti[i].GetPitanjaOdgovore().size() < 3 || _polozeniPredmeti[i].GetPredmet() < 3.5)) {
+			// PRII > PRI && ( < 3 predmeta || < 3.5 ) 
+			if (predmet > _polozeniPredmeti[i].GetPredmet() && 
+				( _polozeniPredmeti[i].GetPitanjaOdgovore().size() < 3 ||
+					_polozeniPredmeti[i].GetProsjekPredmeta() < 3.5)) {
 				return false;
 			}
 		}
+
 		for (int i = 0; i < _polozeniPredmeti.size(); i++)
 		{
+			// PRI == PRI 
 			if (predmet == _polozeniPredmeti[i].GetPredmet()) {
-
+				// prolazimo kroz sva pitanja
 				for (int j = 0; j < _polozeniPredmeti[i].GetPitanjaOdgovore().size(); j++)
 				{
+					// pitanje == pitanje
 					if (pitanje == *_polozeniPredmeti[i].GetPitanjaOdgovore()[j]) {
 						return false;
 					}
+
 				}
+
+
+				// da ne pravimo nove predmete mi cemo ako predmet postoji samo cemo dodati na njega novo pitanje
 				_polozeniPredmeti[i].GetPitanjaOdgovore().push_back(new Pitanje(pitanje));
-				for (int i = 0; i < pitanje.GetOcjene().getTrenutno(); i++)
+
+				for (int j = 0; j < pitanje.GetOcjene().getTrenutno(); j++)
 				{
-					thread t1(&Kandidat::PosaljiMail, this, pitanje.GetOcjene().getElement1(i), pitanje, pitanje.GetProsjek());
+					thread t1(&Kandidat::PosaljiMail, this, pitanje.GetOcjene().getElement1(j), pitanje, _polozeniPredmeti[i].GetProsjekPredmeta());
 					t1.join();
 				}
+
 				return true;
+
+
+
 			}
+
+
 		}
+
+
+
 		Ispit ispit(predmet);
 		ispit.GetPitanjaOdgovore().push_back(new Pitanje(pitanje));
 		_polozeniPredmeti.push_back(ispit);
+
 		for (int i = 0; i < pitanje.GetOcjene().getTrenutno(); i++)
 		{
-			thread t2(&Kandidat::PosaljiMail, this, pitanje.GetOcjene().getElement1(i), pitanje, pitanje.GetProsjek());
+			thread t2(&Kandidat::PosaljiMail, this, pitanje.GetOcjene().getElement1(i), pitanje, ispit.GetProsjekPredmeta());
 			t2.join();
 		}
+
 		return true;
+
 	}
+
 
 	~Kandidat() {
 		cout << crt << "DESTRUKTOR -> Kandidat" << crt;
 	}
+
+
 	friend ostream& operator<< (ostream& COUT, Kandidat& obj) {
-		COUT << obj.GetImePrezime() << " " << obj.GetEmail() << " " << obj.GetLozinka() << endl;
+		COUT << obj.GetImePrezime() << " " << obj.GetEmail() << " " <<
+			obj.GetLozinka() << endl;
 		for (size_t i = 0; i < obj._polozeniPredmeti.size(); i++)
 			COUT << obj._polozeniPredmeti[i];
 		return COUT;
 	}
+
+
 	vector<Ispit>& GetPolozeniPredmeti() { return _polozeniPredmeti; }
 };
 const char* GetOdgovorNaPrvoPitanje() {
@@ -513,6 +681,8 @@ void main() {
 		datum20062020(20, 6, 2020),
 		datum30062020(30, 6, 2020),
 		datum05072020(5, 7, 2020);
+
+
 	int kolekcijaTestSize = 10;
 	Kolekcija<int, int> kolekcija1;
 	for (int i = 0; i < kolekcijaTestSize; i++)
@@ -526,6 +696,8 @@ void main() {
 	catch (exception& err) {
 		cout << crt << "Greska -> " << err.what() << crt;
 	}
+
+
 	cout << kolekcija1 << crt;
 	kolekcija1.RemoveAt(2);
 	/*uklanja par (T1 i T2) iz kolekcije koji se nalazi na lokaciji sa
@@ -542,29 +714,29 @@ void main() {
 	nakon uklanjanja vrijednosti na lokaciji 1, sadrzaj kolekcije ce biti
    sljedeci
 	0 0
-	2 2
+	1 1 
 	3 3
 	*/
 	cout << kolekcija1 << crt;
 	kolekcija1.AddElement(9, 9, 2);
-	/*funkciji AddElement se, kao treci parametar, moze proslijediti i
-   lokacija na koju se dodaju
-	nove vrijednosti pri cemu treba zadrzati postojece vrijednosti pomjerene
-   za jedno mjesto unaprijed
-	u odnosu na definisanu lokaciju npr. ako unutar kolekcije postoje
-   elementi
-	0 0
-	1 1
-	2 2
-	3 3
-	nakon dodavanja vrijednosti 9 i 9 na lokaciju 1, sadrzaj kolekcije ce
-   biti sljedeci
-	0 0
-	9 9
-	1 1
-	2 2
-	3 3
-	*/
+	///*funkciji AddElement se, kao treci parametar, moze proslijediti i
+ //  lokacija na koju se dodaju
+	//nove vrijednosti pri cemu treba zadrzati postojece vrijednosti pomjerene
+ //  za jedno mjesto unaprijed
+	//u odnosu na definisanu lokaciju npr. ako unutar kolekcije postoje
+ //  elementi
+	//0 0
+	//1 1
+	//2 2
+	//3 3
+	//nakon dodavanja vrijednosti 9 i 9 na lokaciju 1, sadrzaj kolekcije ce
+ //  biti sljedeci
+	//0 0
+	//9 9
+	//1 1
+	//2 2
+	//3 3
+	//*/
 	cout << kolekcija1 << crt;
 	Kolekcija<int, int> kolekcija2 = kolekcija1;
 	cout << kolekcija1 << crt;
@@ -573,40 +745,49 @@ void main() {
 	/* npr.ako unutar kolekcije postoje elementi:
 	0 0
 	9 9
-	1 1
-	2 2
-	3 3
-	nakon promjene vrijednosti sadrzaj kolekcije ce biti sljedeci
-	0 0
-	9 2
-	1 1
-	2 2
-	3 3
-	*/
+	//1 1
+	//2 2
+	//3 3
+	//nakon promjene vrijednosti sadrzaj kolekcije ce biti sljedeci
+	//0 0
+	//9 2
+	//1 1
+	//2 2
+	//3 3
+	//*/
 	cout << kolekcija1;
-
 	Pitanje sortiranjeNiza("Navedite algoritme za sortiranje clanova niza."),
 		dinamickaMemorija("Navedite pristupe za upravljanje dinamickom memorijom."),
 		visenitnoProgramiranje("Na koji se sve nacin moze koristiti veci broj niti tokom izvrsenja programa."),
 		regex("Navedite par primjera regex validacije podataka.");
-	/*svako pitanje moze imati vise ocjena tj. razlicita rjesenja/odgovori se
-   mogu postaviti u vise navrata.Drugim rijecima, ocjena, rjesenje i odgovor se
-   mogu posmatrati kao sinonimi.
-	- razmak izmedju postavljanja dva rjesenja mora biti najmanje 3
-   dana
-	- nije dozvoljeno dodati ocjenu sa ranijim datumom u odnosu na vec
-   evidentirane (bez obzira sto je stariji od 3 dana)
-	*/
+	///*svako pitanje moze imati vise ocjena tj. razlicita rjesenja/odgovori se
+ //  mogu postaviti u vise navrata.Drugim rijecima, ocjena, rjesenje i odgovor se
+ //  mogu posmatrati kao sinonimi.
+	//- razmak izmedju postavljanja dva rjesenja mora biti najmanje 3
+ //  dana
+	//- nije dozvoljeno dodati ocjenu sa ranijim datumom u odnosu na vec
+ //  evidentirane (bez obzira sto je stariji od 3 dana)
+	//*/
 	if (sortiranjeNiza.AddOcjena(1, datum19062020))
 		cout << "Ocjena evidentirana!" << endl;
 	if (!sortiranjeNiza.AddOcjena(5, datum20062020))
 		cout << "Ocjena NIJE evidentirana!" << endl;
 	if (sortiranjeNiza.AddOcjena(5, datum30062020))
 		cout << "Ocjena evidentirana!" << endl;
-	//// ispisuje sadrzaj/tekst pitanja, ocjene (zajedno sa datumom) i
-	//// prosjecnu ocjenu za sve odgovore / rjesenja
-	//// ukoliko pitanje nema niti jednu ocjenu prosjecna treba biti 0
+
+	//if (sortiranjeNiza.AddOcjena( datum19062020,1))
+	//	cout << "Ocjena evidentirana!" << endl;
+	//if (!sortiranjeNiza.AddOcjena( datum20062020,5))
+	//	cout << "Ocjena NIJE evidentirana!" << endl;
+	//if (sortiranjeNiza.AddOcjena( datum30062020,5))
+	//	cout << "Ocjena evidentirana!" << endl;
+	// ispisuje sadrzaj/tekst pitanja, ocjene (zajedno sa datumom) i
+	// prosjecnu ocjenu za sve odgovore / rjesenja
+	// ukoliko pitanje nema niti jednu ocjenu prosjecna treba biti 0
 		cout << sortiranjeNiza << endl;
+
+
+
 	if (ValidirajLozinku("john4Do*e"))
 		cout << "OK" << crt;
 	if (!ValidirajLozinku("john4Doe"))
@@ -617,7 +798,7 @@ void main() {
 		cout << "Veliko slovo?" << crt;
 	if (ValidirajLozinku("@john2Doe"))
 		cout << "OK" << crt;
-	/*
+	///*
 	//za autentifikaciju svaki korisnik mora posjedovati lozinku koja sadrzi:
 	//- najmanje 7 znakova
 	//- velika i mala slova
@@ -629,10 +810,13 @@ void main() {
  //  slucaju da nije validna
 	//postaviti je na podrazumijevanu vrijednost: <VRIJEDNOST_NIJE_VALIDNA>
 	//*/
-	Korisnik* jasmin = new Kandidat("Jasmin Azemovic", "jasmin@kursevi.ba", "j@sm1N*");
-	Korisnik* adel = new Kandidat("Adel Handzic", "adel@edu.kursevi.ba", "4Ade1*H");
-	Korisnik* lozinkaNijeValidna = new Kandidat("John Doe","john.doe@google.com", "johndoe");
-	/*
+	Korisnik* jasmin = new Kandidat("Jasmin Azemovic", "jasmin@kursevi.ba",
+		"j@sm1N*");
+	Korisnik* adel = new Kandidat("Adel Handzic", "adel@edu.kursevi.ba",
+		"4Ade1*H");
+	Korisnik* lozinkaNijeValidna = new Kandidat("John Doe",
+		"john.doe@google.com", "johndoe");
+	///*
 	//svi odgovori na nivou jednog predmeta (PRI, PRII... ) se evidentiraju
  //  unutar istog objekta tipa Ispit tj. pripadajuceg objekta tipa Pitanje,
 	//tom prilikom onemoguciti:
@@ -650,8 +834,9 @@ void main() {
 	if (jasminPolaznik != nullptr) {
 		if (jasminPolaznik->AddPitanje(PRI, dinamickaMemorija))
 			cout << "Pitanje uspjesno dodano!" << crt;
-		//ne treba dodati visenitnoProgramiranje jer ne postoje evidentiran 3 pitanja za predmet PRI
-			if (!jasminPolaznik->AddPitanje(PRII, visenitnoProgramiranje))
+		//ne treba dodati visenitnoProgramiranje jer ne postoje evidentirana
+		// 3 pitanja za predmet PRI
+		if (!jasminPolaznik->AddPitanje(PRII, visenitnoProgramiranje))
 				cout << "Pitanje NIJE uspjesno dodano!" << crt;
 		if (jasminPolaznik->AddPitanje(PRI, visenitnoProgramiranje))
 			cout << "Pitanje uspjesno dodano!" << crt;
@@ -669,8 +854,10 @@ void main() {
  //  email sa porukom:
 	//FROM:info@kursevi.ba
 	//TO: emailKorisnika
-	//Postovani ime i prezime, evidentirana vam je ocjena X za odgovor na pitanje Y.Dosadasnji uspjeh (prosjek ocjena)
-	//za pitanje Y iznosi F, a ukupni uspjeh (prosjek ocjena) na svim predmetima iznosi Z.
+	//Postovani ime i prezime, evidentirana vam je ocjena X za odgovor na
+ //  pitanje Y. Dosadasnji uspjeh (prosjek ocjena)
+	//za pitanje Y iznosi F, a ukupni uspjeh (prosjek ocjena) na svim
+ //  predmetima iznosi Z.
 	//Pozdrav.
 	//EDUTeam.
  //  slanje email poruka implemenitrati koristeci zasebne thread-ove.

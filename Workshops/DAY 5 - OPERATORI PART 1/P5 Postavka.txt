@@ -56,7 +56,7 @@ int pom = 1000; // koristi se za broj racuna samo ga povecas ++
 
 	class Racun {
 		int _brojRacuna;
-		StavkaRacuna *stavke;
+		StavkaRacuna *_stavke;
 		int _trenutno;
                 int _max;
 		double _iznosBezPDV;
