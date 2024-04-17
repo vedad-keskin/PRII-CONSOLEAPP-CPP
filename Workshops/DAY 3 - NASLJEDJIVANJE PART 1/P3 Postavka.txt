@@ -17,18 +17,29 @@ protected:
 	char* _imePrezime;
 	char* _JMBG;
 public:
-
-
+	//Kreirati i implementirati
+	//1. Defaultni konstruktor
+	//2. Konstruktor koji prima parametre
+	//3. Konstruktor kopije
+	//4. Operator dodjele
+	//5. Destruktor
+	//6. Operator ispisa 
 
 
 };
 
 
 
-class Profesor  {
+class Profesor {
 public:
 	char* _titula;
-
+	//Kreirati i implementirati
+	//1. Defaultni konstruktor
+	//2. Konstruktor koji prima parametre
+	//3. Konstruktor kopije
+	//4. Operator dodjele
+	//5. Destruktor
+	//6. Operator ispisa 
 
 
 };
@@ -39,25 +50,33 @@ public:
 	char* _naziv;
 	int _ECTS;
 	Profesor* _PredmetniProfesor;
-
-
-
-
+	//Kreirati i implementirati
+	//1. Defaultni konstruktor
+	//2. Konstruktor koji prima parametre
+	//3. Konstruktor kopije
+	//4. Operator dodjele
+	//5. Destruktor
+	//6. Operator ispisa 
 
 
 };
 
 
 
-class Student  {
+class Student {
 public:
 	char* _brojIndeksa;
 	Predmet* _PolozeniPredmeti;
 	int _max;
-	int *_trenutno;
-
-
-
+	int* _trenutno;
+	//Kreirati i implementirati
+	//1. Defaultni konstruktor
+	//2. Konstruktor koji prima parametre
+	//3. Konstruktor kopije
+	//4. Operator dodjele
+	//5. Destruktor
+	//6. Operator ispisa 
+	//7. Potrebne funkcije
 
 
 };
@@ -68,10 +87,6 @@ public:
 
 
 void main() {
-
-
-
-
 
 
 

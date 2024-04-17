@@ -8,14 +8,15 @@ public:
     char* _zanr;
     int _godinaObjavljivanja;
     float _ocjena;
+    //Kreirati i implementirati
+    //1. Defaultni konstruktor
+    //2. Konstruktor koji prima parametre
+    //3. Konstruktor kopije
+    //4. Operator dodjele
+    //5. Destruktor
+    //6. Operator ispisa 
 
-    // Implementirati potrebne konstruktore i destruktor
 
-   
-
-
-
-  
 };
 
 class Serija : public Media
@@ -23,11 +24,13 @@ class Serija : public Media
 public:
     int _brojEpizoda;
     int* _brojSezona;
-
-    // Implementirati potrebne konstruktore i destruktor
-  
-
-    
+    //Kreirati i implementirati
+    //1. Defaultni konstruktor
+    //2. Konstruktor koji prima parametre
+    //3. Konstruktor kopije
+    //4. Operator dodjele
+    //5. Destruktor
+    //6. Operator ispisa
 
 
 };
@@ -36,9 +39,16 @@ class Film : public Media
 {
 public:
     int _trajanje; // misli se na trajanje u minutama
+    //Kreirati i implementirati
+    //1. Defaultni konstruktor
+    //2. Konstruktor koji prima parametre
+    //3. Konstruktor kopije
+    //4. Operator dodjele
+    //5. Destruktor
+    //6. Operator ispisa 
+    //7. Potrebne funkcije
 
 
- 
 };
 
 class Korisnik
@@ -54,12 +64,18 @@ public:
     Serija* _pregledaneSerije;
     int _maxPregledanihSerija;
     int* _trenutnoPregledanihSerija;
+    //Kreirati i implementirati
+    //1. Defaultni konstruktor
+    //2. Konstruktor koji prima parametre
+    //3. Konstruktor kopije
+    //4. Operator dodjele
+    //5. Destruktor
+    //6. Operator ispisa 
+    //7. Potrebne funkcije
 
-    // Implementirati potrebne konstruktore i destruktor
 
 
-
-    bool IsUserDataValid(const char* username,const char* password)
+    bool IsUserDataValid(const char* username, const char* password)
     {
         // Funkcija vraca true false u ovisnosti od toga da li su proslijedjeni podaci tacni
         // Odnosno da li se korisnik moze logirati ili ne
@@ -92,11 +108,6 @@ public:
 void main()
 {
 
-    
 
-
-
-
-
-
+    system("PAUSE>0");
 }

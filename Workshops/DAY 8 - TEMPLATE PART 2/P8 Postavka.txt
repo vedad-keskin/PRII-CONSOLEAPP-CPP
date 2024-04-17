@@ -7,55 +7,84 @@ public:
     T* _elementi;
     int _max;
     int _trenutno;
+    //Kreirati i implementirati
+    //1. Defaultni konstruktor
+    //2. Konstruktor koji prima parametre
+    //3. Konstruktor kopije
+    //4. Operator dodjele
+    //5. Destruktor
+    //6. Operator ispisa 
 
-    // Potrebne kontruktore, destruktor i operatore
 
     // Operator += koji ima za cilj dodati novi element u kolekciju.
     // Onemoguciti dodavanje istih elemenata. Baciti izuzetak tipa exception, ukoliko 
     // nije moguce dodati vise elemenata ili element vec postoji.
     // Nije potrebno raditi prosirivanje kolekcije.
 
+
     // Operator -= koji ima za cilj ukloniti odredjeni element iz kolekcije.
     // Ako element nije pronadjen, baciti izuzetak tipa exception.
 
+
     // Operator [] dvije verzije
     // Treba da pronadje i vrati trazeni element. Ako element ne postoji, baciti izuzetak tipa exception
+
     T& operator[] (T el) {
+
     }
 
     T& operator[] (int pozicija) {
 
     }
 
-    // operator <<
+
 };
 
-class Artikal
-{
-public:
+class Artikal {
+protected:
     char* _kod;
     char* _naziv;
     float _cijena;
     int _kolicinaNaSkladistu;
+public:
+    //Kreirati i implementirati
+    //1. Defaultni konstruktor
+    //2. Konstruktor koji prima parametre
+    //3. Konstruktor kopije
+    //4. Operator dodjele
+    //5. Destruktor
+    //6. Operator ispisa 
+    //7. Operator poredjenja
 
-    // Potrebne kontruktore, destruktor i operatore
+
 };
 
-class PrehrambeniArtikal : public Artikal
-{
+class PrehrambeniArtikal : public Artikal {
 public:
     float _gramaza;
-    // Potrebne kontruktore, destruktor i operatore
+    //Kreirati i implementirati
+    //1. Defaultni konstruktor
+    //2. Konstruktor koji prima parametre
+    //3. Konstruktor kopije
+    //4. Operator dodjele
+    //5. Destruktor
+    //6. Operator ispisa 
+
 
 };
 
-class Odjeca : public Artikal
-{
+class Odjeca : public Artikal {
 public:
-    char* _velicina; // xs, s, m, l, xl ...
-    char* _materijal;
+    char* _velicina; // XS, S, M, L ..
+    char* _materijal; // pamuk, svila ..
+    //Kreirati i implementirati
+    //1. Defaultni konstruktor
+    //2. Konstruktor koji prima parametre
+    //3. Konstruktor kopije
+    //4. Operator dodjele
+    //5. Destruktor
+    //6. Operator ispisa 
 
-    // Potrebne kontruktore, destruktor i operatore
 
 };
 
@@ -67,47 +96,65 @@ public:
 
     Kolekcija<Odjeca> _odjeca;
     Kolekcija<PrehrambeniArtikal> _prehrana;
+    //Kreirati i implementirati
+    //1. Defaultni konstruktor
+    //2. Konstruktor koji prima parametre
+    //3. Konstruktor kopije
+    //4. Operator dodjele
+    //5. Destruktor
+    //6. Operator ispisa 
 
-    // Konstruktore, destruktore
 
-    bool DodajOdjecu(Odjeca o)
+    bool DodajOdjecu(Odjeca odjeca)
     {
         // Funkcija ima za cilj dodati novi komad odjece
         // Onemoguciti dodavanje dva ista komada.
+
+
     }
 
-    bool DodajPrehrambeniArtikal(PrehrambeniArtikal p)
+    bool DodajPrehrambeniArtikal(PrehrambeniArtikal prehrana)
     {
         // Funkcija ima za cilj dodati novi prehrambeni artikl
         // Onemoguciti dodavanje dva ista komada 
+
+
     }
 
-    bool UvecajStanjeNaSkladistu(PrehrambeniArtikal p)
+    bool UvecajStanjeNaSkladistu(PrehrambeniArtikal prehrana)
     {
         // Funkcija ima za cilj da uveca stanje na skladistu za proslijedjeni artikal
         // Ako proslijedjeni artikal ne postoji funkcija vraca false, inace uvecava stanje na skladistu
         // te vraca true
+
+
     }
 
-    bool UvecajStanjeNaSkladistu(Odjeca o)
+    bool UvecajStanjeNaSkladistu(Odjeca odjeca)
     {
         // Funkcija ima za cilj da uveca stanje na skladistu za proslijedjeni artikal
         // Ako proslijedjeni artikal ne postoji funkcija vraca false, inace uvecava stanje na skladistu
         // te vraca true
+
+
     }
 
-    bool UmanjiStanjeNaSkladistu(PrehrambeniArtikal p)
+    bool UmanjiStanjeNaSkladistu(PrehrambeniArtikal prehrana)
     {
         // Funkcija ima za cilj da umanji stanje na skladistu za proslijedjeni artikal
         // Ako proslijedjeni artikal ne postoji funkcija vraca false, inace uvecava stanje na skladistu
         // te vraca true
+
+
     }
 
-    bool UmanjiStanjeNaSkladistu(Odjeca o)
+    bool UmanjiStanjeNaSkladistu(Odjeca odjeca)
     {
         // Funkcija ima za cilj da umanji stanje na skladistu za proslijedjeni artikal
         // Ako proslijedjeni artikal ne postoji funkcija vraca false, inace uvecava stanje na skladistu
         // te vraca true
+
+
     }
 };
 
@@ -115,5 +162,5 @@ void main()
 {
 
 
-
+    system("PAUSE>0");
 }

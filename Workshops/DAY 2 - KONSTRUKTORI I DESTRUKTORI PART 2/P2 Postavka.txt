@@ -4,23 +4,32 @@ using namespace std;
 class Datum {
 public:
 	int* _dan, * _mjesec, * _godina;
+	//Kreirati i implementirati
+	//1. Defaultni konstruktor
+	//2. Konstruktor koji prima parametre
+	//3. Konstruktor kopije
+	//4. Operator dodjele
+	//5. Destruktor
+	//6. Operator ispisa 
 
 
-	// Kreirati i implementirati
-	// Konstruktor
-	// Konstruktor kopije
-	// Destruktor
+
+
 };
 
 class Kandidat {
 public:
 	char* _imePrezime;
 	char* _JMBG;
-	// Kreirati i implementirati
-// Konstruktor
-// Konstruktor kopije
-// Destruktor
-	
+	//Kreirati i implementirati
+	//1. Defaultni konstruktor
+	//2. Konstruktor koji prima parametre
+	//3. Konstruktor kopije
+	//4. Operator dodjele
+	//5. Destruktor
+	//6. Operator ispisa 
+
+
 };
 
 class Osoba {
@@ -29,40 +38,47 @@ public:
 	char* _imePrezime;
 	char* _JMBG;
 	char* _Prebivaliste;
-	// Kreirati i implementirati
-// Konstruktor
-// Konstruktor kopije
-// Destruktor
-	
+	//Kreirati i implementirati
+	//1. Defaultni konstruktor
+	//2. Konstruktor koji prima parametre
+	//3. Konstruktor kopije
+	//4. Operator dodjele
+	//5. Destruktor
+	//6. Operator ispisa 
+
+
 };
 
 class GlasackiListic {
 public:
 	Osoba* _glasac;
 	Kandidat* _glasZa;
-	// Kreirati i implementirati
-// Konstruktor
-// Konstruktor kopije
-// Destruktor
+	//Kreirati i implementirati
+	//1. Defaultni konstruktor
+	//2. Konstruktor koji prima parametre
+	//3. Konstruktor kopije
+	//4. Operator dodjele
+	//5. Destruktor
+	//6. Operator ispisa 
+
+
 };
 
-	
-class Izbori {	
+
+class Izbori {
 public:
 	char* _glasackoMjesto;
 	GlasackiListic* _glasovi;
 	int _trenutnoGlasova;
 	int _maxBrojGlasova;
-
-// Kreirati i implementirati
-// Konstruktor
-// Konstruktor kopije
-// Operator dodjele
-// Destruktor
-
-
-
-
+	//Kreirati i implementirati
+	//1. Defaultni konstruktor
+	//2. Konstruktor koji prima parametre
+	//3. Konstruktor kopije
+	//4. Operator dodjele
+	//5. Destruktor
+	//6. Operator ispisa 
+	//7. Potrebne funkcije
 
 
 	bool AddGlasackiListic(GlasackiListic listic)
@@ -81,6 +97,8 @@ public:
 
 
 void main() {
+
+
 
 	system("pause>0");
 }

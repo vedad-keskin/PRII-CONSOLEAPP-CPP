@@ -3,104 +3,94 @@ using namespace std;
 
 
 
-class Datum
-{
+class Datum {
 	int* _dan, * _mjesec, * _godina;
 public:
-
-
+	//Kreirati i implementirati
+	//1. Defaultni konstruktor
+	//2. Konstruktor koji prima parametre
+	//3. Konstruktor kopije
+	//4. Operator dodjele
+	//5. Destruktor
+	//6. Operator ispisa 
+	//7. Operator poredjenja
 
 
 };
 
 
-class Fudbaler
-{
-	char* _imePrezime; //ne smije sadržavati brojeve, regex: [0-9]
+class Fudbaler {
+	char* _imePrezime; 
 	char* _pozicija;
 	int _brojDresa;
-	Datum *_datumRodjenja;
+	Datum* _datumRodjenja;
 public:
-	//Potrebne konstruktor i destruktor funkcije
+	//Kreirati i implementirati
+	//1. Defaultni konstruktor
+	//2. Konstruktor koji prima parametre
+	//3. Konstruktor kopije
+	//4. Operator dodjele
+	//5. Destruktor
+	//6. Operator ispisa 
+	//7. Potrebne funkcije
+	//8. Operator poredjenja
 
 
-
-	// operator =
-
-
-	//operator ==
-
-
-
-	// operator += mijenja broj dresa
-
-
-
-	
-	// operator <<
-
+	//Operator += na način da se mijenja broj dresa fudbalera za proslijeđenu vrijednost
 
 
 };
 class Tim {
 	char* _naziv;
-	Fudbaler *_momcad;
-	int *_trenutno;
+	Fudbaler* _momcad;
+	int* _trenutno;
 	int _max;
-
 public:
-	
-	//Potrebne konstruktor i destruktor funkcije
+	//Kreirati i implementirati
+	//1. Defaultni konstruktor
+	//2. Konstruktor koji prima parametre
+	//3. Konstruktor kopije
+	//4. Operator dodjele
+	//5. Destruktor
+	//6. Operator ispisa 
+	//7. Potrebne funkcije
+	//8. Operator poredjenja
 
 
-
-	// operator ==
-
-
-
-	// operator ( )  za dodavanje igraca u tim
-
+	//Operator ( ) na način da se doda igrač u tim gdje je Fudbaler parametar operatora
 
 
 	const char* GetNazivTima() {
 		return _naziv;
 	}
-	
-	// operator <<
-
 
 };
 
 
-class Liga
-{
-public:
+class Liga{
 	char* _naziv;
 	Tim* _timovi;
 	int* _trenutno;
 	int _max;
+public:
+	//Kreirati i implementirati
+	//1. Defaultni konstruktor
+	//2. Konstruktor koji prima parametre
+	//3. Konstruktor kopije
+	//4. Operator dodjele
+	//5. Destruktor
+	//6. Operator ispisa 
+	//7. Potrebne funkcije
+	//8. Operator poredjenja
 
 
+	//Operator ( ) na način da se da parametar Tim dodaje u niz _timovi
 
 
-	// operator =
+	//Operator [ ] na način da se pronalazi Tim gdje je parametar Tim
+ 
 
-
-
-	// operator ==
-
-
-
-	// operator ( ) za dodavanje timova u ligu
-
-
-
-	// operator [ ] koji prolanazi tim koji proslijedimo kao naziv tima ili kao Tim
-
-
-
-	// operator <<
-
+	//Operator [ ] na način da se pronalazi Tim gdje je parametar naziv tima
 
 
 };
@@ -110,8 +100,8 @@ public:
 void main()
 {
 
-	Datum datum1(12, 12, 1998);
-	Datum datum2(1, 15, 1995);
+	//Datum datum1(12, 12, 1998);
+	//Datum datum2(1, 15, 1995);
 
 
 	//Fudbaler fudbaler1("Oliver Kahn", "GK", 1, datum2);
@@ -126,7 +116,7 @@ void main()
 	//Fudbaler fudbaler10("David Villa", "CF", 9, datum1);
 
 
-	
+
 
 
 	system("pause>0");

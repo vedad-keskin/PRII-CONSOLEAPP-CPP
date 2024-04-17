@@ -7,12 +7,18 @@ class Artikal {
 	double _cijena;
 	int _kolicinaNaSkladistu;
 public:
-	//potrebne konstruktor i destruktor funkcije (imati na umu i konstruktor kopije)
+	//Kreirati i implementirati
+	//1. Defaultni konstruktor
+	//2. Konstruktor koji prima parametre
+	//3. Konstruktor kopije
+	//4. Operator dodjele
+	//5. Destruktor
+	//6. Operator ispisa 
+
 
 	//Operator -= na način da se stanje na skladištu artikla promijeni za proslijeđenu vrijednost
 
 	//Operator += na način da se stanje na skladištu artikla promijeni za proslijeđenu vrijednost
-
 
 	//Operator ++ na način da se cijena artikla uveća za 1
 
@@ -27,62 +33,70 @@ public:
 };
 
 class StavkaRacuna {
-	Artikal *_artikal;
+	Artikal* _artikal;
 	int* _kolicina;
 public:
-	//potrebne konstruktor i destruktor funkcije (imati na umu i konstruktor kopije)
+	//Kreirati i implementirati
+	//1. Defaultni konstruktor
+	//2. Konstruktor koji prima parametre
+	//3. Konstruktor kopije
+	//4. Operator dodjele
+	//5. Destruktor
+	//6. Operator ispisa 
 
-	//operator dodjele =
+	//Operator += koji uvećava stanje na skladištu artikla
 
-	//operator += koji uvećava stanje na skladištu artikla
+	//Operator -= koji umanjuje stanje na skladištu artikla
 
-	//operator -= koji umanjuje stanje na skladištu artikla (jeste da u artiklu imamo ovo već preklopljeno, ali artikal je 
-	//private atribut klase, ne možemo mu tek tako pristupati iz računa
+	//Operator == koji poredi stavke na osnovu sifre
 
-	//Operator poređenja== koji poredi stavke po sifri artikla
-
-	//operator ++ koji uvećava količinu stavke racuna
+	//Operator ++ koji uvećava količinu stavke racuna
 
 
-	double GetCijena() {//vraća cijenu stavke racuna (kolicina * cijena artikla) 
+	double GetCijena() { //vraća cijenu stavke racuna (kolicina * cijena artikla) 
 	}
 
-	double GetKolicina() { //vraća količinu stavke računa }
+	double GetKolicina() { //vraća količinu stavke računa 
 
 	}
-	
+
 };
+
 int pom = 1000; // koristi se za broj racuna samo ga povecas ++ 
 
-	class Racun {
-		int _brojRacuna;
-		StavkaRacuna *_stavke;
-		int _trenutno;
-                int _max;
-		double _iznosBezPDV;
-		double _iznosSaPDV;
-		bool _naplaceno;
-	public:
-		//potrebne konstruktor i destruktor funkcije (imati na umu i konstruktor kopije)
+class Racun {
+	int _brojRacuna;
+	StavkaRacuna* _stavke;
+	int _trenutno;
+	int _max;
+	double _iznosBezPDV;
+	double _iznosSaPDV;
+	bool _naplaceno;
+public:
+	//Kreirati i implementirati
+	//1. Defaultni konstruktor
+	//2. Konstruktor koji prima parametre
+	//3. Konstruktor kopije
+	//4. Operator dodjele
+	//5. Destruktor
+	//6. Printanje racuna
 
-		//operator dodjele =
-
-		//Operator() - dodaje nove artikle u stavke racuna (ulazni parametri su artikal i kolicina), kolicina nije obavezni parametar
-		//Voditi računa o tome da li je račun već naplaćen
-		//Prilikom svakog dodavanja artikla, azurirati vrijednosti iznosBezPDV i iznosSaPDV
-
-
-		void PrintRacun() {
-			//Ispisuje sve stavke računa zajedno sa iznosom za plaćanje
-			
-		
-		}
-	};
+	//Operator () - dodaje nove artikle u stavke racuna (ulazni parametri su artikal i kolicina)
+	//Voditi računa o tome da li je račun već naplaćen
+	//Prilikom svakog dodavanja artikla, azurirati vrijednosti iznosBezPDV i iznosSaPDV
 
 
-	void main() {
-		
+	void PrintRacun() {
+		//Ispisuje sve stavke računa zajedno sa iznosom za plaćanje
 
-
-		system("pause>0");
 	}
+
+};
+
+
+void main() {
+
+
+
+	system("pause>0");
+}
