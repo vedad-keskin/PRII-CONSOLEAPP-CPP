@@ -24,6 +24,7 @@ public:
 	//4. Operator dodjele
 	//5. Destruktor
 	//6. Operator ispisa 
+	//7. Potrebne funkcije
 
 
 	void AddElement(T el) {

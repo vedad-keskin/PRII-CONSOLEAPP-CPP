@@ -14,6 +14,7 @@ public:
     //4. Operator dodjele
     //5. Destruktor
     //6. Operator ispisa 
+    //7. Potrebne funkcije
 
 
     // Operator += koji ima za cilj dodati novi element u kolekciju.
@@ -88,8 +89,7 @@ public:
 
 };
 
-class Prodavnica
-{
+class Prodavnica {
 public:
     char* _naziv;
     char* _adresa;
@@ -103,7 +103,8 @@ public:
     //4. Operator dodjele
     //5. Destruktor
     //6. Operator ispisa 
-
+    //7. Potrebne funkcije
+    //8. Operator poredjenja
 
     bool DodajOdjecu(Odjeca odjeca)
     {
