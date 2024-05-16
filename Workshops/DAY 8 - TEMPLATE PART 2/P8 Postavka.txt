@@ -5,8 +5,7 @@ template<class T>
 class Kolekcija {
 public:
     T* _elementi;
-    int _max;
-    int _trenutno;
+    int* _trenutno;
     //Kreirati i implementirati
     //1. Defaultni konstruktor
     //2. Konstruktor koji prima parametre
