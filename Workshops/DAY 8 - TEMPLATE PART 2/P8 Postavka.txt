@@ -17,9 +17,8 @@ public:
 
 
     // Operator += koji ima za cilj dodati novi element u kolekciju.
-    // Onemoguciti dodavanje istih elemenata. Baciti izuzetak tipa exception, ukoliko 
-    // nije moguce dodati vise elemenata ili element vec postoji.
-    // Nije potrebno raditi prosirivanje kolekcije.
+    // Onemoguciti dodavanje istih elemenata. Baciti izuzetak tipa exception, ukoliko element vec postoji
+
 
 
     // Operator -= koji ima za cilj ukloniti odredjeni element iz kolekcije.
@@ -121,38 +120,30 @@ public:
 
     }
 
-    bool UvecajStanjeNaSkladistu(PrehrambeniArtikal prehrana)
+    bool UvecajStanjeNaSkladistu(PrehrambeniArtikal prehrana, int kolicina)
     {
         // Funkcija ima za cilj da uveca stanje na skladistu za proslijedjeni artikal
-        // Ako proslijedjeni artikal ne postoji funkcija vraca false, inace uvecava stanje na skladistu
-        // te vraca true
 
 
     }
 
-    bool UvecajStanjeNaSkladistu(Odjeca odjeca)
+    bool UvecajStanjeNaSkladistu(Odjeca odjeca, int kolicina)
     {
         // Funkcija ima za cilj da uveca stanje na skladistu za proslijedjeni artikal
-        // Ako proslijedjeni artikal ne postoji funkcija vraca false, inace uvecava stanje na skladistu
-        // te vraca true
 
 
     }
 
-    bool UmanjiStanjeNaSkladistu(PrehrambeniArtikal prehrana)
+    bool UmanjiStanjeNaSkladistu(PrehrambeniArtikal prehrana, int kolicina)
     {
         // Funkcija ima za cilj da umanji stanje na skladistu za proslijedjeni artikal
-        // Ako proslijedjeni artikal ne postoji funkcija vraca false, inace uvecava stanje na skladistu
-        // te vraca true
 
 
     }
 
-    bool UmanjiStanjeNaSkladistu(Odjeca odjeca)
+    bool UmanjiStanjeNaSkladistu(Odjeca odjeca, int kolicina)
     {
         // Funkcija ima za cilj da umanji stanje na skladistu za proslijedjeni artikal
-        // Ako proslijedjeni artikal ne postoji funkcija vraca false, inace uvecava stanje na skladistu
-        // te vraca true
 
 
     }
