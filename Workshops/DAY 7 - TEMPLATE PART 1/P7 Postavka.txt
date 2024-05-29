@@ -80,7 +80,12 @@ public:
 	//7. Operator poredjenja
 
 
-	//Operator < na način da poredi težine dviju životinja
+
+
+        //Operator == na način da poredi po vrsti životinje da li su dvije životinje iste
+
+
+	//Operator > na način da poredi težine dviju životinja
 
 
 };
