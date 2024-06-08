@@ -65,7 +65,7 @@ public:
 	}
 
 	friend ostream& operator << (ostream& COUT, const Kolekcija& obj) {
-		
+
 		for (int i = 0; i < obj._trenutno; i++)
 		{
 			COUT << obj._niz[i] << endl;
@@ -125,7 +125,7 @@ public:
 			return false;
 		}
 
-		for (int i = lokacija; i < _trenutno-1; i++)
+		for (int i = lokacija; i < _trenutno - 1; i++)
 		{
 			_niz[i] = _niz[i + 1];
 		}
@@ -155,6 +155,27 @@ public:
 		}
 
 		return false;
+
+
+	}
+
+	void AddElement(T el, int lokacija) {
+		// dodaje element na određenu lokaciju
+
+
+		if (_trenutno == _max) {
+			throw exception("Niz ce izaci izvan opsega ako dodamo novi element");
+		}
+
+
+		for (int i = _trenutno; i > lokacija; i--)
+		{
+			_niz[i] = _niz[i - 1];
+		}
+
+		_niz[lokacija] = el;
+		_trenutno++;
+
 
 
 	}
@@ -211,12 +232,12 @@ public:
 
 
 
-	Zivotinja(const char* vrsta = "---",int tezina = 0) {
+	Zivotinja(const char* vrsta = "---", int tezina = 0) {
 
 		_vrsta = GetNizKaraktera(vrsta);
 		_tezina = tezina;
 
-    }
+	}
 
 	Zivotinja(const Zivotinja& obj) {
 		_vrsta = GetNizKaraktera(obj._vrsta);
@@ -272,7 +293,7 @@ public:
 	}
 
 	friend ostream& operator << (ostream& COUT, const Zivotinja& obj) {
-		COUT << obj._vrsta<<" - "<<obj._tezina<<"kg";
+		COUT << obj._vrsta << " - " << obj._tezina << "kg";
 		return COUT;
 	}
 
@@ -302,6 +323,7 @@ void main() {
 	//	cout << err.what() << endl;
 	//}
 
+	//kolekcijaSlova.AddElement('Z', 3);
 
 
 	//try {

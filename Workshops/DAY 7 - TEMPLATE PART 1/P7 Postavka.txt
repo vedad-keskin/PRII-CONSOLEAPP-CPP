@@ -28,37 +28,43 @@ public:
 
 
 	void AddElement(T el) {
-		// dodaje element u niz
+		// dodaje element u niz, u slucaju dupliranja ili izlaska izvan opsega baciti izuzetak tipa exception
 
 	}
 
 
 	bool Ukloni() {
-		//uklanja zadnji element iz niza
+		// uklanja zadnji element iz niza
 
 	}
 
 
 	bool RemoveAt(int lokacija) {
-		//uklanja element na određenoj poziciji
+		// uklanja element na određenoj poziciji
+
+	}
+
+
+	void AddElement(T el, int lokacija) {
+		// dodaje element na određenu lokaciju
 
 	}
 
 
 	bool RemoveAt(T el) {
-		//Uklanja element koji je jednak proslijeđenom
+		// uklanja element koji je jednak proslijeđenom
 
 	}
 
 
 	bool Prazan() {
-		//vrši provjeru da li je niz prazan
+		// vrši provjeru da li je niz prazan
 
 	}
 
 
 	T* GetNajmanjiElement() {
-		//vraća najmanji element iz niza i to kao pokazivač
+		// vraća najmanji element iz niza i to kao pokazivač
 
 	}
 
@@ -82,7 +88,7 @@ public:
 
 
 
-        //Operator == na način da poredi po vrsti životinje da li su dvije životinje iste
+	//Operator == na način da poredi po vrsti životinje da li su dvije životinje iste
 
 
 	//Operator > na način da poredi težine dviju životinja
