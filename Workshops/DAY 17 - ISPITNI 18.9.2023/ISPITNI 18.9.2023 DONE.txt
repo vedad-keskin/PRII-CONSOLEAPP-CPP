@@ -94,7 +94,7 @@ public:
         (*_trenutno)++;
     }
 
-   
+
 
     void AddElement(T1 el1, T2 el2, int lokacija) {
 
@@ -283,7 +283,7 @@ public:
     Ispit(const Ispit& obj) {
         _predmet = new Predmet(*obj._predmet);
         _pitanjaOdgovori = obj._pitanjaOdgovori;
-        
+
     }
 
     Ispit& operator = (const Ispit& obj) {
@@ -312,6 +312,10 @@ public:
         }
 
         return suma / brojac;
+    }
+
+    void DodajPitanje(Pitanje pitanje) {
+        _pitanjaOdgovori.push_back(pitanje);
     }
 
     ~Ispit() {
@@ -400,7 +404,7 @@ public:
 };
 
 mutex m;
-class Kandidat:public Korisnik {
+class Kandidat :public Korisnik {
     vector<Ispit*> _polozeniPredmeti;
 public:
     Kandidat(const char* imePrezime, string emailAdresa, string lozinka) :Korisnik(imePrezime, emailAdresa, lozinka) {
@@ -421,7 +425,7 @@ public:
             }
 
             Korisnik::operator=(obj);
-            for(int i = 0; i < obj._polozeniPredmeti.size(); i++)
+            for (int i = 0; i < obj._polozeniPredmeti.size(); i++)
             {
                 _polozeniPredmeti.push_back(new Ispit(*obj._polozeniPredmeti[i]));
             }
@@ -488,11 +492,15 @@ public:
                         return false;
                     }
                 }
-                _polozeniPredmeti[i]->GetPitanjaOdgovore().push_back(pitanje);
+
+                // moze i ovo i ovo
+                //_polozeniPredmeti[i]->GetPitanjaOdgovore().push_back(pitanje);
+                _polozeniPredmeti[i]->DodajPitanje(pitanje);
+
                 for (int i = 0; i < pitanje.GetOcjene().getTrenutno(); i++)
                 {
                     if (GetAktivan() == true) {
-                        thread t1(&Kandidat::PosaljiMail, this, pitanje.GetOcjene().getElement1(i), pitanje, pitanje.GetProsjek());
+                        thread t1(&Kandidat::PosaljiMail, this, pitanje.GetOcjene().getElement1(i), pitanje, _polozeniPredmeti[i]->ProsjekPredmeta());
                         t1.join();
 
                     }
@@ -501,13 +509,17 @@ public:
             }
         }
         Ispit ispit(predmet);
-        ispit.GetPitanjaOdgovore().push_back(pitanje);
+
+        // moze i ovo i ovo
+        //ispit.GetPitanjaOdgovore().push_back(pitanje);
+        ispit.DodajPitanje(pitanje);
+
         _polozeniPredmeti.push_back(new Ispit(ispit));
         for (int i = 0; i < pitanje.GetOcjene().getTrenutno(); i++)
         {
             if (GetAktivan() == true) {
 
-                thread t2(&Kandidat::PosaljiMail, this, pitanje.GetOcjene().getElement1(i), pitanje, pitanje.GetProsjek());
+                thread t2(&Kandidat::PosaljiMail, this, pitanje.GetOcjene().getElement1(i), pitanje, ispit.ProsjekPredmeta());
                 t2.join();
             }
         }
@@ -526,7 +538,7 @@ public:
                 {
                     if (datumOd.SumaDana() <= _polozeniPredmeti[i]->GetPitanjaOdgovore()[j].GetOcjene().getElement2(k)->SumaDana() && datumDo.SumaDana() >= _polozeniPredmeti[i]->GetPitanjaOdgovore()[j].GetOcjene().getElement2(k)->SumaDana()
                         ) {
-                        novakolekcija.AddElement(_polozeniPredmeti[i]->GetPitanjaOdgovore()[j], 
+                        novakolekcija.AddElement(_polozeniPredmeti[i]->GetPitanjaOdgovore()[j],
                             _polozeniPredmeti[i]->GetPitanjaOdgovore()[j].GetProsjek());
                     }
                 }
