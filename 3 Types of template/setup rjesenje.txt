@@ -1,0 +1,605 @@
+#include <iostream>
+using namespace std;
+
+
+enum Dupliranje { BEZ_DUPLIKATA, SA_DUPLIKATIMA };
+const char* crt = "\n-------------------------------------------\n";
+
+
+template<class T1, class T2>
+class Rjecnik {
+	T1* _elementi1;
+	T2* _elementi2;
+	int _trenutno;
+	bool _omoguciDupliranje;
+public:
+	Rjecnik(bool omoguciDupliranje = true) {
+		_omoguciDupliranje = omoguciDupliranje;
+
+		_trenutno = 0;
+		
+		_elementi1 = new T1[_trenutno];
+		_elementi2 = new T2[_trenutno];
+
+	}
+
+	Rjecnik(const Rjecnik& obj) {
+
+		_omoguciDupliranje = obj._omoguciDupliranje;
+		_trenutno = obj._trenutno;
+
+		_elementi1 = new T1[_trenutno];
+		_elementi2 = new T2[_trenutno];
+
+		for (int i = 0; i < _trenutno; i++)
+		{
+			_elementi1[i] = obj._elementi1[i];
+			_elementi2[i] = obj._elementi2[i];
+		}
+
+
+	}
+
+	Rjecnik& operator = (const Rjecnik& obj) {
+		if (this != &obj) {
+			delete[] _elementi1;
+			delete[] _elementi2;
+
+
+			_omoguciDupliranje = obj._omoguciDupliranje;
+			_trenutno = obj._trenutno;
+
+			_elementi1 = new T1[_trenutno];
+			_elementi2 = new T2[_trenutno];
+
+			for (int i = 0; i < _trenutno; i++)
+			{
+				_elementi1[i] = obj._elementi1[i];
+				_elementi2[i] = obj._elementi2[i];
+			}
+		}
+		return *this;
+	}
+
+
+	void AddElement(T1 el1, T2 el2) {
+
+		if (_omoguciDupliranje == false) {
+
+			for (int i = 0; i < _trenutno; i++)
+			{
+				if (el1 == _elementi1[i] || el2 == _elementi2[i]) {
+					throw exception("Dupliranje nije dozvoljeno");
+				}
+			}
+
+		}
+
+
+		// 1. korak napraviti kopiju temp koja ima iste elemente kao i elementi
+
+		T1* temp1 = _elementi1;
+		T2* temp2 = _elementi2;
+
+
+		// 2. prosiriti elemente da imaju jedno prazno mjesto ali kada alociramo neki niz taj niz je uvijek po defaultu prazan
+
+		_elementi1 = new T1[_trenutno + 1];
+		_elementi2 = new T2[_trenutno + 1];
+
+		// 3. vracamo iz tempa elemente nazad u kolekciju
+
+		for (int i = 0; i < _trenutno; i++)
+		{
+			_elementi1[i] = temp1[i];
+			_elementi2[i] = temp2[i];
+		}
+
+		// 4. pohrana na odredjeno mjesto
+
+		_elementi1[_trenutno] = el1;
+		_elementi2[_trenutno] = el2;
+
+		_trenutno++;
+
+	}
+
+	void RemoveAt(int lokacija) {
+
+		if (lokacija < 0 || lokacija > _trenutno) {
+			return;
+		}
+
+
+		for (int i = lokacija; i < _trenutno - 1 ; i++)
+		{
+			_elementi1[i] = _elementi1[i + 1];
+			_elementi2[i] = _elementi2[i + 1];
+		}
+
+		_trenutno--;
+
+	}
+
+	void InsertAt(T1 el1 , T2 el2, int lokacija) {
+
+		Rjecnik<int, int> novirjecnik;
+
+		for (int i = 0; i < _trenutno; i++) // i = 0 , 1, 2 ,3 ,4 
+		{
+			if (lokacija == i) { // ako si nasao lokaciju 3 
+				novirjecnik.AddElement(el1, el2); // 3
+			}
+			novirjecnik.AddElement(_elementi1[i], _elementi2[i]);
+
+		}
+
+		*this = novirjecnik;
+
+
+	}
+
+	void InsertAt2(T1 el1, T2 el2, int lokacija) {
+
+
+		T1* temp1 = _elementi1;
+		T2* temp2 = _elementi2;
+
+		_elementi1 = new T1[_trenutno + 1];
+		_elementi2 = new T2[_trenutno + 1];
+
+		for (int i = 0; i < _trenutno; i++)
+		{
+			_elementi1[i] = temp1[i];
+			_elementi2[i] = temp2[i];
+		
+		}
+
+		for (int i = _trenutno; i > lokacija; i--)
+		{
+			_elementi1[i] = _elementi1[i - 1];
+			_elementi2[i] = _elementi2[i - 1];
+		}
+
+		_elementi1[lokacija] = el1;
+		_elementi2[lokacija] = el2;
+
+		_trenutno++;
+
+
+	}
+
+
+	~Rjecnik() {
+		delete[] _elementi1; _elementi1 = nullptr;
+		delete[] _elementi2; _elementi2 = nullptr;
+	}
+
+
+	T1& getElement1(int lokacija)const { return _elementi1[lokacija]; }
+	T2& getElement2(int lokacija)const { return _elementi2[lokacija]; }
+	int getTrenutno() const { return _trenutno; }
+
+	friend ostream& operator<< (ostream& COUT, const Rjecnik& obj) {
+		for (size_t i = 0; i < obj._trenutno; i++)
+			COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
+		return COUT;
+	}
+};
+
+template<class T1, class T2, int max>
+class Dictionary {
+	T1* _elementi1[max];
+	T2* _elementi2[max];
+	int* _trenutno;
+	bool _omoguciDupliranje;
+
+public:
+	Dictionary(bool omoguciDupliranje = true) {
+
+		_trenutno = new int(0);
+		_omoguciDupliranje = omoguciDupliranje;
+
+		// kada su zadaci sa maxom ovdje ne radis nista
+
+	}
+
+	Dictionary(const Dictionary& obj) {
+
+		_trenutno = new int(*obj._trenutno);
+		_omoguciDupliranje = obj._omoguciDupliranje;
+
+		// kada su zadaci sa maxom ovdje ne radis alokaciju
+
+
+		for (int i = 0; i < *_trenutno; i++)
+		{
+			_elementi1[i] = new T1(*obj._elementi1[i]);
+			_elementi2[i] = new T2(*obj._elementi2[i]);
+
+		}
+
+
+	}
+
+	Dictionary& operator = (const Dictionary& obj) {
+		if (this != &obj) {
+
+			for (int i = 0; i < *_trenutno; i++)
+			{
+				delete _elementi1[i];
+				delete _elementi2[i];
+			}
+			delete _trenutno;
+
+
+
+			_trenutno = new int(*obj._trenutno);
+			_omoguciDupliranje = obj._omoguciDupliranje;
+
+			// kada su zadaci sa maxom ovdje ne radis alokaciju
+
+
+			for (int i = 0; i < *_trenutno; i++)
+			{
+				_elementi1[i] = new T1(*obj._elementi1[i]);
+				_elementi2[i] = new T2(*obj._elementi2[i]);
+
+			}
+		}
+		return *this;
+	}
+
+
+	void AddElement(T1 el1, T2 el2) {
+
+		if (_omoguciDupliranje == false) {
+
+			for (int i = 0; i < *_trenutno; i++)
+			{
+				if (el1 == *_elementi1[i] || el2 == *_elementi2[i]) {
+					throw exception("Dupliranje nije dozvoljeno");
+				}
+			}
+
+		}
+
+
+
+		_elementi1[*_trenutno] = new T1(el1);
+		_elementi2[*_trenutno] = new T2(el2);
+
+		(*_trenutno)++;
+
+	}
+
+
+	void RemoveAt(int lokacija) {
+
+		for (int i = lokacija; i < *_trenutno - 1; i++)
+		{
+			_elementi1[i] = new T1(*_elementi1[i + 1]);
+			_elementi2[i] = new T2(*_elementi2[i + 1]);
+		}
+
+		(*_trenutno)--;
+
+
+	}
+
+	void InsertAt(T1 el1, T2 el2, int lokacija) {
+
+		Dictionary<int, int, max> novirjecnik;
+
+		for (int i = 0; i < *_trenutno; i++)
+		{
+			if (lokacija == i) {
+				novirjecnik.AddElement(el1, el2);
+			}
+			novirjecnik.AddElement(*_elementi1[i], *_elementi2[i]);
+
+		}
+
+		*this = novirjecnik;
+
+
+	}
+
+	void InsertAt2(T1 el1, T2 el2, int lokacija) {
+
+
+		for (int i = *_trenutno; i > lokacija; i--)
+		{
+
+			_elementi1[i] = new T1(*_elementi1[i - 1]);
+			_elementi2[i] = new T2(*_elementi2[i - 1]);
+
+		}
+
+		_elementi1[lokacija] = new T1(el1);
+		_elementi2[lokacija] = new T2(el2);
+
+		(*_trenutno)++;
+
+	}
+
+	T1& getElement1(int lokacija)const { return *_elementi1[lokacija]; }
+	T2& getElement2(int lokacija)const { return *_elementi2[lokacija]; }
+	int getTrenutno() const { return *_trenutno; }
+
+
+	~Dictionary() {
+
+		for (int i = 0; i < *_trenutno; i++)
+		{
+			delete _elementi1[i];
+			_elementi1[i] = nullptr;
+			delete _elementi2[i];
+			_elementi2[i] = nullptr;
+		}
+		delete _trenutno;
+		_trenutno = nullptr;
+
+
+	}
+
+
+	friend ostream& operator<< (ostream& COUT, const Dictionary& obj) {
+		for (size_t i = 0; i < *obj._trenutno; i++)
+			COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
+		return COUT;
+	}
+};
+
+
+template<class T1, class T2, int max = 15>
+class Kolekcija {
+	T1 _elementi1[max];
+	T2 _elementi2[max];
+	int* _trenutno;
+	Dupliranje _dupliranje;
+public:
+	Kolekcija(Dupliranje dupliranje = SA_DUPLIKATIMA) {
+		_trenutno = new int(0);
+		_dupliranje = dupliranje;
+
+		// ovdje ne radimo nista
+
+	}
+
+	Kolekcija(const Kolekcija& obj) {
+
+		_trenutno = new int(*obj._trenutno);
+		_dupliranje = obj._dupliranje;
+
+		for (int i = 0; i < *_trenutno; i++)
+		{
+			_elementi1[i] = obj._elementi1[i];
+			_elementi2[i] = obj._elementi2[i];
+		}
+
+	}
+
+
+	Kolekcija& operator = (const Kolekcija& obj) {
+		if (this != &obj) {
+			delete _trenutno;
+
+			_trenutno = new int(*obj._trenutno);
+			_dupliranje = obj._dupliranje;
+
+			for (int i = 0; i < *_trenutno; i++)
+			{
+				_elementi1[i] = obj._elementi1[i];
+				_elementi2[i] = obj._elementi2[i];
+			}
+		}
+		return *this;
+	}
+
+	void AddElement(T1 el1, T2 el2) {
+
+		if (_dupliranje == BEZ_DUPLIKATA) {
+
+			for (int i = 0; i < *_trenutno; i++)
+			{
+				if (el1 == _elementi1[i] || el2 == _elementi2[i]) {
+					throw exception("Dupliranje nije dozvoljeno");
+				}
+			}
+
+		}
+
+		_elementi1[*_trenutno] = el1;
+		_elementi2[*_trenutno] = el2;
+
+		(*_trenutno)++;
+
+	}
+
+	void RemoveAt(int lokacija) {
+
+		for (int i = lokacija; i < *_trenutno - 1; i++)
+		{
+			_elementi1[i] = _elementi1[i + 1];
+			_elementi2[i] = _elementi2[i + 1];
+		}
+
+		(*_trenutno)--;
+
+
+	}
+
+	void InsertAt(T1 el1, T2 el2, int lokacija) {
+
+		Kolekcija<int, int, max> novirjecnik;
+
+		for (int i = 0; i < *_trenutno; i++)
+		{
+			if (lokacija == i) {
+				novirjecnik.AddElement(el1, el2);
+			}
+			novirjecnik.AddElement(_elementi1[i], _elementi2[i]);
+
+		}
+
+		*this = novirjecnik;
+
+
+	}
+
+	void InsertAt2(T1 el1, T2 el2, int lokacija) {
+
+
+		for (int i = *_trenutno; i > lokacija; i--)
+		{
+
+			_elementi1[i] = _elementi1[i - 1];
+			_elementi2[i] = _elementi2[i - 1];
+
+		}
+
+		_elementi1[lokacija] = el1;
+		_elementi2[lokacija] = el2;
+
+		(*_trenutno)++;
+
+	}
+
+
+	~Kolekcija() {
+		delete _trenutno; _trenutno = nullptr;
+	}
+
+	T1 getElement1(int lokacija)const { return _elementi1[lokacija]; }
+	T2 getElement2(int lokacija)const { return _elementi2[lokacija]; }
+	int getTrenutno()const { return *_trenutno; }
+	friend ostream& operator<< (ostream& COUT, const Kolekcija& obj) {
+		for (size_t i = 0; i < *obj._trenutno; i++)
+			COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
+		return COUT;
+	}
+};
+
+
+
+
+
+void main() {
+
+
+
+	const int rjecnikTestSize = 9;
+	Rjecnik<int, int> rjecnik1(false);
+	for (int i = 0; i < rjecnikTestSize - 1; i++) // 0 1 2 3 4 5 6 7 9 
+		rjecnik1.AddElement(i, i);//dodaje vrijednosti u rjecnik
+
+	try {
+		//ukoliko nije dozvoljeno dupliranje elemenata (provjeravaju se T1 ili T2), metoda AddElement treba baciti objekat tipa exception
+		rjecnik1.AddElement(3, 3);
+	}
+	catch (exception& err) {
+		cout << err.what() << crt;
+	}
+	rjecnik1.AddElement(9, 9);
+
+	cout << rjecnik1 << crt;
+
+	cout << crt << "============= REMOVE AT =================" << crt;
+
+	rjecnik1.RemoveAt(2);
+
+	cout << rjecnik1;
+
+	cout << crt << "============= INSERT AT =================" << crt;
+
+	//rjecnik1.InsertAt(10,10,3);
+	rjecnik1.InsertAt2(10,10,3);
+
+	cout << rjecnik1;
+
+
+	// =============================
+	cout << crt << "============= ZADACI SA MAXOM =================" << crt;
+
+
+	Dictionary<int, int, rjecnikTestSize> rijecnik1(false);
+
+	for (int i = 0; i < rjecnikTestSize - 1; i++)
+		rijecnik1.AddElement(i, i);//dodaje vrijednosti u rijecnik
+
+	//try {
+	//	//ukoliko nije dozvoljeno dupliranje elemenata (provjeravaju se T1 i T2), metoda AddElement treba baciti objekat tipa exception
+	//	rijecnik1.AddElement(3, 3);
+	//}
+	//catch (exception& err) {
+	//	cout << err.what() << crt;
+	//}
+	rijecnik1.AddElement(9, 9);
+
+	//try
+	//{
+	//	//ukoliko je rijecnik popunje, metoda AddElement treba baciti objekat tipa exception
+	//	rijecnik1.AddElement(10, 10);
+	//}
+	//catch (exception& err) {
+	//	cout << err.what() << crt;
+	//}
+
+	cout << rijecnik1 << crt;
+	cout << crt << "============= REMOVE AT =================" << crt;
+
+
+
+	rijecnik1.RemoveAt(2);
+
+	cout << rijecnik1 << crt;
+
+	cout << crt << "============= INSERT AT =================" << crt;
+
+
+	rijecnik1.InsertAt(10,10,2);
+
+	cout << rijecnik1 << crt;
+
+	// =================================
+
+	cout << crt << "============= ZADACI SA MAXOM BEZ POK =================" << crt;
+
+
+	Kolekcija<int, int> kolekcija1(BEZ_DUPLIKATA);
+	for (int i = 0; i <= rjecnikTestSize; i++)
+		kolekcija1.AddElement(i, i);
+
+	try {
+		//ukoliko nije dozvoljeno dupliranje elemenata (provjeravaju se T1 i T2), metoda AddElement baca izuzetak
+		//takodjer, izuzetak se baca i u slucaju da se prekoraci maksimalan broj elemenata
+		kolekcija1.AddElement(3, 3);
+	}
+	catch (exception& err) {
+		cout << err.what() << crt;
+	}
+
+
+	cout << kolekcija1 << crt;
+
+	
+	cout << crt << "============= REMOVE AT =================" << crt;
+
+
+
+	kolekcija1.RemoveAt(2);
+
+	cout << kolekcija1 << crt;
+
+	cout << crt << "============= INSERT AT =================" << crt;
+
+
+	kolekcija1.InsertAt(10, 10, 2);
+
+	cout << rijecnik1 << crt;
+
+
+	cin.get();
+	system("pause>0");
+}

@@ -1,0 +1,194 @@
+#include <iostream>
+using namespace std;
+
+
+enum Dupliranje { BEZ_DUPLIKATA, SA_DUPLIKATIMA };
+
+
+template<class T1, class T2>
+class Rjecnik {
+	T1* _elementi1;
+	T2* _elementi2;
+	int _trenutno;
+	bool _omoguciDupliranje;
+public:
+	Rjecnik(bool omoguciDupliranje = true) {
+		_omoguciDupliranje = omoguciDupliranje;
+
+	}
+	~Rjecnik() {
+		delete[] _elementi1; _elementi1 = nullptr;
+		delete[] _elementi2; _elementi2 = nullptr;
+	}
+	T1& getElement1(int lokacija)const { return _elementi1[lokacija]; }
+	T2& getElement2(int lokacija)const { return _elementi2[lokacija]; }
+	int getTrenutno() const { return _trenutno; }
+
+	friend ostream& operator<< (ostream& COUT, const Rjecnik& obj) {
+		for (size_t i = 0; i < obj._trenutno; i++)
+			COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
+		return COUT;
+	}
+};
+
+template<class T1, class T2, int max>
+class Dictionary {
+	T1* _elementi1[max];
+	T2* _elementi2[max];
+	int* _trenutno;
+	bool _omoguciDupliranje;
+
+public:
+	Dictionary(bool omoguciDupliranje = true) {
+
+	}
+
+	T1& getElement1(int lokacija)const { return _elementi1[lokacija]; }
+	T2& getElement2(int lokacija)const { return _elementi2[lokacija]; }
+	int getTrenutno() { return *_trenutno; }
+	friend ostream& operator<< (ostream& COUT, const Dictionary& obj) {
+		for (size_t i = 0; i < obj._trenutno; i++)
+			COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
+		return COUT;
+	}
+};
+
+
+template<class T1, class T2, int max = 15>
+class Kolekcija {
+	T1 _elementi1[max];
+	T2 _elementi2[max];
+	int* _trenutno;
+	Dupliranje _dupliranje;
+public:
+	Kolekcija(Dupliranje dupliranje = SA_DUPLIKATIMA) {
+		_trenutno = new int(0);
+		_dupliranje = dupliranje;
+	}
+	~Kolekcija() {
+		delete _trenutno; _trenutno = nullptr;
+	}
+
+	T1 getElement1(int lokacija)const { return _elementi1[lokacija]; }
+	T2 getElement2(int lokacija)const { return _elementi2[lokacija]; }
+	int getTrenutno()const { return *_trenutno; }
+	friend ostream& operator<< (ostream& COUT, const Kolekcija& obj) {
+		for (size_t i = 0; i < *obj._trenutno; i++)
+			COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
+		return COUT;
+	}
+};
+
+
+
+
+
+void main() {
+
+
+
+	//const int rjecnikTestSize = 9;
+	//Rjecnik<int, int> rjecnik1(false);
+	//for (int i = 0; i < rjecnikTestSize - 1; i++)
+	//	rjecnik1.AddElement(i, i);//dodaje vrijednosti u rjecnik
+
+	//try {
+	//	//ukoliko nije dozvoljeno dupliranje elemenata (provjeravaju se T1 ili T2), metoda AddElement treba baciti objekat tipa exception
+	//	rjecnik1.AddElement(3, 3);
+	//}
+	//catch (exception& err) {
+	//	cout << err.what() << crt;
+	//}
+	//rjecnik1.AddElement(9, 9);
+
+	//cout << rjecnik1 << crt;
+
+	///*
+	//* metoda prihvata indekse lokacije, te vraća elemente koji se u rjecniku nalaze na proslijedjenim lokacijama (ukljucujuci i te lokacije)
+	//*/
+	//Rjecnik<int, int> rjecnik2 = rjecnik1(2, 5);
+	///*clanovi objekta rjecnik2 bi trebali biti:
+	//2 2
+	//3 3
+	//4 4
+	//5 5
+	//*/
+	//cout << rjecnik2 << crt;
+
+	// =============================
+
+
+	//Dictionary<int, int, rijecnikTestSize> rijecnik1(false);
+
+	//for (int i = 0; i < rijecnikTestSize - 1; i++)
+	//	rijecnik1.AddElement(i, i);//dodaje vrijednosti u rijecnik
+
+	//try {
+	//	//ukoliko nije dozvoljeno dupliranje elemenata (provjeravaju se T1 i T2), metoda AddElement treba baciti objekat tipa exception
+	//	rijecnik1.AddElement(3, 3);
+	//}
+	//catch (exception& err) {
+	//	cout << err.what() << crt;
+	//}
+	//rijecnik1.AddElement(9, 9);
+
+	//try
+	//{
+	//	//ukoliko je rijecnik popunje, metoda AddElement treba baciti objekat tipa exception
+	//	rijecnik1.AddElement(10, 10);
+	//}
+	//catch (exception& err) {
+	//	cout << err.what() << crt;
+	//}
+
+	//cout << rijecnik1 << crt;
+
+	///* metoda RemoveAt treba da ukloni i vrati (kao povratnu vrijednost)clanoverijecnika koji se nalaze na lokaciji definisanoj prvim parametrom.
+	//* Nakon izvrsenja metode RemoveAt, objekat rijecnik1 bi trebao posjedovati sljedeci sadrzaj:
+	//* 0  0
+	//* 1  1
+	//* 3  3
+	//* 4  4
+	//* ....
+	//*
+	//* a objekat rijecnik2 samo jedan par:
+	//*  2  2
+	//*/
+	//Dictionary<int, int, rijecnikTestSize> rijecnik2 = rijecnik1.RemoveAt(2);
+	//cout << rijecnik2 << crt;
+
+
+	// =================================
+
+	//Kolekcija<int, int> kolekcija1(BEZ_DUPLIKATA);
+	//for (int i = 0; i <= kolekcijaTestSize; i++)
+	//	kolekcija1.AddElement(i, i);
+
+	//try {
+	//	//ukoliko nije dozvoljeno dupliranje elemenata (provjeravaju se T1 i T2), metoda AddElement baca izuzetak
+	//	//takodjer, izuzetak se baca i u slucaju da se prekoraci maksimalan broj elemenata
+	//	kolekcija1.AddElement(3, 3);
+	//}
+	//catch (exception& err) {
+	//	cout << err.what() << crt;
+	//}
+	//cout << kolekcija1 << crt;
+
+	///*objekat kolekcija2 ce biti inicijalizovan elementima koji se u objektu kolekcija1 nalaze na lokacijama 1 - 4
+	//ukljucujuci i te lokacije. u konkretnom primjeru to ce biti parovi sa vrijednostima: 1 1 2 2 3 3 4 4*/
+	//Kolekcija<int, int> kolekcija2 = kolekcija1(1, 4);
+	//cout << kolekcija2 << crt;
+	//try {
+	//	//primjeri u kojima opseg nije validan, te bi funkcija trebala baciti izuzetak
+	//	Kolekcija<int, int> temp1 = kolekcija1(1, 14);//imamo 10 elemenata
+	//	Kolekcija<int, int> temp2 = kolekcija1(-1, 8);//lokacija -1 ne postoji
+	//}
+	//catch (exception& err) {
+	//	cout << err.what() << crt;
+	//}
+
+
+
+	cin.get();
+	system("pause>0");
+}
