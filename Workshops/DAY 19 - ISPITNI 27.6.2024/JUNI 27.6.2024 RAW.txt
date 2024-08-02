@@ -44,7 +44,7 @@ public:
 		_trenutno = nullptr;
 	}
 	~Kolekcija() {
-		for (int i = 0; i < _trenutno; i++) {
+		for (int i = 0; i < *_trenutno; i++) {
 			delete _elementi1[i]; _elementi1[i] = nullptr;
 			delete _elementi2[i]; _elementi2[i] = nullptr;
 		}

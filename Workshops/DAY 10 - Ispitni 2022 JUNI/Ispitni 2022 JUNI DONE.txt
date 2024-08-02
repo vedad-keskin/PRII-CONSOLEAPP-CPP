@@ -57,7 +57,7 @@ unique_ptr<char[]> GetNizUniqueKaraktera(const char* tekst) {
 	if (tekst == nullptr)
 		return nullptr;
 	int vel = strlen(tekst) + 1;
-	unique_ptr<char[]> novi (new char[vel]);
+	unique_ptr<char[]> novi(new char[vel]);
 	strcpy_s(novi.get(), vel, tekst);
 	return novi;
 }
@@ -137,17 +137,17 @@ public:
 		_elementi2[*_trenutno] = new T2(el2);
 		(*_trenutno)++;
 	}
-/* metoda RemoveAt treba da ukloni i vrati (kao povratnu vrijednost) clanoverijecnika koji se nalaze na lokaciji definisanoj prvim parametrom.
-* Nakon izvrsenja metode RemoveAt, objekat rijecnik1 bi trebao posjedovati sljedeci sadrzaj:
-* 0  0
-* 1  1
-* 3  3
-* 4  4
-* ....
-*
-* a objekat rijecnik2 samo jedan par:
-*  2  2
-*/
+	/* metoda RemoveAt treba da ukloni i vrati (kao povratnu vrijednost) clanoverijecnika koji se nalaze na lokaciji definisanoj prvim parametrom.
+	* Nakon izvrsenja metode RemoveAt, objekat rijecnik1 bi trebao posjedovati sljedeci sadrzaj:
+	* 0  0
+	* 1  1
+	* 3  3
+	* 4  4
+	* ....
+	*
+	* a objekat rijecnik2 samo jedan par:
+	*  2  2
+	*/
 
 	Rijecnik<int, int, max> RemoveAt(int lokacija) {
 
@@ -157,7 +157,7 @@ public:
 		novakolekcija.AddElement(*_elementi1[lokacija], *_elementi2[lokacija]);
 
 
-		for (int i = lokacija; i < *_trenutno-1; i++)
+		for (int i = lokacija; i < *_trenutno - 1; i++)
 		{
 			_elementi1[i] = new T1(*_elementi1[i + 1]);
 			_elementi2[i] = new T2(*_elementi2[i + 1]);
@@ -187,7 +187,7 @@ public:
 
 	T1& getElement1(int lokacija)const { return *_elementi1[lokacija]; } // 4. CAKA SAMO KOD ZADATAKA SA MAXOM 
 	T2& getElement2(int lokacija)const { return *_elementi2[lokacija]; }
-	int getTrenutno()const  { return *_trenutno; }  // 1. CAKA FALI CONST, 2. CAKA FALI * 
+	int getTrenutno()const { return *_trenutno; }  // 1. CAKA FALI CONST, 2. CAKA FALI * 
 
 
 	friend ostream& operator<< (ostream& COUT, const Rijecnik& obj) {
@@ -229,7 +229,7 @@ public:
 		return *_dan + *_mjesec * 30 + *_godina * 365;
 	}
 
-	
+
 	~Datum() {
 		delete _dan; _dan = nullptr;
 		delete _mjesec; _mjesec = nullptr;
@@ -303,13 +303,13 @@ public:
 		_ocjeneKarakteristika->AddElement(karaktersitka, ocjena);
 	}
 
-//   Nismo pretjerano zadovoljni kvalitetom, a ni pakovanjem.
-//		 NARUDZBA(7)
-//		 KVALITET(4)
-//		 PAKOVANJE(3)
-//		 ISPORUKA(6)
-//   -------------------------------------------
-//   Prosjecna ocjena -> 5
+	//   Nismo pretjerano zadovoljni kvalitetom, a ni pakovanjem.
+	//		 NARUDZBA(7)
+	//		 KVALITET(4)
+	//		 PAKOVANJE(3)
+	//		 ISPORUKA(6)
+	//   -------------------------------------------
+	//   Prosjecna ocjena -> 5
 
 	float getProsjek() const {
 		float suma = 0;  // 7+4+3+6  = 20
@@ -333,7 +333,7 @@ public:
 		COUT << obj._komentar << endl;
 		for (int i = 0; i < obj._ocjeneKarakteristika->getTrenutno(); i++)
 		{
-			COUT <<"\t"<< obj._ocjeneKarakteristika->getElement1(i) << "(" << obj._ocjeneKarakteristika->getElement2(i) << ")" << endl;
+			COUT << "\t" << obj._ocjeneKarakteristika->getElement1(i) << "(" << obj._ocjeneKarakteristika->getElement2(i) << ")" << endl;
 		}
 		COUT << crt << "Prosjecna ocjena -> " << obj.getProsjek() << endl;
 
@@ -447,7 +447,7 @@ class Kupovina {
 public:
 	Kupovina(Datum& datum, Kupac& kupac) : _datumKupovine(datum) {
 		_kupaci.push_back(kupac);
-		
+
 	}
 
 	Kupovina(const Kupovina& obj) {
@@ -500,7 +500,7 @@ public:
 		}
 
 		if (brojac >= 2) {
-			thread t1(&Kupovina::PosaljiMail,this,_zadovoljstvoKupca.getProsjek());
+			thread t1(&Kupovina::PosaljiMail, this, _zadovoljstvoKupca.getProsjek());
 			t1.join();
 		}
 
@@ -520,7 +520,7 @@ public:
    //   Puno pozdrava
 //  */
 
-	void PosaljiMail(float prosjek) {
+	void PosaljiMail() {
 		m.lock();
 		cout << "To: ";
 		for (int i = 0; i < _kupaci.size(); i++)
@@ -529,7 +529,7 @@ public:
 		}
 		cout << endl << "Subject: Informacija" << endl << endl;
 		cout << "Postovani," << endl << endl;
-		cout << "Zaprimili smo Vase ocjene, a njihova prosjecna vrijednost je "<< prosjek << endl;
+		cout << "Zaprimili smo Vase ocjene, a njihova prosjecna vrijednost je " << _zadovoljstvoKupca.getProsjek() << endl;
 		cout << " Zao nam je zbog toga, te ce Vas u najkracem periodu kontaktirati nasa Sluzba za odnose sa kupcima." << endl << endl;
 		cout << "Nadamo se da cete i dalje poslovati sa nama" << endl;
 		cout << "Puno pozdrava" << endl;
@@ -542,7 +542,7 @@ public:
 	// red po red ---> radili prosli put 
 	// slovo po slovo ----> laksi nacin
 
-	tuple<int, int, int>  GetBrojZnakova(const char * nazivFajla) {
+	tuple<int, int, int>  GetBrojZnakova(const char* nazivFajla) {
 
 		int brojacVelikih = 0;
 		int brojacMalih = 0;
@@ -685,7 +685,7 @@ void main() {
 	Kupac adel("Adel Handzic", "adel@edu.fit.ba", "[B]2356 {ih}");
 	Kupac jedinstveniKodNotValid("Ime Prezime", "korisnik@klix.ba", "BH2356{ih}");//_jedinstveniKod = NOT VALID
 
-	
+
 
 	//kupovini  se prilikom kreiranja mora dodijeliti kupac koji je kreator kupovine
 	Kupovina kupovina(datum30062022, denis);
