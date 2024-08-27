@@ -136,7 +136,7 @@ public:
 
 		// _trenutno++; // <---- ako trenutno nije pokazivac
 
-		(* _trenutno)++; // <--- ako je pokzivac trenutno nemoj zaboravit u zagrade ga stavit prije ++ 
+		(*_trenutno)++; // <--- ako je pokzivac trenutno nemoj zaboravit u zagrade ga stavit prije ++ 
 
 	}
 
@@ -191,7 +191,7 @@ public:
 		_dan = new int(*obj._dan);
 		_mjesec = new int(*obj._mjesec);
 		_godina = new int(*obj._godina);
-		
+
 	}
 
 	Datum& operator = (const Datum& obj) {
@@ -276,7 +276,7 @@ public:
 	}
 
 	//                                                  KVALITET
-	void DodajKomentarKarakteristike(Karakteristike karakteristika, const char * komentar) {
+	void DodajKomentarKarakteristike(Karakteristike karakteristika, const char* komentar) {
 		for (int i = 0; i < _komentariKarakteristika.getTrenutno(); i++)
 		{
 			if (karakteristika == _komentariKarakteristika.getElement1(i)) {
@@ -291,18 +291,18 @@ public:
 	int GetOcjena() { return _ocjena; }
 	Rjecnik<Karakteristike, const char*>& GetKomentareKarakteristika() { return _komentariKarakteristika; }
 
-	    //zadovoljstvo kupca : 7
-		//			NARUDZBA - Nismo mogli odabrati sve potrebne opcije
-		//			KVALITET - Kvalitet je ocekivan
-		//			PAKOVANJE - Pakovanje je bio osteceno
-		//			ISPORUKA - Mada su najavili da ce proizvod biti isporucen u roku od 2 dana, cekali smo 5 dana
+	//zadovoljstvo kupca : 7
+	//			NARUDZBA - Nismo mogli odabrati sve potrebne opcije
+	//			KVALITET - Kvalitet je ocekivan
+	//			PAKOVANJE - Pakovanje je bio osteceno
+	//			ISPORUKA - Mada su najavili da ce proizvod biti isporucen u roku od 2 dana, cekali smo 5 dana
 
 	friend ostream& operator<< (ostream& COUT, const ZadovoljstvoKupca& obj) {
 		COUT << obj._ocjena << endl;
 		for (int i = 0; i < obj._komentariKarakteristika.getTrenutno(); i++)
 		{
 			//   alt + q
-			COUT <<"\t"<< obj._komentariKarakteristika.getElement1(i) << " - " << obj._komentariKarakteristika.getElement2(i) << endl;
+			COUT << "\t" << obj._komentariKarakteristika.getElement1(i) << " - " << obj._komentariKarakteristika.getElement2(i) << endl;
 		}
 		return COUT;
 	}
@@ -331,7 +331,7 @@ public:
 		return *this;
 	}
 
-	
+
 
 
 	virtual ~Osoba() { // u klasi koja se nasljejduje treba se staviti virtual prije destruktora
@@ -355,19 +355,19 @@ public:
 
 // KADA otkomentarises zadnju klasu i ona u ispisu pokusava da ispise parametar koji joj ne pripada onda znamo da se mora nasljediti klasa iznad
 mutex m;
-class Kupac:public Osoba {  // 1. KORAK U NASLJEDJIVANJU stavit   :public Osoba
+class Kupac :public Osoba {  // 1. KORAK U NASLJEDJIVANJU stavit   :public Osoba
 	char* _emailAdresa;
 	//float se odnosi na iznos racuna za odredjenu kupovinu
 	Rjecnik<float, ZadovoljstvoKupca>* _kupovine;
 	vector<int> _bodovi; // bodovi sakupljeni tokom kupovine, svakih potrosenih 10KM donosi po 1 bod.
 public:
 	Kupac(const char* imePrezime = "", Datum datumRodjenja = Datum(), const char* emailAdresa = "")
-		:Osoba(imePrezime,datumRodjenja) { // 2. KORAK SPOJITI SPOJENI KONSTRUKTOR KLASE OSOBA SA KLASOM KUPAC
+		:Osoba(imePrezime, datumRodjenja) { // 2. KORAK SPOJITI SPOJENI KONSTRUKTOR KLASE OSOBA SA KLASOM KUPAC
 		_emailAdresa = GetNizKaraktera(emailAdresa);
 		_kupovine = new Rjecnik<float, ZadovoljstvoKupca>(false);
 	}
 
-	Kupac(const Kupac& obj):Osoba(obj) { // 3. KORAK SPOJITI COPY KUPCA SA COPY OSOBE
+	Kupac(const Kupac& obj) :Osoba(obj) { // 3. KORAK SPOJITI COPY KUPCA SA COPY OSOBE
 		_emailAdresa = GetNizKaraktera(obj._emailAdresa);
 		_kupovine = new Rjecnik<float, ZadovoljstvoKupca>(*obj._kupovine);
 		_bodovi = obj._bodovi;
@@ -379,7 +379,7 @@ public:
 			delete[]_emailAdresa;
 			delete _kupovine;
 
-			 
+
 			Osoba::operator=(obj);  // 4. KORAK SPOJITI OPERAOTR KUPCA SA OPERAOTORM OSOBE
 
 			_emailAdresa = GetNizKaraktera(obj._emailAdresa);
@@ -434,7 +434,7 @@ public:
 				// AKO NAM KAZE NAKON 3 SEKUNDE , 300 MILISEKUNDI
 				// this_thread::sleep_for(chrono::seconds(3));
 				// this_thread::sleep_for(chrono::milliseconds(300));
-				thread t1(&Kupac::PosaljiMail, this,bod);
+				thread t1(&Kupac::PosaljiMail, this, bod);
 				t1.join();
 
 			}
@@ -443,15 +443,15 @@ public:
 
 	}
 
-//  To: denis@fit.ba;
-//  Subject: Osvareni bodovi
+	//  To: denis@fit.ba;
+	//  Subject: Osvareni bodovi
 
-//  Postovani,
+	//  Postovani,
 
-//  Prilikom posljednje kupovine ste ostvarili 8 bodova, tako da trenutno vas ukupan broj bodova iznosi 20.
+	//  Prilikom posljednje kupovine ste ostvarili 8 bodova, tako da trenutno vas ukupan broj bodova iznosi 20.
 
-//  Zahvaljujemo vam na kupovini.
-//  Puno pozdrava
+	//  Zahvaljujemo vam na kupovini.
+	//  Puno pozdrava
 
 	void PosaljiMail(int bodovi) {
 		m.lock();
@@ -464,106 +464,118 @@ public:
 		m.unlock();
 	}
 
+
+	//  /*metoda SacuvajBodove treba sve clanove vector-a _bodovi upisati u fajl(ignorisuci ranije dodate/postojece vrijednosti u fajlu) pod nazivom emailKorisnika.txt npr. denis@fit.ba.txt.
+//  na osnovu trenutnog stanja objekta, sadrzaj fajla denis@fit.ba.txt bi trebao biti sljedeci:
+//  12
+//  8
+
+//  nakon spasavanja u fajl, sadrzaj vector-a ostaje nepromijenjen.
 //  */
- //  /* 
- // metoda SacuvajBodove treba sve clanove vector-a _bodovi upisati u fajl(ignorisuci ranije dodate/postojece vrijednosti u fajlu) pod nazivom emailKorisnika.txt npr. denis@fit.ba.txt.
- //  na osnovu trenutnog stanja objekta, sadrzaj fajla denis@fit.ba.txt bi trebao biti sljedeci:
- //  12
- //  8
 
- //  nakon spasavanja u fajl, sadrzaj vector-a ostaje nepromijenjen.
- //  */
+	// ifstream ---> citamo nesto iz nekog fajla 
+	// ofstream ---> kreiranje novog fajla 
 
-		//ofstream fajl;  // pravimo neki fajl
-		//ifstream fajl;  // ucitavamo iz nekog fajla 
 	void SacuvajBodove() {
 
 		string naziv = _emailAdresa; // denis@fit.ba
 		naziv += ".txt";  // denis@fit.ba.txt
 
-		ofstream fajl(naziv);  // 
+		ofstream fajl(naziv);
+
 
 		for (int i = 0; i < _bodovi.size(); i++)
 		{
 			fajl << _bodovi[i];
 
-			if (i != _bodovi.size()-1 ) {
+			if (i != _bodovi.size() - 1) {
 				fajl << endl;
 			}
+
 		}
 
 		fajl.close();
 
 	}
 
-	////metoda UcitajBodove ucitava sadrzaj fajla pod nazivom emailKorisnika.txt i njegove vrijednosti pohranjuje/dodaje u vector _bodovi (zadrzavajuci postojece bodove). 
 
-	// 12 
-	// 8
-
-	//     RED char[10]   ----->   STRING   -----> INT 
+	////metoda UcitajBodove ucitava sadrzaj fajla pod nazivom emailKorisnika.txt i njegove vrijednosti pohranjuje/dodaje u vector _bodovi (zadrzavajuci postojece bodove).  
 
 	void UcitajBodove() {
 
-		string naziv = _emailAdresa; // denis@..
-		naziv += ".txt";   //denis@fit.ba.txt
+		string naziv = _emailAdresa; // denis@fit.ba
+		naziv += ".txt";  // denis@fit.ba.txt
 
 		ifstream fajl(naziv);
 
-		char Red[20]; // neki pomocniRed
-		string string; // neki pomocniString
-		int broj;      // pomocni intager
+		// Red ---> string ----> int
 
-		while (!fajl.eof())  //  vrti se while dok god imamo redova u fajlu
-		{
-			fajl.getline(Red, 20);  // sad smo 12 napisali u neki red
-			string = Red;           // sada smo napisali 12 u neki string
-			broj = stoi(string);    // sada smo napisali 12 kao neki int 
+		char Red[20];          // Red
+		string PomociTekst;    // string
+		int broj;              // int
 
+
+		while (!fajl.eof()) {
+
+			fajl.getline(Red, 20); // 12 
+			PomociTekst = Red;     // "12"
+
+			//     string to integer
+			broj = stoi(PomociTekst); // 12 
 
 			_bodovi.push_back(broj);
-		}
 
+		}
 
 		fajl.close();
 
 	}
 
-	///*Ocekivani ispis:
-//	-------------------------------------------
-//	Rezultat pretrage ->
-//	-------------------------------------------
-//	PAKOVANJE Pakovanje je bio osteceno
-//	KVALITET Jako lose, proizvod ostecen
-//	-------------------------------------------
-//*/
+	//                                                                 ostecen
+	Rjecnik<Karakteristike, const char*> GetKupovineByKomentar(string trazenaRijec) {
 
+		Rjecnik<Karakteristike, const char*> osteceniProizvodi; // prazana kolekcija
 
-	//                                                                        ostecen
-	Rjecnik<Karakteristike, const char*>  GetKupovineByKomentar(const char * komentar ) {
-
-		Rjecnik<Karakteristike, const char*> novakolekcija; // prazna kolekciaj 
-		string trazenaRijec = komentar; // ostecen kao string
 
 
 		for (int i = 0; i < _kupovine->getTrenutno(); i++)
 		{
+
 			for (int j = 0; j < _kupovine->getElement2(i).GetKomentareKarakteristika().getTrenutno(); j++)
 			{
+                //			NARUDZBA - Nismo mogli odabrati sve potrebne opcije
+                //			KVALITET - Kvalitet je ocekivan
+                //			PAKOVANJE - Pakovanje je bio osteceno
+                //			ISPORUKA - Mada su najavili da ce proizvod biti isporucen u roku od 2 dana, cekali smo 5 dana
+
+				// Nismo mogli odabrati sve potrebne opcije
 				string komentar = _kupovine->getElement2(i).GetKomentareKarakteristika().getElement2(j);
 
-				if (komentar.find(trazenaRijec) != -1) { // trazena rijec postoji u nekoj recenici
+				if (komentar.find(trazenaRijec) != -1) {
 
-					novakolekcija.AddElement(_kupovine->getElement2(i).GetKomentareKarakteristika().getElement1(j), _kupovine->getElement2(i).GetKomentareKarakteristika().getElement2(j));
 
+					osteceniProizvodi.AddElement(
+						_kupovine->getElement2(i).GetKomentareKarakteristika().getElement1(j),
+						_kupovine->getElement2(i).GetKomentareKarakteristika().getElement2(j));
 
 				}
 
+
+
 			}
+
+
+
 		}
-		return novakolekcija;
+
+		return osteceniProizvodi;
+
 
 	}
+
+
+
+
 
 
 	int GetBodoviUkupno() {

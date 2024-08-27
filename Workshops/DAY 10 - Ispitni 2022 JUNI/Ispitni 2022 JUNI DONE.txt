@@ -500,7 +500,7 @@ public:
 		}
 
 		if (brojac >= 2) {
-			thread t1(&Kupovina::PosaljiMail, this, _zadovoljstvoKupca.getProsjek());
+			thread t1(&Kupovina::PosaljiMail, this);
 			t1.join();
 		}
 
@@ -542,17 +542,18 @@ public:
 	// red po red ---> radili prosli put 
 	// slovo po slovo ----> laksi nacin
 
-	tuple<int, int, int>  GetBrojZnakova(const char* nazivFajla) {
+
+	tuple<int, int, int> GetBrojZnakova (const char* nazivFajla) {
+
+		ifstream fajl(nazivFajla); // sadzaj.txt
 
 		int brojacVelikih = 0;
 		int brojacMalih = 0;
 		int brojacRazmaka = 0;
+		
 		char znak;
 
-		ifstream fajl(nazivFajla);
-
-
-		while (fajl.get(znak)) // funckija ce se vritit dok god ima slovo u fajlu
+		while (fajl.get(znak)) // D e n i s   M u s i c 
 		{
 
 			if (znak >= 'A' && znak <= 'Z') {
@@ -564,13 +565,12 @@ public:
 			if (znak == ' ') {
 				brojacRazmaka++;
 			}
+
 		}
 
 		fajl.close();
 
-
-		return { brojacVelikih,brojacMalih,brojacRazmaka };
-
+		return { brojacVelikih , brojacMalih , brojacRazmaka };
 
 	}
 
@@ -751,6 +751,11 @@ void main() {
 		cout << "Kupac je vec dodan!";
 
 	cout << kupovinaSaAdelom << endl;
+
+	// pair<int,int> dvaBrojaca;
+	// tuple<int,int,int,int,int> 
+
+
 
 	/*metoda GetBrojZnakova treba prebrojati koliko se unutar fajla, cije ime je proslijedjeno kao parametar, nalazi: velikih slova, malih slova i razmaka..*/
 	tuple<int, int, int> brojac = kupovinaSaAdelom.GetBrojZnakova("sadrzaj.txt");
