@@ -230,6 +230,15 @@ public:
 		if (_ocjena > 5 && ocjena <= 10)
 			_prihvaceno = true;
 	}
+
+	int PrebrojiBrojSlova() {
+
+		int brojSlova = strlen(_sadrzaj);
+
+		return brojSlova;
+
+	}
+
 };
 
 class ZavrsniRad
@@ -316,6 +325,9 @@ public:
 		for (int i = 0; i < _poglavljaRada.size(); i++) {
 			if (strcmp(naziv, _poglavljaRada[i].GetNaslov()) == 0)
 			{
+				
+
+
 				_poglavljaRada[i].OcijeniPoglavlje(ocjena);
 				return;
 			}
@@ -329,7 +341,7 @@ public:
 	bool operator==(ZavrsniRad zr)
 	{
 
-		return strcmp(zr.GetNazivTeme() , _tema) == 0;
+		return strcmp(zr.GetNazivTeme(), _tema) == 0;
 
 	}
 
@@ -359,6 +371,23 @@ public:
 	{
 		_konacnaOcjena = o;
 	}
+
+
+	void ZakaziOdbranuRada(string datum) {
+		_datumOdbrane = datum;
+	}
+
+	int PrebrojiPoglavlja() {
+
+		int brojac = 0;
+
+		for (int i = 0; i < _poglavljaRada.size(); i++)
+		{
+			brojac++;
+		}
+		return brojac;
+	}
+
 };
 
 class Mentor
@@ -371,16 +400,23 @@ public:
 	// zavrsiti implementaciju copy ctor-a
 	Mentor(const Mentor& obj) : _teme(obj._teme)
 	{
-
+		_imePrezime = AlocirajNizKaraktera(obj._imePrezime);
 	}
 	// implementirati user-def. ctor, dodijeliti samo odgovarajucu vrijednost atributu _imePrezime
 	Mentor(const char* imePrezime)
 	{
-
+		_imePrezime = AlocirajNizKaraktera(imePrezime);
 	}
 	// zavrsiti implementaciju operatora dodjele
 	Mentor& operator=(const Mentor& obj)
 	{
+		if (this != &obj) {
+			delete[] _imePrezime;
+
+			_imePrezime = AlocirajNizKaraktera(obj._imePrezime);
+			_teme = obj._teme;
+		}
+
 
 		return *this;
 	}
@@ -402,7 +438,18 @@ public:
 	prvi parametar. sprijeciti dodavanje zavrsnih radova sa istom temom*/
 	bool DodajZavrsniRad(const char* brojIndeksa, ZavrsniRad zr)
 	{
-		return false;
+
+		for (int i = 0; i < _teme.getTrenutno(); i++)
+		{
+			if (strcmp(brojIndeksa, _teme.getElement1(i)) == 0 || zr == _teme.getElement2(i)) {
+				return false;
+			}
+		}
+
+
+		_teme.Add(brojIndeksa, zr);
+
+		return true;
 	}
 
 	/*funkcija ZakaziOdbranuRada ima zadatak da studentu sa proslijedjenim brojem indeksa zakaze odbranu zavrsnog rada sto podrazumijeva definisanje
@@ -417,6 +464,32 @@ u slucaju da student sa primljenim brojem indeksa nije prijavio zavrsni rad ili 
 //parametri:brojIndeksa, datumOdbrane
 	ZavrsniRad* ZakaziOdbranuRada(const char* brojIndeksa, string datum)
 	{
+		for (int i = 0; i < _teme.getTrenutno(); i++)
+		{
+			if (strcmp(_teme.getElement1(i), brojIndeksa) == 0) {
+
+				if (_teme.getElement2(i).PrebrojiPoglavlja() < min_polgavlja) {
+					return nullptr;
+				}
+
+				for (int j = 0; j < _teme.getElement2(i).GetPoglavlja().size(); j++)
+				{
+					if (_teme.getElement2(i).GetPoglavlja()[j].PrebrojiBrojSlova() < min_karaktera_po_poglavlju) {
+						return nullptr;
+					}
+				}
+
+
+				_teme.getElement2(i).ZakaziOdbranuRada(datum);
+
+				ZavrsniRad *zavrsni = new ZavrsniRad(_teme.getElement2(i));
+
+				return zavrsni;
+
+			}
+		}
+
+
 		return nullptr;
 	}
 
@@ -427,13 +500,13 @@ int main()
 	cout << crt << "UPLOAD RADA OBAVEZNO IZVRSITI U ODGOVARAJUCI FOLDER NA FTP SERVERU" << endl;
 	cout << "U slucaju da je Upload folder prazan pritisnite tipku F5" << crt;
 
-	//const int max = 4;
-	//Mentor* mentori[max];
+	const int max = 4;
+	Mentor* mentori[max];
 
-	//mentori[0] = new Mentor("Armina Hubana");
-	//mentori[1] = new Mentor("Zanin Vejzovic");
-	//mentori[2] = new Mentor("Jasmin Azemovic");
-	//mentori[3] = new Mentor("Emina Junuz");
+	mentori[0] = new Mentor("Armina Hubana");
+	mentori[1] = new Mentor("Zanin Vejzovic");
+	mentori[2] = new Mentor("Jasmin Azemovic");
+	mentori[3] = new Mentor("Emina Junuz");
 	// parametri: naziv zavrsnog rada
 	ZavrsniRad multimedijalni("Multimedijalni informacijski sistem za visoko - obrazovnu ustanovu");
 	ZavrsniRad podrsa_operaterima("Sistem za podršku rada kablovskog operatera");
@@ -475,50 +548,53 @@ int main()
 
 	cout << multimedijalni;
 
-//
-//	/*funkcija DodajZavrsniRad ima zadatak da odredjenom Mentoru dodijeli mentorstvo na zavrsnom radu. zavrsni rad se dodaje studentu sa brojem indeksa proslijedjenim kao
-//	prvi parametar. sprijeciti dodavanje zavrsnih radova sa istom temom*/
-//	// parametri:brojIndeksa, zavrsniRad
-//	if (mentori[0]->DodajZavrsniRad("IB130011", multimedijalni))
-//		cout << "Zavrsni rad uspjesno dodat!" << endl;
-//	if (mentori[0]->DodajZavrsniRad("IB120051", podrsa_operaterima))
-//		cout << "Zavrsni rad uspjesno dodat!" << endl;
-//	if (!mentori[0]->DodajZavrsniRad("IB120056", podrsa_operaterima)) // dupliranje rada
-//		cout << "Zavrsni rad nije dodat!" << endl;
-//	if (!mentori[0]->DodajZavrsniRad("IB120051", kriptografija)) // studentu vec dodijeljen rad
-//		cout << "Zavrsni rad nije dodat!" << endl;
-//	if (mentori[1]->DodajZavrsniRad("IB140102", analiza_sigurnosti))
-//		cout << "Zavrsni rad uspjesno dodat!" << endl;
-//	if (mentori[2]->DodajZavrsniRad("IB140002", kriptografija))
-//		cout << "Zavrsni rad uspjesno dodat!" << endl;
-//
-//	/*funkcija ZakaziOdbranuRada ima zadatak da studentu sa proslijedjenim brojem indeksa zakaze odbranu zavrsnog rada sto podrazumijeva definisanje
-//datuma odbrane. odbrana rada se moze zakazati samo studentu koji je rad prethodno prijavio i pri tom su zadovoljeni sljedeci uslovi:
-//	1. zavrsni rad ima broj poglavlja veci od minimalnog
-//	2. svako poglavlje ima broj karaktera veci od minimalnog
-//	3. svako poglavlje je prihvaceno/odobreno
-//ukoliko su zadovoljeni prethodni kriteriji, izracunava se konacna ocjena rada (prosjek ocjena svih poglavlja), postavlja datum odbrane rada i vraca pokazivac na rad kome je zakazan odbrana.
-//u slucaju da student sa primljenim brojem indeksa nije prijavio zavrsni rad ili neki od postavljenih kriterija nije zadovoljen, funkcija vraca nullptr.
-//*/
-//
-////parametri:brojIndeksa, datumOdbrane
-//	ZavrsniRad* zr1 = mentori[0]->ZakaziOdbranuRada("IB130011", "25.09.2018");
-//	if (zr1 != nullptr)
-//		cout << *zr1 << endl;
-//
-//	zr1 = mentori[0]->ZakaziOdbranuRada("IB130111", "25.09.2018");//student sa brojem indeksa IB130111 jos uvijek nije prijavio rad
-//	if (zr1 != nullptr)
-//		cout << *zr1 << endl;
-//
-//	//ispisuje sve podatke o Mentoru i njegovim mentorstvima
-//	mentori[0]->Info();
-//
-//
-//	for (int i = 0; i < max; i++)
-//	{
-//		delete mentori[i];
-//		mentori[i] = nullptr;
-//	}
+	
+		/*funkcija DodajZavrsniRad ima zadatak da odredjenom Mentoru dodijeli mentorstvo na zavrsnom radu. zavrsni rad se dodaje studentu sa brojem indeksa proslijedjenim kao
+		prvi parametar. sprijeciti dodavanje zavrsnih radova sa istom temom*/
+		// parametri:brojIndeksa, zavrsniRad
+		if (mentori[0]->DodajZavrsniRad("IB130011", multimedijalni))
+			cout << "Zavrsni rad uspjesno dodat!" << endl;
+		if (mentori[0]->DodajZavrsniRad("IB120051", podrsa_operaterima))
+			cout << "Zavrsni rad uspjesno dodat!" << endl;
+		if (!mentori[0]->DodajZavrsniRad("IB120056", podrsa_operaterima)) // dupliranje rada
+			cout << "Zavrsni rad nije dodat!" << endl;
+		if (!mentori[0]->DodajZavrsniRad("IB120051", kriptografija)) // studentu vec dodijeljen rad
+			cout << "Zavrsni rad nije dodat!" << endl;
+		if (mentori[1]->DodajZavrsniRad("IB140102", analiza_sigurnosti))
+			cout << "Zavrsni rad uspjesno dodat!" << endl;
+		if (mentori[2]->DodajZavrsniRad("IB140002", kriptografija))
+			cout << "Zavrsni rad uspjesno dodat!" << endl;
+
+
+
+	//
+	//	/*funkcija ZakaziOdbranuRada ima zadatak da studentu sa proslijedjenim brojem indeksa zakaze odbranu zavrsnog rada sto podrazumijeva definisanje
+	//datuma odbrane. odbrana rada se moze zakazati samo studentu koji je rad prethodno prijavio i pri tom su zadovoljeni sljedeci uslovi:
+	//	1. zavrsni rad ima broj poglavlja veci od minimalnog
+	//	2. svako poglavlje ima broj karaktera veci od minimalnog
+	//	3. svako poglavlje je prihvaceno/odobreno
+	//ukoliko su zadovoljeni prethodni kriteriji, izracunava se konacna ocjena rada (prosjek ocjena svih poglavlja), postavlja datum odbrane rada i vraca pokazivac na rad kome je zakazan odbrana.
+	//u slucaju da student sa primljenim brojem indeksa nije prijavio zavrsni rad ili neki od postavljenih kriterija nije zadovoljen, funkcija vraca nullptr.
+	//*/
+	//
+	//parametri:brojIndeksa, datumOdbrane
+		ZavrsniRad* zr1 = mentori[0]->ZakaziOdbranuRada("IB130011", "25.09.2018");
+		if (zr1 != nullptr)
+			cout << *zr1 << endl;
+	//
+		zr1 = mentori[0]->ZakaziOdbranuRada("IB130111", "25.09.2018");//student sa brojem indeksa IB130111 jos uvijek nije prijavio rad
+		if (zr1 != nullptr)
+			cout << *zr1 << endl;
+	//
+	//	//ispisuje sve podatke o Mentoru i njegovim mentorstvima
+		mentori[0]->Info();
+	//
+	//
+		for (int i = 0; i < max; i++)
+		{
+			delete mentori[i];
+			mentori[i] = nullptr;
+		}
 	system("pause>0");
 	return 0;
 }
