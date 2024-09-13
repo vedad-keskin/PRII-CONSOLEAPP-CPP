@@ -25,19 +25,22 @@ char* AlocirajNizKaraktera(const char* sadrzaj)
 	return temp;
 }
 
+
+//              int       int
 template <class T1, class T2>
 class Kolekcija
 {
-	T1* _elementi1 = nullptr;
+	T1* _elementi1 = nullptr; // int char ZavrsniRad
 	T2* _elementi2 = nullptr;
 	int* _trenutno = nullptr;
-
 public:
+
 	Kolekcija()
 	{
 		_trenutno = new int(0);
 
-		_elementi1 = new T1[*_trenutno];
+
+		_elementi1 = new T1[*_trenutno]; // ctrl + d
 		_elementi2 = new T2[*_trenutno];
 
 	}
@@ -45,11 +48,11 @@ public:
 	// implementirati copy ctor
 	Kolekcija(const Kolekcija& obj)
 	{
-
 		_trenutno = new int(*obj._trenutno);
 
-		_elementi1 = new T1[*_trenutno];
+		_elementi1 = new T1[*_trenutno]; // ctrl + d
 		_elementi2 = new T2[*_trenutno];
+
 
 		for (int i = 0; i < *_trenutno; i++)
 		{
@@ -57,9 +60,14 @@ public:
 			_elementi2[i] = obj._elementi2[i];
 		}
 
+
 	}
+
+
+
 	// implementirati operator dodjele
-	Kolekcija& operator = (const Kolekcija& obj) {
+	Kolekcija& operator=(const Kolekcija& obj)
+	{
 		if (this != &obj) {
 
 			delete[] _elementi1;
@@ -67,10 +75,12 @@ public:
 			delete _trenutno;
 
 
+
 			_trenutno = new int(*obj._trenutno);
 
-			_elementi1 = new T1[*_trenutno];
+			_elementi1 = new T1[*_trenutno]; // ctrl + d
 			_elementi2 = new T2[*_trenutno];
+
 
 			for (int i = 0; i < *_trenutno; i++)
 			{
@@ -78,6 +88,9 @@ public:
 				_elementi2[i] = obj._elementi2[i];
 			}
 		}
+
+
+
 		return *this;
 	}
 
@@ -90,6 +103,8 @@ public:
 		delete _trenutno;
 		_trenutno = nullptr;
 	}
+
+
 	T1* getElementi1Pok() { return _elementi1; }
 	T2* getElementi2Pok() { return _elementi2; }
 	T1& getElement1(int lokacija) const
@@ -113,20 +128,29 @@ public:
 
 	friend ostream& operator<<(ostream& COUT, Kolekcija<T1, T2>& obj)
 	{
-		for (size_t i = 0; i < obj.getTrenutno(); i++)
+		for (size_t i = 0; i < obj.getTrenutno(); i++) // 0 1 2 3
 			COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
 		return COUT;
 	}
 
 	// potrebno je implementirati funkciju Add za klasu kolekcija na nacin da se svaki novi el1 doda na kraj niza _elemnti1, a svaki novi el2 na kraj niza _elementi2
 	// voditi racuna o tome da prije dodavanja novih elementa treba prosiriti velcinu nizova bez gubljenja prethodno spremljenjih vrijednosti
+
+	//          2        2   
 	void Add(T1 el1, T2 el2)
 	{
-		T1* temp1 = _elementi1; // <--- prekopiramo sve elemente u neku privremenu vrijedost
+
+		// 1. napraviti neki temp koji ce imati nase dosadasnje vrijednosti
+
+		T1* temp1 = _elementi1;
 		T2* temp2 = _elementi2;
 
-		_elementi1 = new T1[*_trenutno + 1]; // prosirujemo da ima jedno dodatno mjesto
+		// 2. prosiriti nas niz na moze primiti jos jedan element
+
+		_elementi1 = new T1[*_trenutno + 1];
 		_elementi2 = new T2[*_trenutno + 1];
+
+		// 3. vratiti iz tempa stare vrijednosti
 
 		for (int i = 0; i < *_trenutno; i++)
 		{
@@ -134,15 +158,22 @@ public:
 			_elementi2[i] = temp2[i];
 		}
 
+		// 4. klasicna pohrana
+
 		_elementi1[*_trenutno] = el1;
 		_elementi2[*_trenutno] = el2;
 
-		(*_trenutno)++;
+		(*_trenutno)++; // -> 3 --> 4 
+
 
 
 
 	}
+
+
 };
+
+
 class Poglavlje
 {
 	char* _naslov;
@@ -150,27 +181,38 @@ class Poglavlje
 	bool _prihvaceno;
 	int _ocjena; // da bi se poglavlje smatralo prihvacenim ocjena mora biti u opsegu od 6 - 10
 public:
+
+	int PrebrojiBrojSlovaUSadrzaju() {
+
+		int vel = strlen(_sadrzaj);
+
+		return vel;
+
+	}
+
 	// zavrsiti implementaciju user-def. ctor-a
 	Poglavlje(const char* naslov = nullptr, const char* sadrzaj = nullptr) : _ocjena(0), _prihvaceno(false)
 	{
-
 		_naslov = AlocirajNizKaraktera(naslov);
 		_sadrzaj = AlocirajNizKaraktera(sadrzaj);
-
-
 	}
+
+
 	// implementirati copy ctor
 	Poglavlje(const Poglavlje& obj)
 	{
 		_naslov = AlocirajNizKaraktera(obj._naslov);
 		_sadrzaj = AlocirajNizKaraktera(obj._sadrzaj);
-
 		_prihvaceno = obj._prihvaceno;
 		_ocjena = obj._ocjena;
 
 	}
+
+
 	// implementirati operator dodjele
-	Poglavlje& operator = (const Poglavlje& obj) {
+	Poglavlje& operator=(const Poglavlje& obj)
+	{
+
 		if (this != &obj) {
 
 			delete[] _naslov;
@@ -179,10 +221,12 @@ public:
 
 			_naslov = AlocirajNizKaraktera(obj._naslov);
 			_sadrzaj = AlocirajNizKaraktera(obj._sadrzaj);
-
 			_prihvaceno = obj._prihvaceno;
 			_ocjena = obj._ocjena;
+
 		}
+
+
 		return *this;
 	}
 
@@ -211,13 +255,6 @@ public:
 	bool GetPrihvaceno() const { return _prihvaceno; }
 	int GetOcjena() const { return _ocjena; }
 
-	void AddSadrzaj(const char* noviSadrzaj) {
-		char* temp = AlocirajNizKaraktera((string(_sadrzaj) + " " + noviSadrzaj).c_str());
-
-
-		_sadrzaj = temp;
-	}
-
 	void SetSadrzaj(const char* s)
 	{
 		delete[] _sadrzaj;
@@ -231,13 +268,16 @@ public:
 			_prihvaceno = true;
 	}
 
-	int PrebrojiBrojSlova() {
+	// _sadrzaj =  U ovom poglavlju ce biti rijeci o multimedijalnim sistemima
+	// noviSadrzaj = o multimedijalnim sistemima
+	void DodjelaSadrzaja(const char* noviSadrzaj) {
+		//                               U ovom poglavlju ce biti rijeci o multimedijalnim sistemima
+		char* temp = AlocirajNizKaraktera((string(_sadrzaj) + " " + noviSadrzaj).c_str());
 
-		int brojSlova = strlen(_sadrzaj);
 
-		return brojSlova;
-
+		_sadrzaj = temp;
 	}
+
 
 };
 
@@ -248,14 +288,34 @@ class ZavrsniRad
 	string _datumOdbrane;
 	float _konacnaOcjena; // prosjek ocjena svih poglavlja u zavrsnom radu koja se izracunava u momentu zakazivanja odbrane
 public:
+
+	int PrebrojiBrojPoglavalja() {
+
+		int brojac = 0;
+
+		for (int i = 0; i < _poglavljaRada.size(); i++)
+		{
+			brojac++; // 1 2 3 4
+		}
+
+		return brojac;
+	}
+
+
 	ZavrsniRad(const char* nazivTeme = nullptr) : _konacnaOcjena(0), _datumOdbrane(not_set), _poglavljaRada()
 	{
+		// za vector i Kolekcija ako ih imas u user-def contr za njih ne radimo nista
+
 		_tema = AlocirajNizKaraktera(nazivTeme);
+
 	}
 
 	// zavrsiti implementaciju copy ctor-a
 	ZavrsniRad(const ZavrsniRad& org) : _poglavljaRada(org._poglavljaRada), _konacnaOcjena(org._konacnaOcjena), _datumOdbrane(org._datumOdbrane)
 	{
+		// kopiranje vectora : 
+		// _poglavljaRada = org._poglavljaRada;
+
 		_tema = AlocirajNizKaraktera(org._tema);
 	}
 
@@ -268,13 +328,19 @@ public:
 	vector<Poglavlje>& GetPoglavlja() { return _poglavljaRada; };
 	string GetDatumOdbrane() const { return _datumOdbrane; }
 	float GetOcjena() { return _konacnaOcjena; }
+
+
 	void SetDatumOdbrane(string datumOdbrane) { _datumOdbrane = datumOdbrane; }
+
+
 	// operator dodjele je vec implementiran za ovu klasu, nema potrebe za izmjenom
 	ZavrsniRad& operator=(const ZavrsniRad& org)
 	{
 		if (this != &org)
 		{
 			delete[] _tema;
+
+
 			_tema = AlocirajNizKaraktera(org._tema);
 			_datumOdbrane = org._datumOdbrane;
 			_poglavljaRada = org._poglavljaRada;
@@ -297,73 +363,103 @@ public:
 	// završiti implementaciju funkcije
 	/*u zavrsni rad dodaje novo poglavlje i njegov sadrzaj. ukoliko poglavlje vec postoji u zavrsnom radu, funkcija tom poglavlju treba dodati novi sadrzaj i pri tome zadrzi
 	postojeci (izmedju postojeceg i novog sadrzaja se dodaje prazan prostor). u slucaju da poglavlje ne postoji, ono se dodaje zajedno sa sadrzaje*/
+
+	//                               Uvod
 	void DodajPoglavlje(const char* naslov, const char* sadrzaj)
 	{
 
-		for (int i = 0; i < _poglavljaRada.size(); i++)
+		for (int i = 0; i < _poglavljaRada.size(); i++) // 0 1 2 3
 		{
-			if (strcmp(_poglavljaRada[i].GetNaslov(), naslov) == 0) {
+			//  Uvod == Uvod 
+			// char* == char* 
+			// strcmp( naziv1, naziv2 ) == 0
 
-				_poglavljaRada[i].AddSadrzaj(sadrzaj);
+			if (strcmp(naslov, _poglavljaRada[i].GetNaslov()) == 0) {
+
+				_poglavljaRada[i].DodjelaSadrzaja(sadrzaj);
+
 				return;
 			}
+
+
 		}
 
-		Poglavlje novoPolgavlje(naslov, sadrzaj);
 
-		_poglavljaRada.push_back(novoPolgavlje);
+		Poglavlje novoPoglavlje(naslov, sadrzaj); // Uvod -- adasdasasd
 
+		_poglavljaRada.push_back(novoPoglavlje);
 
 	}
 
 	// zavrsiti implementaciju funkcije
 	/*funkcija OcijeniPoglavlje, na osnovu naziva poglavlja, dodjeljuje ocjenu poglavlju te ukoliko je ocjena pozitivna (6 - 10) onda poglavlje oznacava prihvacenim.
 	U slucaju da ocjena nije validna ili poglavlje ne postoji, funkcija baca izuzetak sa odgovarajucom porukom*/
+
+	//                                UVOD
 	void OcijeniPoglavlje(const char* naziv, int ocjena)
 	{
 
-		for (int i = 0; i < _poglavljaRada.size(); i++) {
-			if (strcmp(naziv, _poglavljaRada[i].GetNaslov()) == 0)
-			{
-				
+		for (int i = 0; i < _poglavljaRada.size(); i++)
+		{
+			// i = 0 UVOD == UVOD
+			// i = 1 UVOD == VRSTE 
+			// i = 2 UVOD == TEORIJA
+			// i = 3 UVOD == ZAKLJUCAK
 
 
+			if (strcmp(naziv, _poglavljaRada[i].GetNaslov()) == 0) {
+
+				// poglavlje[0] = UVOD 
 				_poglavljaRada[i].OcijeniPoglavlje(ocjena);
 				return;
 			}
 		}
 
-		throw exception("Poglavlje ne postoji.\n");
+		// BACITI IZUZETAK AKO POGLAVLJE NE POSTOJI
+
+		throw exception("Poglavlje ne postoji");
+
 
 	}
 
 	// potrebno je implementirati opertor usporedbe (==) za klasu ZavrsniRad, porediti samo naziv teme
-	bool operator==(ZavrsniRad zr)
+	bool operator == (ZavrsniRad zr) // zr1 == zr2 
 	{
+		// char* == char*  -> strcmp () == 0
+		// int == int
 
-		return strcmp(zr.GetNazivTeme(), _tema) == 0;
+		if (strcmp(_tema, zr._tema) == 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+
 
 	}
 
 	// potrebno je izracunati prosjecnu ocjenu za sva poglavlja rada koja se nalaze u vektoru _poglavljaRada i vratiti tu vrijednost iz funkcije
 	float prosjecnaOcjena()
 	{
+		// 8 + 8 + 9 + 9 = 32
 
 		float suma = 0;
 		float brojac = 0;
 
-
-		for (int i = 0; i < _poglavljaRada.size(); i++)
+		for (int i = 0; i < _poglavljaRada.size(); i++) // 0 1 2 3
 		{
-			suma += _poglavljaRada[i].GetOcjena();
-			brojac++;
+			suma += _poglavljaRada[i].GetOcjena(); // + 8 + 8 + 9 + 7 = 32
+			brojac++; //                              1 2 3 4 
 		}
 
 		if (brojac == 0) {
 			return 0;
 		}
 
-		return suma / brojac;
+
+
+		return suma / brojac; // 32 / 4 = 8
+
 
 	}
 	// implementirati setersku funkciju za atribut _konacnaOcjena
@@ -371,23 +467,6 @@ public:
 	{
 		_konacnaOcjena = o;
 	}
-
-
-	void ZakaziOdbranuRada(string datum) {
-		_datumOdbrane = datum;
-	}
-
-	int PrebrojiPoglavlja() {
-
-		int brojac = 0;
-
-		for (int i = 0; i < _poglavljaRada.size(); i++)
-		{
-			brojac++;
-		}
-		return brojac;
-	}
-
 };
 
 class Mentor
@@ -400,23 +479,32 @@ public:
 	// zavrsiti implementaciju copy ctor-a
 	Mentor(const Mentor& obj) : _teme(obj._teme)
 	{
+		// kopiranje kolekcije: 
+		// _teme = obj._teme;
+
 		_imePrezime = AlocirajNizKaraktera(obj._imePrezime);
+
 	}
 	// implementirati user-def. ctor, dodijeliti samo odgovarajucu vrijednost atributu _imePrezime
 	Mentor(const char* imePrezime)
 	{
 		_imePrezime = AlocirajNizKaraktera(imePrezime);
+
+		// ako imas kolekciju u user-def ne radimo nista
+
 	}
 	// zavrsiti implementaciju operatora dodjele
 	Mentor& operator=(const Mentor& obj)
 	{
 		if (this != &obj) {
+
 			delete[] _imePrezime;
+
 
 			_imePrezime = AlocirajNizKaraktera(obj._imePrezime);
 			_teme = obj._teme;
-		}
 
+		}
 
 		return *this;
 	}
@@ -428,6 +516,8 @@ public:
 	}
 	Kolekcija<const char*, ZavrsniRad>& GetTeme() { return _teme; };
 	char* GetImePrezime() { return _imePrezime; }
+
+
 	void Info()
 	{
 		cout << _imePrezime << endl
@@ -436,12 +526,18 @@ public:
 
 	/*funkcija DodajZavrsniRad ima zadatak da odredjenom Mentoru dodijeli mentorstvo na zavrsnom radu. zavrsni rad se dodaje studentu sa brojem indeksa proslijedjenim kao
 	prvi parametar. sprijeciti dodavanje zavrsnih radova sa istom temom*/
+
+
+
 	bool DodajZavrsniRad(const char* brojIndeksa, ZavrsniRad zr)
 	{
 
 		for (int i = 0; i < _teme.getTrenutno(); i++)
 		{
-			if (strcmp(brojIndeksa, _teme.getElement1(i)) == 0 || zr == _teme.getElement2(i)) {
+			// char* => niz karaktera
+
+			if (zr == _teme.getElement2(i) || strcmp( brojIndeksa , _teme.getElement1(i))==0  ) {
+
 				return false;
 			}
 		}
@@ -450,6 +546,8 @@ public:
 		_teme.Add(brojIndeksa, zr);
 
 		return true;
+
+
 	}
 
 	/*funkcija ZakaziOdbranuRada ima zadatak da studentu sa proslijedjenim brojem indeksa zakaze odbranu zavrsnog rada sto podrazumijeva definisanje
@@ -464,30 +562,52 @@ u slucaju da student sa primljenim brojem indeksa nije prijavio zavrsni rad ili 
 //parametri:brojIndeksa, datumOdbrane
 	ZavrsniRad* ZakaziOdbranuRada(const char* brojIndeksa, string datum)
 	{
+
 		for (int i = 0; i < _teme.getTrenutno(); i++)
 		{
-			if (strcmp(_teme.getElement1(i), brojIndeksa) == 0) {
+			// PRONASLI SMO STUDENTA SA TIM BROJEM INDEXA
+			if (strcmp(brojIndeksa , _teme.getElement1(i)) == 0) {
 
-				if (_teme.getElement2(i).PrebrojiPoglavlja() < min_polgavlja) {
+
+				// 1. zavrsni rad ima broj poglavlja veci od minimalnog
+				if (_teme.getElement2(i).PrebrojiBrojPoglavalja() < min_polgavlja) {
 					return nullptr;
 				}
 
+				// USLI SMO U SVA POGLAVLJA NEKOG ZAVRSNOG RADA
 				for (int j = 0; j < _teme.getElement2(i).GetPoglavlja().size(); j++)
 				{
-					if (_teme.getElement2(i).GetPoglavlja()[j].PrebrojiBrojSlova() < min_karaktera_po_poglavlju) {
+			 
+					// 3. svako poglavlje je prihvaceno / odobreno
+					if (_teme.getElement2(i).GetPoglavlja()[j].GetPrihvaceno() == false) {
 						return nullptr;
 					}
+
+					// _teme.getElement2(i).poglavljaRada[j]
+					// 2. svako poglavlje ima broj karaktera veci od minimalnog
+
+					if (_teme.getElement2(i).GetPoglavlja()[j].PrebrojiBrojSlovaUSadrzaju() < min_karaktera_po_poglavlju) {
+						return nullptr;
+					}
+
 				}
 
 
-				_teme.getElement2(i).ZakaziOdbranuRada(datum);
 
-				ZavrsniRad *zavrsni = new ZavrsniRad(_teme.getElement2(i));
+				_teme.getElement2(i).SetDatumOdbrane(datum);
+
+				float prosjek = _teme.getElement2(i).prosjecnaOcjena();
+
+				_teme.getElement2(i).SetKonacnaOcjena(prosjek);
+
+				ZavrsniRad* zavrsni = new ZavrsniRad(_teme.getElement2(i));
 
 				return zavrsni;
-
 			}
+
+
 		}
+
 
 
 		return nullptr;
@@ -500,18 +620,34 @@ int main()
 	cout << crt << "UPLOAD RADA OBAVEZNO IZVRSITI U ODGOVARAJUCI FOLDER NA FTP SERVERU" << endl;
 	cout << "U slucaju da je Upload folder prazan pritisnite tipku F5" << crt;
 
-	const int max = 4;
-	Mentor* mentori[max];
 
-	mentori[0] = new Mentor("Armina Hubana");
-	mentori[1] = new Mentor("Zanin Vejzovic");
-	mentori[2] = new Mentor("Jasmin Azemovic");
-	mentori[3] = new Mentor("Emina Junuz");
-	// parametri: naziv zavrsnog rada
+	//Kolekcija<int, int> kolekcija;
+
+	//kolekcija.Add(0, 0);
+	//kolekcija.Add(1, 1);
+	//kolekcija.Add(2, 2);
+	//kolekcija.Add(3, 3);
+
+	//cout << kolekcija;
+
+
+
+
+
+		const int max = 4;
+		Mentor* mentori[max];
+	
+		mentori[0] = new Mentor("Armina Hubana");
+		mentori[1] = new Mentor("Zanin Vejzovic");
+		mentori[2] = new Mentor("Jasmin Azemovic");
+		mentori[3] = new Mentor("Emina Junuz");
+		// parametri: naziv zavrsnog rada
 	ZavrsniRad multimedijalni("Multimedijalni informacijski sistem za visoko - obrazovnu ustanovu");
 	ZavrsniRad podrsa_operaterima("Sistem za podršku rada kablovskog operatera");
 	ZavrsniRad analiza_sigurnosti("Prakticna analiza sigurnosti beži?nih ra?unarskih mreža");
 	ZavrsniRad kriptografija("Primjena teorije informacija u procesu generisanja kriptografskih klju?eva");
+
+
 
 	/*u zavrsni rad dodaje novo poglavlje i njegov sadrzaj. ukoliko poglavlje vec postoji u zavrsnom radu, funkcija tom poglavlju treba dodati novi sadrzaj i pri tome zadrzi
 	postojeci (izmedju postojeceg i novog sadrzaja se dodaje prazan prostor). u slucaju da poglavlje ne postoji, ono se dodaje zajedno sa sadrzaje*/
@@ -522,7 +658,6 @@ int main()
 	multimedijalni.DodajPoglavlje("Vrste multimedijalnih sistema", "Danas se moze govoriti o nekoliko vrsta multimedijalnih sistema, a neke od najznacajnijih su ...");
 	multimedijalni.DodajPoglavlje("Teorija multimedije", "Sadrzaj koji bi trebao stajati na pocetku treceg poglavlja zavrsnog rada o multimediji studenta IB130011");
 	multimedijalni.DodajPoglavlje("Zakljucak", "U ovom radu su predstavljeni osnovni koncepti i prakticna primjena...");
-
 
 
 	try
@@ -542,13 +677,10 @@ int main()
 		cout << "Greska -> " << err.what() << endl;
 	}
 
-	float prosjek = multimedijalni.prosjecnaOcjena();
 
-	multimedijalni.SetKonacnaOcjena(prosjek);
 
 	cout << multimedijalni;
-
-	
+	//
 		/*funkcija DodajZavrsniRad ima zadatak da odredjenom Mentoru dodijeli mentorstvo na zavrsnom radu. zavrsni rad se dodaje studentu sa brojem indeksa proslijedjenim kao
 		prvi parametar. sprijeciti dodavanje zavrsnih radova sa istom temom*/
 		// parametri:brojIndeksa, zavrsniRad
@@ -567,7 +699,8 @@ int main()
 
 
 
-	//
+
+	
 	//	/*funkcija ZakaziOdbranuRada ima zadatak da studentu sa proslijedjenim brojem indeksa zakaze odbranu zavrsnog rada sto podrazumijeva definisanje
 	//datuma odbrane. odbrana rada se moze zakazati samo studentu koji je rad prethodno prijavio i pri tom su zadovoljeni sljedeci uslovi:
 	//	1. zavrsni rad ima broj poglavlja veci od minimalnog
@@ -577,24 +710,27 @@ int main()
 	//u slucaju da student sa primljenim brojem indeksa nije prijavio zavrsni rad ili neki od postavljenih kriterija nije zadovoljen, funkcija vraca nullptr.
 	//*/
 	//
-	//parametri:brojIndeksa, datumOdbrane
+	////parametri:brojIndeksa, datumOdbrane
 		ZavrsniRad* zr1 = mentori[0]->ZakaziOdbranuRada("IB130011", "25.09.2018");
 		if (zr1 != nullptr)
 			cout << *zr1 << endl;
-	//
+	
 		zr1 = mentori[0]->ZakaziOdbranuRada("IB130111", "25.09.2018");//student sa brojem indeksa IB130111 jos uvijek nije prijavio rad
 		if (zr1 != nullptr)
 			cout << *zr1 << endl;
 	//
 	//	//ispisuje sve podatke o Mentoru i njegovim mentorstvima
 		mentori[0]->Info();
-	//
-	//
+	
+	
 		for (int i = 0; i < max; i++)
 		{
 			delete mentori[i];
 			mentori[i] = nullptr;
 		}
+
+
+
 	system("pause>0");
 	return 0;
 }
