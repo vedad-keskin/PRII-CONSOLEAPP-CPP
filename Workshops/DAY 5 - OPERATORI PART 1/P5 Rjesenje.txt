@@ -19,7 +19,7 @@ class Artikal {
 public:
 
 
-	Artikal(const char* sifra = "SIF000",const char* naziv = "---", double cijena = 0, int kolicina = 0) {
+	Artikal(const char* sifra = "SIF000", const char* naziv = "---", double cijena = 0, int kolicina = 0) {
 
 		_sifra = GetNizKaraktera(sifra);
 		_naziv = GetNizKaraktera(naziv);
@@ -62,7 +62,7 @@ public:
 
 	friend ostream& operator << (ostream& COUT, const Artikal& obj) {
 
-		COUT << "["<<obj._sifra<<"] - "<<obj._naziv<<", cijene "<<obj._cijena<<" KM" << endl;
+		COUT << "[" << obj._sifra << "] - " << obj._naziv << ", cijene " << obj._cijena << " KM" << endl;
 		COUT << "Kolicina na skladistu : " << obj._kolicinaNaSkladistu << " kom" << endl;
 
 		return COUT;
@@ -179,7 +179,7 @@ class StavkaRacuna {
 	int* _kolicina;		  // pok ( )  <--- jedna vrijednost
 public:
 
-	StavkaRacuna(Artikal artikal = Artikal() , int kolicina = 0 ) {
+	StavkaRacuna(Artikal artikal = Artikal(), int kolicina = 0) {
 
 		_artikal = new Artikal(artikal);
 		_kolicina = new int(kolicina);
@@ -218,7 +218,7 @@ public:
 
 
 		COUT << *obj._artikal;
-		COUT << "Kupljena kolicina : " << *obj._kolicina<<" kom" << endl;
+		COUT << "Kupljena kolicina : " << *obj._kolicina << " kom" << endl;
 
 		return COUT;
 	}
@@ -320,10 +320,10 @@ public:
 
 };
 
-int pom = 1000; // koristi se za broj racuna samo ga povecas ++ 
+
 
 class Racun {
-	int _brojRacuna;
+	static int _brojRacuna;
 
 	StavkaRacuna* _stavke;  // pok [ ] Stavke
 	int _trenutno;
@@ -338,7 +338,7 @@ public:
 
 	Racun(int max = 3) {
 
-		_brojRacuna = pom + 1;
+		_brojRacuna = _brojRacuna + 1;
 
 		_trenutno = 0;
 		_max = max;
@@ -419,11 +419,11 @@ public:
 
 
 		cout << "========== Br. Racuna " << _brojRacuna << " ==========" << endl << endl;
-		
+
 		for (int i = 0; i < _trenutno; i++)
 		{
 			cout << _stavke[i] << endl;
-			cout << "================" << endl<<endl;
+			cout << "================" << endl << endl;
 		}
 
 		cout << "Iznos BEZ PDV : " << _iznosBezPDV << " KM" << endl;
@@ -469,7 +469,7 @@ public:
 
 		_iznosBezPDV += stavka.GetCijena(); // + 12.15 +  1/2
 
-		_iznosSaPDV += stavka.GetCijena() + (stavka.GetCijena() * 0.17)  ;   // + 12.15 + 
+		_iznosSaPDV += stavka.GetCijena() + (stavka.GetCijena() * 0.17);   // + 12.15 + 
 
 
 
@@ -486,6 +486,8 @@ public:
 
 
 };
+
+int Racun::_brojRacuna = 1000;
 
 
 void main() {
@@ -521,10 +523,10 @@ void main() {
 
 	Racun racun(3);
 
-	racun(artikal1,3);
-	racun(artikal2,1);
-	racun(artikal2,1);
-	racun(artikal3,3);
+	racun(artikal1, 3);
+	racun(artikal2, 1);
+	racun(artikal2, 1);
+	racun(artikal3, 3);
 
 
 
@@ -533,7 +535,9 @@ void main() {
 	racun.PrintRacun();
 	racun.PrintRacun();
 
+	Racun racun2;
 
+	racun2.PrintRacun();
 
 
 
