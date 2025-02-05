@@ -345,8 +345,6 @@ public:
 ///*
 //* za validaciju broja pasosa koristiti funkciju ValidirajBrojPasosa koja treba, koristeci regex, osigurati postivanje
 //sljedeceg formata:
-// 
-// 
 //- pocetak sadrzi jedan ili dva velika slova unutar uglastih zagrada
 //- nakon toga slijede tri ili cetiri broja
 //- nakon toga moze, a ne mora, doci znak crtica (-) ili razmak ( )
@@ -355,33 +353,44 @@ public:
 //pomenutu funkciju iskoristiti u konstruktoru klase Kupac, te ukoliko jedinstveni kod  nije u validnom formatu onda njegova vrijednost treba biti postavljena na NOT VALID
 //*/
 
-//1. SPECIJALNI ZNAKOVI ---->>  [ ]  {  }  ( ) / \  --> ako hocemo da ovaj znak nema fuckciju  \\[  <-- nije spec.
-//2. AKO HOCEMO NEKI RANGE  [ ] -- [A-Z] [a-z] [0-9]   <--- NAJMANJE JEDNO
-//3. PRAVILO VELICINE { }  --> {2,4}  {1,2}  {2}  {2,}  {,7}
-//4. AKO NESTO MOZE A NE MORA IZA USLOVA NAPISEMO [- ]? 
-//5. AKO NESTO TREBA BAS TAKO DA BUDE com, ba ili org   --> ( ) ---> ovako tacno mora bit napisano (ba|org|com)
-//6. AKO TI TREBA TACKA   .  ---> bilo koji znak
-//7.  BAS TACKA [.]
-//8. KADA HOCEMO NECEGA A NE ZNAMO KOLIKO STAVIMO + [a-z]+[.]  aid.
-//9. KADA TRAZE @ ONO SE PISE SAMO 
+// regex_match ---> redosljed je bitan ,  vedad.keskin@edu.fit.ba   ,,    +387 6x xxx xxxx
+
+// regex_search ---> lozinke, username redosljed nije bitan , vise od 8, jedno veliko, jedan znak .. 
+
+// FINALNI REZULTAT -> [AB]012-{ab}
+
+// 1. [ ] - RANGE  ---> malo slovo [a-z] , veliko [A-Z] , jedan broj [0-9]
+
+// 2. { } - SIZE   ---> tri necega {3}  ,  2 ili vise {2,} , 8 ili manje {,8}  ,  od 2 do 5 {2,5} 
+
+// 3. ( ) - TACAN TEKST ---> gmail (gmail) ,  yahoo ili gmail  (gmail|yahoo)  ,  com  (com) 
+
+// 4. SPECIJALNI ZNAKOVI ( ) [ ] { } / \  ----> moramo ispred napisati \\  altgr + q 
+
+// 5. AKO NESTO NIJE OBAVEZNO (OPCIONALNI PARAMETRI) iza moramo napisati ? 
+
+// 6. KADA ZELIMO NECEGA DA SE PONAVALJA NEOGRANICENO DOK SE NE POJAVI IDUCE PRAVILO --> + 
+
+// 7. KADA ZELIMO BILO KOJI KARAKTER ---> . 
+
+// 8. AKO ZELIMO TACKU KAO TACKU --> [.] ili (.) 
+
+// 9. @ REGEX KOD JE @
 
 
-// regex_match
 // vedad.keskin@edu.fit.ba
 
-// regex_search
-// validiramo lozinke, username
+// regex kod : [a-z]+[.][a-z]+@(yahoo|outlook|gmail)[.](com|ba)
 
-//   [AZ]233-{as}     <----- VALIDAN PASOS
+// regex stranica : https://regex101.com/
 
-bool ValidirajJedinstveniKod(string pasos) {
+bool ValidirajJedinstveniKod(string kod) {
 
 	regex reg("\\[[A-Z]{1,2}\\][0-9]{3,4}[- ]?\\{[a-z]{2}\\}");
 
-	return regex_match(pasos, reg);
+	return regex_match(kod, reg);
 
 }
-
 
 class Kupac {
 	unique_ptr<char[]> _imePrezime;
@@ -391,17 +400,28 @@ public:
 	Kupac(const char* imePrezime, string emailAdresa, string jedinstveniKod) {
 		_imePrezime = GetNizUniqueKaraktera(imePrezime);
 		_emailAdresa = emailAdresa;
+	
 		if (ValidirajJedinstveniKod(jedinstveniKod) == true) {
 			_jedinstveniKod = jedinstveniKod;
 		}
 		else {
 			_jedinstveniKod = "NOT VALID";
 		}
+
+		// gdje hoces da nesto pohranis = uslov ? ako je taj uslov true : ako je uslov false ; 
+
+		// _jedinstveniKod = ValidirajJedinstveniKod(jedinstveniKod) ? jedinstveniKod : "NOT VALID";
+
+
 	}
+
 	Kupac(const Kupac& obj) {
+
 		_imePrezime = GetNizUniqueKaraktera(obj._imePrezime.get());
+
 		_emailAdresa = obj._emailAdresa;
 		_jedinstveniKod = obj._jedinstveniKod;
+
 	}
 
 	Kupac& operator = (const Kupac& obj) {
@@ -409,20 +429,32 @@ public:
 
 			_imePrezime.reset();
 
-
 			_imePrezime = GetNizUniqueKaraktera(obj._imePrezime.get());
+
 			_emailAdresa = obj._emailAdresa;
 			_jedinstveniKod = obj._jedinstveniKod;
+
 		}
 		return *this;
 	}
 
 	~Kupac() {
+
 		_imePrezime.reset();
+
 	}
 
-	bool operator == (Kupac obj) {
-		return _jedinstveniKod == obj._jedinstveniKod;
+	bool operator == (const Kupac& obj) {
+
+		if (obj._jedinstveniKod == _jedinstveniKod || obj._emailAdresa == _emailAdresa) {
+			return true;
+		}
+		else {
+			return false;
+		}
+
+		//return obj._jedinstveniKod == _jedinstveniKod || obj._emailAdresa == _emailAdresa;
+
 	}
 
 	string GetEmail() { return _emailAdresa; }
@@ -434,7 +466,6 @@ public:
 		return COUT;
 	}
 };
-
 mutex m;
 class Kupovina {
 	Datum _datumKupovine;
