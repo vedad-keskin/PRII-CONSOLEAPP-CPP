@@ -1,37 +1,36 @@
 #include <iostream>
 using namespace std;
 
+// POKAZIVACI : 
 
-// POKAZIVACI 
+// 1. ALOKACIJA ( new ) 
 
-// 1. ALOKACIJA --> new 
+// ako je jedna vrijednost --> ( ) 
 
-// jedna vrijednost ---> ( ) 
+// ako je vise vrijednosti --> [ ] 
 
-// ako vam treba niz --> vise vrijednosti [ ]
+// 2. DEREFERENCIRANJE ( ispis , kopiranje )
 
-// 2. DEREFERECIRANJE 
+// ako je jedna vrijednost --> ( ) -->  _ECTS -> 000002205A2481E0 , *_ECTS -> 0 
 
-// kada hocemo da ispisemo nesto ili da kopiramo nesto sto je pokazivac 
+// ako je vise vrijednosti --> [ ] -->  _naziv --> Nema predmeta
 
-// kada imamo jedna vrijendost ( ) ----> moramo staviti * ispred
+// 3. DEALOCIRANJE / DESKTRUKTOR  --> ( delete , nullptr )
 
-// kada je nesto niz [ ] -----> ne stavljamo * ispred 
+// ako je jedna vrijednost --> ( ) -->	delete _ECTS;
 
-// 3. DESTURKOTR/ DEALOKACIJA 
+// ako je vise vrijednosti --> [ ] -->  delete[] _naziv;
 
-// kada je nesto jenda vrijednost ( ) ----> delete _ECTS;
-
-// kada je nesto niz [ ] ----> delete[] _naziv;
 
 
 class Predmet {
-public:
-	char* _naziv; // Programiranje 2
-	int _ocjena;  //  9
-	int* _ECTS;   //  7
+public:             //      dft      //     user def.    //
+	char* _naziv;  	// Nema predmeta // Programiranje II //
+	int _ocjena;	//      5		 //       9			 //
+	int* _ECTS;		//      0		 //       7			 //
 
-	// defaultni konstrutkor 
+
+	// dft. constructor
 
 	Predmet() {
 
@@ -39,24 +38,26 @@ public:
 
 		_ECTS = new int(0);
 
-		//char dftNaziv[] = "Nema predmeta";
-		const char* dftNaziv1 = "Nema predmeta";
+		//char tekst1[] = "Nema Predmeta";
+		//string tekst2 = "Nema predmeta";
+		const char* dftNaziv = "Nema predmeta";
 
-		int vel = strlen(dftNaziv1) + 1;
+		int vel = strlen(dftNaziv) + 1; // 14 
 
-		_naziv = new char[vel];
+		_naziv = new char[vel]; // na pocetku je taj niz prazan 
 
-		strcpy_s(_naziv, vel, dftNaziv1); // 1. gdje hocemo da kopiramo, 2. koliko necega hocemo da kopiramo, 3. sta hocemo da kopiramo 
+		// 1. gdje hocete da pohranite nesto 
+		// 2. koliko ce karaktera biti prekopirano 
+		// 3. sta zelimo da pohranimo
+		strcpy_s(_naziv, vel, dftNaziv); 
 
 
 	}
 
-	// konstruktor koji prima parametre 
 
+	// user-def constr. , standardni/obicni constr.
 
-	// Predmet predmet1("Programiranje 2", 9, 7);
-
-
+	//	Predmet predmet1("Programiranje II", 9, 7);
 	Predmet(const char* naziv, int ocjena, int ects) {
 
 		_ocjena = ocjena;
@@ -68,21 +69,20 @@ public:
 
 		_naziv = new char[vel];
 
-		strcpy_s(_naziv, vel, naziv); // gdje, koliko , sta
+		strcpy_s(_naziv, vel, naziv); // 1. gdje, 2. koliko, 3. sta
+
 
 	}
 
-	// copy constructor
+	// copy constr. 
 
-	// Predmet KopijaPredmeta2(predmet1); // copy constructor
+	// 	Predmet predmetKopija(predmet1);
 
-	// kada imamo & --> posalji mi originalni predmet
-	// bez & ----> pravi se kopija predmeta
-	// const ---> nesto se ne moze mijenjati
+	// bez & -> pravimo kopiju ali isto tako pravimo i duplu memoriju
+	// sa & -> saljemo original ali se taj original moze mijenjati
+	// const -> osigurava da se nesto ne smije mijenjati 
 
-
-	Predmet(const Predmet& predmet) { // pravi se kopija predmeta
-
+	Predmet(const Predmet& predmet) { // salje originalni predmet
 
 		_ocjena = predmet._ocjena;
 
@@ -96,20 +96,15 @@ public:
 
 	}
 
-
-	// predmetKopija3 = predmet2; // operator dodjele
-
+	//	predmet5 = predmet1; // <-- operator dodjele
 
 	Predmet& operator = (const Predmet& predmet) {
-
 
 		if (this != &predmet) {
 
 
 			delete _ECTS;
 			delete[] _naziv;
-
-
 
 
 			_ocjena = predmet._ocjena;
@@ -125,46 +120,37 @@ public:
 		}
 
 
-
-
 		return *this;
-
 	}
 
 
 
 
-
-
-
-	// neki ispis
-
-	void Ispis() {
-
-		cout << "Naziv predmeta : " << _naziv << endl;
-		cout << "ECTS : " << *_ECTS << endl;
-		cout << "Ocjena predmeta : " << _ocjena << endl;
-
-	}
-
-
-	// destruktor/dealokacija 
-
-	// alt + 1
-
-	// delete, nullptr
-
+	// destructor
+	// 
+	// TILDA -> alt gr + 1
 	~Predmet() {
 
 		delete _ECTS;
-
 		_ECTS = nullptr;
 
 		delete[] _naziv;
-
 		_naziv = nullptr;
 
 	}
+
+	// pr1 nacin ispisa
+
+	void Ispis() {
+
+		cout << "Naziv predmeta: " << _naziv << endl;
+		cout << "Ocjena predmeta: " << _ocjena << endl;
+		cout << "ECTS predmeta: " << *_ECTS << endl;
+
+		cout << endl << "====================" << endl <<endl;
+
+	}
+
 
 
 
@@ -173,94 +159,96 @@ public:
 
 
 
+
+
 class Student {
-	char* _ImePrezime;  // Nema imena i prezimena   <---- niz [ ] char
+	char* _imePrezime;   // niz karaktera [ ] char
 
-
-	Predmet* _polozeni; // <---- niz [ ] ako imamo trenutno i max 
-	int _trenutno;      // koji nam kaze koliko imamo pohranjenih predmeta
-	int _max;           // koliko maksimlano mozemo imati predmeta u nizu
+	Predmet* _polozeni;  // [ ] niz Predmeta
+	int _trenutno;       // koliko trenutno imamo pohranjenih predmeta u nizu
+	int _max;            // koliko maksimalno mozete imati pohranjenih predmeta
 public:
+
 
 	Student() {
 
-		const char* dftNaziv = "Nema imena i prezimena";
-
-		int vel = strlen(dftNaziv) + 1;
-
-		_ImePrezime = new char[vel];
-
-		strcpy_s(_ImePrezime, vel, dftNaziv);
+		const char* dftImePrezime = "Nema imena i prezime";
+		int vel = strlen(dftImePrezime) + 1;
+		_imePrezime = new char[vel];
+		strcpy_s(_imePrezime, vel, dftImePrezime);
 
 		_trenutno = 0;
-
 		_max = 3;
 
 		_polozeni = new Predmet[_max];
 
+
 	}
 
-	//                 Vedad Keskin      3
 
+	// 	Student student("Vedad Keskin", 3);
 	Student(const char* imeprezime, int max) {
 
 		int vel = strlen(imeprezime) + 1;
-		_ImePrezime = new char[vel];
-		strcpy_s(_ImePrezime, vel, imeprezime);
+		_imePrezime = new char[vel];
+		strcpy_s(_imePrezime, vel, imeprezime);
+
 
 		_trenutno = 0;
 		_max = max;
 
 		_polozeni = new Predmet[_max];
 
+
+
 	}
 
-
-	// Student studentKopija = student; // copy constructor
 	Student(const Student& student) {
 
+		int vel = strlen(student._imePrezime) + 1;
+		_imePrezime = new char[vel];
+		strcpy_s(_imePrezime, vel, student._imePrezime);
 
-		int vel = strlen(student._ImePrezime) + 1;
-		_ImePrezime = new char[vel];
-		strcpy_s(_ImePrezime,vel,student._ImePrezime);
+
+		_trenutno = student._trenutno;
 
 		_max = student._max;
-		_trenutno = student._trenutno;
 
 		_polozeni = new Predmet[_max];
 
-		for (int i = 0; i < _trenutno; i++)
+		for (int i = 0; i < _trenutno; i++) // 0 1 
 		{
 			_polozeni[i] = student._polozeni[i];
 		}
 
+
 	}
 
-	// studentOperatorDodjele = student; // operator dodjele
+	// 	studentOperatorDodjele = student;
 
 	Student& operator = (const Student& student) {
 
 		if (this != &student) {
 
-			delete[] _ImePrezime;
+			delete[] _imePrezime;
 			delete[] _polozeni;
 
 
+			int vel = strlen(student._imePrezime) + 1;
+			_imePrezime = new char[vel];
+			strcpy_s(_imePrezime, vel, student._imePrezime);
 
-			int vel = strlen(student._ImePrezime) + 1;
-			_ImePrezime = new char[vel];
-			strcpy_s(_ImePrezime, vel, student._ImePrezime);
+
+			_trenutno = student._trenutno;
 
 			_max = student._max;
-			_trenutno = student._trenutno;
 
 			_polozeni = new Predmet[_max];
 
-			for (int i = 0; i < _trenutno; i++)
+			for (int i = 0; i < _trenutno; i++) // 0 1 
 			{
 				_polozeni[i] = student._polozeni[i];
 			}
-
 
 		}
 
@@ -272,78 +260,67 @@ public:
 
 	~Student() {
 
-		delete[] _ImePrezime;
-		_ImePrezime = nullptr;
+		delete[] _imePrezime;
+		_imePrezime = nullptr;
 		delete[] _polozeni;
 		_polozeni = nullptr;
 
-
 	}
+
+
+
+
+
+
+
+
 
 	void Ispis() {
 
-		cout << "Ime i prezime studenta : " << _ImePrezime << endl;
-		cout << "============ POLOZENI PREDMETI STUDENTA ============" << endl;
+		cout << "Ime i prezime studenta: " << _imePrezime << endl;
+		cout << "=========== POLOZENI PREDMETI =============" << endl << endl;
 
-
-
-		for (int i = 0; i < _trenutno; i++) // i = 0, i = 1, i = 2
+		for (int i = 0; i < _trenutno; i++) // 0 1 2
 		{
 			_polozeni[i].Ispis(); // pol[0] , pol[1] , pol[2] 
 		}
 
 
-
 	}
 
 
-	// student.AddPolozeniPredmet(predmet1);  ---> MAt2
-
+	// 	student.AddPolozeniPredmet(predmet1); -> MATII
 	void AddPolozeniPredmet(Predmet predmet) {
-		//Dodaje novi polozeni predmet u niz
-		//Voditi računa da se ne moze dodavati isti predmet (istog naziva)
+		// Dodaje novi polozeni predmet u niz
+		// Voditi računa da se ne može dodavati isti predmet (istog naziva)
+		// Voditi računa da se ne može prekoračiti kapacitet niza
 
-		if (_max == _trenutno) { // 3 == 3
-			cout << "Student ne moze vise poloziti predmeta" << endl;
+		if (_trenutno == _max) {
+			cout << "Student ne moze imati vise polozenih predmeta" << endl;
 			return;
 		}
 
-
-		for (int i = 0; i < _trenutno; i++) // 0 1
+		for (int i = 0; i < _trenutno; i++) // 0 1 
 		{
-			//         MAT2    ==     MAt2  
-			//         char*  == char* 
-			// strcmp( naziv1 , naziv2   ) == 0
+			// Poređenje dva niza karaktera - char*
+			// strcmp( naziv1 , naziv2 ) == 0 
 
+			if ( strcmp( _polozeni[i]._naziv , predmet._naziv) == 0) {
 
-			if ( strcmp( predmet._naziv  , _polozeni[i]._naziv   ) == 0) {
-				cout << "Taj predmet je vec polozen" << endl;
+				cout << "Student vec ima odabrani polozeni predmet" << endl;
 				return;
+
 			}
 
 
 		}
 
 
+		_polozeni[_trenutno] = predmet; // pol[0] = PRII , pol[1] = MATII , pol[2] = WRD
 
-
-		_polozeni[_trenutno] = predmet; // pol[0] = PR2 ,pol[1] = MAT , 
-
-		_trenutno++; // 0 ----> 1 -----> 2 
-
+		_trenutno++; // 0 --> 1 --> 2 --> 3
 
 	}
-
-
-
-
-
-
-
-
-
-
-
 
 };
 
@@ -351,51 +328,51 @@ public:
 
 void main() {
 
-	//Predmet predmet0; // dft constr
+	//Predmet predmet0;  // <--- dft constr.
+	//predmet0.Ispis();  // <--- poziv ispisa
 
 
-	//// Predmet KopijaPredmeta = predmet1; // copy constructor
-	//Predmet KopijaPredmeta2(predmet1); // copy constructor
+	//predmet2.Ispis();
+	//predmet3.Ispis();
+
+	//predmet1.Ispis();
+
+	//Predmet predmetKopija = predmet1;  // <-- copy constr. 
+	//Predmet predmetKopija(predmet1); // <-- copy constr. 
+
+	//predmetKopija.Ispis();
+
+	//Predmet predmetOperatorDodjele;
+
+	//predmetOperatorDodjele = predmetOperatorDodjele; // <-- operator dodjele
+
+	//predmetOperatorDodjele.Ispis();
+
+	Predmet predmet1("Programiranje II", 9, 7); // <--- usr. def constr.
+	Predmet predmet2("Matematika II", 6, 5); // <--- usr. def constr.
+	Predmet predmet3("Web razvoj i dizajn", 7, 5); // <--- usr. def constr.
+	Predmet predmet4("Operativni sistemi", 7, 5); // <--- usr. def constr.
+
+	//Student student0;
+	//student0.Ispis();
+
+	Student student("Vedad Keskin", 3);
+
+	student.AddPolozeniPredmet(predmet1);
+	student.AddPolozeniPredmet(predmet2);
+	student.AddPolozeniPredmet(predmet2); // dupliranje
+	student.AddPolozeniPredmet(predmet3);
+	student.AddPolozeniPredmet(predmet4); // prekoracenje niza
 
 
-	//Predmet predmetKopija3;
-
-	//predmetKopija3 = predmet2; // operator dodjele
-
-
-	//predmetKopija3.Ispis();
-
-
-	Predmet predmet1("Programiranje 2", 9, 7); // <--- konstruktor koji prima parametre 
-	Predmet predmet2("Matematika 2", 6, 5); // <--- konstruktor koji prima parametre 
-	Predmet predmet3("Web razvoj i dizajn", 7, 5); // <--- konstruktor koji prima parametre 
-	Predmet predmet4("Marketing", 8, 4); // <--- konstruktor koji prima parametre 
-
-
-	Student student("Vedad Keskin",3);
-
-
-	student.AddPolozeniPredmet(predmet1); // pr2 
-	student.AddPolozeniPredmet(predmet2); // mat2
-	student.AddPolozeniPredmet(predmet2); // mat2
-	student.AddPolozeniPredmet(predmet3); // wrd
-	student.AddPolozeniPredmet(predmet4); // mar
-
-
-	Student studentKopija = student; // copy constructor
-
+	//Student studentKopija = student; // <-- copy constr.
+	//studentKopija.Ispis();
 
 	Student studentOperatorDodjele;
 
-	studentOperatorDodjele = studentOperatorDodjele; // operator dodjele
-
+	studentOperatorDodjele = student;
 
 	studentOperatorDodjele.Ispis();
-
-
-
-
-
 
 
 	system("pause>0");

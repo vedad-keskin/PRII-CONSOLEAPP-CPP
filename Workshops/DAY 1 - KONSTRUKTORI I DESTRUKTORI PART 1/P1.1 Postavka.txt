@@ -1,5 +1,8 @@
 #include <iostream>
 using namespace std;
+
+
+
 class Predmet {
 public:char* _naziv;
 public:int _ocjena;
@@ -18,8 +21,13 @@ public:int* _ECTS;
 
 
 };
+
+
+
+
+
 class Student {
-	char* _ImePrezime;
+	char* _imePrezime;
 	Predmet* _polozeni;
 	int _trenutno;
 	int _max;
@@ -36,14 +44,12 @@ public:
 
 
 	void AddPolozeniPredmet(Predmet predmet) {
-		//Dodaje novi polozeni predmet u niz
-		//Voditi računa da se ne moze dodavati isti predmet (istog naziva)
+		// Dodaje novi polozeni predmet u niz
+		// Voditi računa da se ne moze dodavati isti predmet (istog naziva)		        // Voditi računa da se ne može prekoračiti kapacitet niza
+
 
 	}
 
-	void Ispis() {
-
-	}
 };
 
 
