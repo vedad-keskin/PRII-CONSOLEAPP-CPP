@@ -45,7 +45,8 @@ public:
 
 	void AddPolozeniPredmet(Predmet predmet) {
 		// Dodaje novi polozeni predmet u niz
-		// Voditi računa da se ne moze dodavati isti predmet (istog naziva)		        // Voditi računa da se ne može prekoračiti kapacitet niza
+		// Voditi računa da se ne može prekoračiti kapacitet niza
+		// Voditi računa da se ne moze dodavati isti predmet (istog naziva)		        
 
 
 	}
