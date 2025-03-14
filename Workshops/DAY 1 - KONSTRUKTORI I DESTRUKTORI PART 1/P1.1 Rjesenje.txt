@@ -49,7 +49,7 @@ public:             //      dft      //     user def.    //
 		// 1. gdje hocete da pohranite nesto 
 		// 2. koliko ce karaktera biti prekopirano 
 		// 3. sta zelimo da pohranimo
-		strcpy_s(_naziv, vel, dftNaziv); 
+		strcpy_s(_naziv, vel, dftNaziv);
 
 
 	}
@@ -125,7 +125,6 @@ public:             //      dft      //     user def.    //
 
 
 
-
 	// destructor
 	// 
 	// TILDA -> alt gr + 1
@@ -147,7 +146,7 @@ public:             //      dft      //     user def.    //
 		cout << "Ocjena predmeta: " << _ocjena << endl;
 		cout << "ECTS predmeta: " << *_ECTS << endl;
 
-		cout << endl << "====================" << endl <<endl;
+		cout << endl << "====================" << endl << endl;
 
 	}
 
@@ -270,11 +269,6 @@ public:
 
 
 
-
-
-
-
-
 	void Ispis() {
 
 		cout << "Ime i prezime studenta: " << _imePrezime << endl;
@@ -305,7 +299,7 @@ public:
 			// Poređenje dva niza karaktera - char*
 			// strcmp( naziv1 , naziv2 ) == 0 
 
-			if ( strcmp( _polozeni[i]._naziv , predmet._naziv) == 0) {
+			if (strcmp(_polozeni[i]._naziv, predmet._naziv) == 0) {
 
 				cout << "Student vec ima odabrani polozeni predmet" << endl;
 				return;
