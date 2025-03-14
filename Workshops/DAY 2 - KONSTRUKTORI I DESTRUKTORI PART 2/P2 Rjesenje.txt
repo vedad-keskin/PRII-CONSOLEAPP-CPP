@@ -1,35 +1,45 @@
 #include <iostream>
 using namespace std;
 
-char* GetNizKaraktera(const char* tekst) {
-	if (tekst == nullptr)
-		return nullptr;
-	int vel = strlen(tekst) + 1;
+char* GetNizKaraktera(const char* sadrzaj) {
+
+	int vel = strlen(sadrzaj) + 1;
+
 	char* novi = new char[vel];
-	strcpy_s(novi, vel, tekst);
+
+	strcpy_s(novi, vel, sadrzaj);
+
 	return novi;
+
 }
+
+
 
 class Datum {
 public:
 	int* _dan, * _mjesec, * _godina;
-public:
 
 
-	Datum(int dan=1, int mjesec=1, int godina=2000) {
+	Datum(int dan = 1, int mjesec = 1, int godina = 2000) {	//konstruktor koji prima parametre, dan mjesec i god su pointeri pa koristimo 'new'
+
 		_dan = new int(dan);
 		_mjesec = new int(mjesec);
 		_godina = new int(godina);
+
 	}
 
-	Datum(const Datum& obj) {
+	Datum(const Datum& obj) {		//copy konstruktor, koristimo 'new' opet da dodijelimo nove adrese, kopiramo ostalo
+
 		_dan = new int(*obj._dan);
 		_mjesec = new int(*obj._mjesec);
 		_godina = new int(*obj._godina);
+
 	}
 
-	Datum& operator = (const Datum& obj) {
+	Datum& operator = (const Datum& obj) {	//operator dodjele, kopiramo destruktor + copy konstruktor
+		//(ne stavljamo adresu na nullptr jer cemo svakako nesto novo upisati na nju)
 		if (this != &obj) {
+
 			delete _dan;
 			delete _mjesec;
 			delete _godina;
@@ -38,50 +48,62 @@ public:
 			_mjesec = new int(*obj._mjesec);
 			_godina = new int(*obj._godina);
 
+
 		}
 		return *this;
+	}
+
+	~Datum() {	//destruktor
+
+		delete _dan; _dan = nullptr;
+		delete _mjesec; _mjesec = nullptr;
+		delete _godina; _godina = nullptr;
+	}
+
+	void Ispis() {
+
+		cout << *_dan << "." << *_mjesec << "." << *_godina << endl;
 
 	}
 
-	friend ostream& operator <<(ostream& COUT, const Datum& obj) {
-		cout << *obj._dan << "." << *obj._mjesec << "." << *obj._godina;
+	// cout << datumPunoljetni;
+
+	friend ostream& operator << (ostream& COUT, const Datum& obj) {
+
+		COUT << *obj._dan << "." << *obj._mjesec << "." << *obj._godina << endl;
+
 		return COUT;
+
 	}
 
-	~Datum() {
-		delete _dan;
-		_dan = nullptr;
-		delete _mjesec;
-		_mjesec = nullptr;
-		delete _godina;
-		_godina = nullptr;
-	}
 
-	// Kreirati i implementirati
-	// Konstruktor
-	// Konstruktor kopije
-	// Destruktor
 };
 
 class Kandidat {
 public:
 	char* _imePrezime;
 	char* _JMBG;
-public:
 
 
-	Kandidat(const char* ime="Nema imena", const char* jmbg="Nema jmbg") {
-		_imePrezime = GetNizKaraktera(ime);
+	Kandidat(const char* imePrezime = "Nema imena", const char* jmbg = "Nema JMBG") {	// kandidat1("Ime Kandidata", "0102003456789");
+
+		_imePrezime = GetNizKaraktera(imePrezime);
+
 		_JMBG = GetNizKaraktera(jmbg);
+
 	}
 
-	Kandidat(const Kandidat& obj) {
+	Kandidat(const Kandidat& obj) {	//copy konstruktor
+
 		_imePrezime = GetNizKaraktera(obj._imePrezime);
 		_JMBG = GetNizKaraktera(obj._JMBG);
+
 	}
 
-	Kandidat& operator = (const Kandidat& obj) {
+	Kandidat& operator = (const Kandidat& obj) {	//operator '='
+
 		if (this != &obj) {
+
 			delete[]_imePrezime;
 			delete[]_JMBG;
 
@@ -89,172 +111,186 @@ public:
 			_JMBG = GetNizKaraktera(obj._JMBG);
 
 		}
+
 		return *this;
-
-	}
-
-	friend ostream& operator <<(ostream& COUT, const Kandidat& obj) {
-		COUT << obj._imePrezime << " - " << obj._JMBG;
-		return COUT;
 	}
 
 	~Kandidat() {
-		delete[]_imePrezime;
-		_imePrezime = nullptr;
-		delete[] _JMBG;
-		_JMBG = nullptr;
+
+		delete[]_imePrezime; _imePrezime = nullptr;
+		delete[]_JMBG; _JMBG = nullptr;
+
 	}
 
+	void Ispis() {
 
+		cout << "ime kandidata: " << _imePrezime << endl;
+		cout << "JMBG kandidata: " << _JMBG << endl << endl;
+		cout << "======================================" << endl << endl;
 
-	// Kreirati i implementirati
-// Konstruktor
-// Konstruktor kopije
-// Destruktor
+	}
+
+	friend ostream& operator << (ostream& COUT, const Kandidat& obj) {
+
+		COUT << obj._imePrezime << " [" << obj._JMBG << "]" << endl;
+
+		return COUT;
+	}
+
 
 };
 
+
 class Osoba {
 public:
-	Datum _datumRodjenja;
+	Datum _datumRodjenja; // maloljetna osoba ne smije glasati
 	char* _imePrezime;
 	char* _JMBG;
-	char* _Prebivaliste;
-public:
+	char* _Prebivaliste; // ne moze glasati osoba koja nije iz prebivalista gdje se glasanje nalazi
 
 
-	Osoba(const char* ime="---", const char* jmbg="---", const char* prebivaliste="---", Datum datum = Datum()) {
-		_imePrezime = GetNizKaraktera(ime);
-		_JMBG = GetNizKaraktera(jmbg);
-		_Prebivaliste = GetNizKaraktera(prebivaliste);
+	Osoba(Datum datumRodjenja = Datum() , const char* imePrezime = "Nema imena", const char* JMBG = "Nema JMBG", const char* Prebivaliste = "Nema prebivalista")
+	{
 
-		_datumRodjenja = datum;
+		_imePrezime = GetNizKaraktera(imePrezime);
+		_JMBG = GetNizKaraktera(JMBG);
+		_Prebivaliste = GetNizKaraktera(Prebivaliste);
+
+		_datumRodjenja = datumRodjenja;
+
 	}
 
 	Osoba(const Osoba& obj) {
+
 		_imePrezime = GetNizKaraktera(obj._imePrezime);
 		_JMBG = GetNizKaraktera(obj._JMBG);
 		_Prebivaliste = GetNizKaraktera(obj._Prebivaliste);
 
 		_datumRodjenja = obj._datumRodjenja;
+
 	}
 
-	Osoba& operator = (const Osoba& obj) {
+	Osoba& operator =(const Osoba& obj) {
+
 		if (this != &obj) {
-			delete[]_JMBG;
+			delete[]_imePrezime; 
+			delete[]_JMBG; 
 			delete[]_Prebivaliste;
-			delete[] _imePrezime;
-			
 
 			_imePrezime = GetNizKaraktera(obj._imePrezime);
 			_JMBG = GetNizKaraktera(obj._JMBG);
 			_Prebivaliste = GetNizKaraktera(obj._Prebivaliste);
 
 			_datumRodjenja = obj._datumRodjenja;
+
 		}
 		return *this;
-
-	}
-
-	friend ostream& operator <<(ostream& COUT, const Osoba& obj) {
-		COUT << obj._imePrezime << " [" << obj._JMBG << "] " << " rodjen/a " << obj._datumRodjenja << " iz " << obj._Prebivaliste << endl;
-		return COUT;
 	}
 
 	~Osoba() {
-		delete[]_imePrezime;
-		_imePrezime = nullptr;
-		delete[] _JMBG;
-		_JMBG = nullptr;
-		delete[] _Prebivaliste;
-		_Prebivaliste = nullptr;
+
+		delete[]_imePrezime; _imePrezime = nullptr;
+		delete[]_JMBG; _JMBG = nullptr;
+		delete[]_Prebivaliste; _Prebivaliste = nullptr;
+
 	}
 
-	// Kreirati i implementirati
-// Konstruktor
-// Konstruktor kopije
-// Destruktor
+	void Ispis() {
+
+		cout << "Ime: " << _imePrezime << endl;
+		cout << "JMBG: " << _JMBG << endl;
+		cout << "Prebivaliste: " << _Prebivaliste << endl << endl;
+		cout << "Datum: " << _datumRodjenja << endl;
+		cout << "======================================" << endl << endl;
+
+	}
+
+	friend ostream& operator << (ostream& COUT, const Osoba& obj) {
+
+		COUT << obj._imePrezime << " [" << obj._JMBG << "] rodjen u " << obj._Prebivaliste << ", datuma " << obj._datumRodjenja << endl;
+
+		return COUT;
+
+	}
 
 };
+
 
 class GlasackiListic {
 public:
 	Osoba* _glasac;
-	Kandidat* _glasZa;
-public:
+	Kandidat* _kandidat;
 
 
-	GlasackiListic(Osoba osoba=Osoba(), Kandidat kandidat=Kandidat()) {
-		_glasac = new Osoba(osoba);
-		_glasZa = new Kandidat(kandidat);
+	GlasackiListic(Osoba glasac = Osoba(), Kandidat kandidat = Kandidat()) {
+
+		_glasac = new Osoba(glasac);
+		_kandidat = new Kandidat(kandidat);
 
 	}
 
 	GlasackiListic(const GlasackiListic& obj) {
+
 		_glasac = new Osoba(*obj._glasac);
-		_glasZa = new Kandidat(*obj._glasZa);
+		_kandidat = new Kandidat(*obj._kandidat);
 
 	}
 
-	GlasackiListic& operator = (const GlasackiListic& obj) {
+	GlasackiListic& operator=(const GlasackiListic& obj) {
+
 		if (this != &obj) {
+
 			delete _glasac;
-			delete _glasZa;
-		
+			delete _kandidat;
 
 			_glasac = new Osoba(*obj._glasac);
-			_glasZa = new Kandidat(*obj._glasZa);
+			_kandidat = new Kandidat(*obj._kandidat);
+
 		}
 		return *this;
-
-	}
-
-	friend ostream& operator <<(ostream& COUT, const GlasackiListic& obj) {
-
-		COUT << *obj._glasac;
-        COUT << "GLASA ZA : " << endl;
-		COUT << *obj._glasZa<<endl<<endl;
-		COUT << "========================" << endl<<endl;
-
-		return COUT;
 	}
 
 	~GlasackiListic() {
-		delete _glasac;
-		_glasac = nullptr;
-		delete _glasZa;
-		_glasZa = nullptr;
+
+		delete _glasac; _glasac = nullptr;
+		delete _kandidat; _kandidat = nullptr;
+	}
+
+	friend ostream& operator << (ostream& COUT, const GlasackiListic& obj) {
+
+		COUT << "============= GLASACKI LISTIC ===============" << endl;
+		COUT << "Glasac:" << endl;
+		COUT << *obj._glasac;
+		COUT << "Glasa za:" << endl;
+		COUT << *obj._kandidat;
+		COUT << "=============================================" << endl;
+
+		return COUT;
+
 	}
 
 
-	// Kreirati i implementirati
-// Konstruktor
-// Konstruktor kopije
-// Destruktor
-
 };
+
 
 class Izbori {
 public:
-	char* _glasackoMjesto;
-	GlasackiListic* _glasovi;
+	char* _glasackoMjesto;    // niz karaktera
+	GlasackiListic* _glasovi; // niz GlasackiListic
 	int _trenutnoGlasova;
 	int _maxBrojGlasova;
-public:
-
-	// Kreirati i implementirati
-	// Konstruktor
-	// Konstruktor kopije
-	// Destruktor
 
 
 
-	Izbori(const char* glasackomjesto="Sarajevo", int max=3) {
-		_glasackoMjesto = GetNizKaraktera(glasackomjesto);
+	Izbori(const char* glasackoMjesto = "Sarajevo", int max = 3) {
+
+		_glasackoMjesto = GetNizKaraktera(glasackoMjesto);
 
 		_maxBrojGlasova = max;
 		_trenutnoGlasova = 0;
+
 		_glasovi = new GlasackiListic[_maxBrojGlasova];
+
 
 	}
 
@@ -262,26 +298,34 @@ public:
 
 		_glasackoMjesto = GetNizKaraktera(obj._glasackoMjesto);
 
-		_maxBrojGlasova = obj._maxBrojGlasova;
 		_trenutnoGlasova = obj._trenutnoGlasova;
+		_maxBrojGlasova = obj._maxBrojGlasova;
+
 		_glasovi = new GlasackiListic[_maxBrojGlasova];
 
-		for (int i = 0; i < obj._trenutnoGlasova; i++)
+		for (int i = 0; i < _trenutnoGlasova; i++)
 		{
 			_glasovi[i] = obj._glasovi[i];
 		}
+
 	}
 
 	Izbori& operator = (const Izbori& obj) {
+
 		if (this != &obj) {
+
 			delete[] _glasackoMjesto;
 			delete[] _glasovi;
+
+
 			_glasackoMjesto = GetNizKaraktera(obj._glasackoMjesto);
 
-			_maxBrojGlasova = obj._maxBrojGlasova;
 			_trenutnoGlasova = obj._trenutnoGlasova;
+			_maxBrojGlasova = obj._maxBrojGlasova;
+
 			_glasovi = new GlasackiListic[_maxBrojGlasova];
-			for (int i = 0; i < obj._trenutnoGlasova; i++)
+
+			for (int i = 0; i < _trenutnoGlasova; i++)
 			{
 				_glasovi[i] = obj._glasovi[i];
 			}
@@ -290,151 +334,140 @@ public:
 
 	}
 
-	friend ostream& operator <<(ostream& COUT, const Izbori& obj) {
-		COUT << "Glasacko mjesto : " << obj._glasackoMjesto << endl;
-		COUT << "=======GLASOVI=========" << endl<<endl;
+	~Izbori() {
+
+		delete[] _glasackoMjesto;
+		_glasackoMjesto = nullptr;
+		delete[] _glasovi;
+		_glasovi = nullptr;
+		
+
+	}
+
+
+
+
+	friend ostream& operator << (ostream& COUT, const Izbori& obj) {
+
+		COUT << "Izbori u " << obj._glasackoMjesto << endl;
+
 		for (int i = 0; i < obj._trenutnoGlasova; i++)
 		{
-			COUT << obj._glasovi[i];
+			COUT << obj._glasovi[i] << endl;
 		}
 
 
 		return COUT;
+
 	}
 
-	~Izbori() {
-		delete[] _glasackoMjesto;
-		_glasackoMjesto = nullptr;
-		delete[]_glasovi;
-		_glasovi = nullptr;
-	}
 
-	bool AddGlas(GlasackiListic glas)
+
+
+	bool AddGlasackiListic(GlasackiListic listic)
 	{
-		/*funkcija treba da omoguci dodavanje informacija o novom glasu i tom pril-ikom:
+		/*funkcija treba da omoguci dodavanje informacija o novom glasu i tom prilikom:
+		-     onemoguciti da se doda vise listica nego sto je dozvoljeno
 		-     onemoguciti da ista osoba glasa vise puta
 		-     onemoguciti glasanje osobama mladjim od 18 godina (uzeti u obzir godinu rodjenja)
 		-     onemoguciti glasanje osobama iz drugih opstina
 		-     u zavisnosti od uspjesnosti operacije funkcija vraca true ili false
 		*/
+
+
 		if (_maxBrojGlasova == _trenutnoGlasova) {
-			cout << "Nije moguce dodati jos glasova" << endl;
+			cout << "Niz je popunjen" << endl;
 			return false;
 		}
-		if (strcmp(_glasackoMjesto, glas._glasac->_Prebivaliste) != 0) {
-			cout << "Kandidat ne pripada tom prebivalistu" << endl;
-			return false;
-		}
+
 		for (int i = 0; i < _trenutnoGlasova; i++)
 		{
-			if (strcmp(_glasovi[i]._glasac->_imePrezime, glas._glasac->_imePrezime) == 0) {
-				cout << "Glasac ne moze glasati vise puta" << endl;
+
+			// strcmp( naziv1 , naziv2 ) == 0
+			if (strcmp( _glasovi[i]._glasac->_imePrezime , listic._glasac->_imePrezime) == 0) {
+				cout << "Osoba je vec glasala" << endl;
 				return false;
 			}
-
 		}
-		if (*glas._glasac->_datumRodjenja._godina > 2005) {
-			cout << "Glasac nema 18 godina" << endl;
+
+		//   2025 - 2012 < 18
+		//if ( 2025 - *listic._glasac->_datumRodjenja._godina < 18 ) {
+
+		//	cout << "Osoba je maloljetna" << endl;
+		//	return false;
+
+		//}
+
+		if (*listic._glasac->_datumRodjenja._godina > 2007) {
+			cout << "Osoba je maloljetna" << endl;
 			return false;
 		}
 
+		//                               Mostar != Jabalnica
+		if (strcmp(listic._glasac->_Prebivaliste , _glasackoMjesto) != 0) {
 
-		_glasovi[_trenutnoGlasova] = glas;
-		_trenutnoGlasova++;
+			cout << "Osoba nije iz grada prebivalista" << endl;
+			return false;
+
+		}
+
+
+		_glasovi[_trenutnoGlasova] = listic;
+
+		_trenutnoGlasova++; 
+
 		return true;
+
 	}
-
-
 
 
 };
 
 
-void ProglasiPobjednika(Izbori izbor) {
-	// funkcija treba ispisati listu kandidata, a uz svakog kandidata je potrebno ispisati i osvojeni procenat glasova
 
-	for (int i = 0; i < izbor._trenutnoGlasova; i++) 
-	{
-		int brojGlasova = 0;
-		bool postojiKandidat = false;
-
-		for (int k = 0; k < i; k++)
-		{
-			if (strcmp(izbor._glasovi[i]._glasZa->_imePrezime, izbor._glasovi[k]._glasZa->_imePrezime) == 0)
-			{
-				postojiKandidat = true;
-			}
-		}
-
-		if (!postojiKandidat) { 
-			for (int j = 0; j < izbor._trenutnoGlasova; j++)
-			{
-				if (strcmp(izbor._glasovi[i]._glasZa->_imePrezime, izbor._glasovi[j]._glasZa->_imePrezime) == 0) {
-					brojGlasova++;
-				}
-			}
-
-			cout << "Kandidat : ";
-			cout << izbor._glasovi[i]._glasZa->_imePrezime;
-			cout << " " << (brojGlasova / float(izbor._trenutnoGlasova)) * 100 <<"%"<< endl;
-		}
-
-
-	}
-}
 void main() {
-	Datum punoljetni(12, 12, 1998);
-	Datum maloljetni(12, 12, 2012);
 
 
-
-	Osoba osoba1("Veda", "IB180079", "Mostar", punoljetni);
-	Osoba osoba2("Emina", "IB11280079", "Mostar", maloljetni);
-	Osoba osoba3("Anes", "IB18420079", "Travnik", punoljetni);
-	Osoba osoba4("Midjo", "IB18230079", "Mostar", punoljetni);
-	Osoba osoba5("Encika", "IB18023079", "Mostar", punoljetni);
-	Osoba osoba6("Idriz", "IB180079", "Mostar", punoljetni);
-	
+	Datum datumPunoljetni(1, 3, 1998);
+	Datum datumMaloljetni(1, 3, 2012);
 
 
-
-	Kandidat kandidat1("Denis Music", "IB200172");
-	Kandidat kandidat2("Elmir Babovic", "IB3123123");
-
+	Kandidat kandidat1("Denis Music", "0407003154765");
+	Kandidat kandidat2("Elmir Babovic", "1354365135322");
 
 
-
-	GlasackiListic glasackiListic1(osoba1, kandidat1);
-	GlasackiListic glasackiListic2(osoba2, kandidat2);
-	GlasackiListic glasackiListic3(osoba3, kandidat1);
-	GlasackiListic glasackiListic4(osoba4, kandidat2);
-	GlasackiListic glasackiListic5(osoba5, kandidat2);
-	GlasackiListic glasackiListic6(osoba6, kandidat1);
+	Osoba osoba1(datumPunoljetni, "Sara Delic", "0407003154578", "Gorazde"); // nece moci glasati jer nije iz Jablanice
+	Osoba osoba2(datumPunoljetni, "Kerim Dziho", "1501003124589", "Mostar"); // nece moci glasati jer nije iz Jablanice
+	Osoba osoba3(datumPunoljetni, "Tarik Dzino", "1208003235689", "Jablanica"); 
+	Osoba osoba4(datumPunoljetni, "Vedad Keskin", "1208003235689", "Jablanica"); 
+	Osoba osoba5(datumMaloljetni, "Iman Bejana Keskin", "1208003235689", "Jablanica"); // nece moci glasati jer nije punoljetna
 
 
-	Izbori izbori("Mostar", 3);
-
-	izbori.AddGlas(glasackiListic1);
-	izbori.AddGlas(glasackiListic2);
-	izbori.AddGlas(glasackiListic3);
-	izbori.AddGlas(glasackiListic4);
-	izbori.AddGlas(glasackiListic5);
-	izbori.AddGlas(glasackiListic6);
-
-	cout << izbori;
+	// ctrl + d
+	GlasackiListic listic1(osoba1, kandidat1 ); // nece moci glasati jer nije iz Jablanice
+	GlasackiListic listic2(osoba2, kandidat2 ); // nece moci glasati jer nije iz Jablanice
+	GlasackiListic listic3(osoba3, kandidat1 );
+	GlasackiListic listic4(osoba4, kandidat2 );
+	GlasackiListic listic5(osoba5, kandidat1 ); // nece moci glasati jer nije punoljetna
 
 
+	Izbori izbori("Jablanica", 3);
+
+	izbori.AddGlasackiListic(listic1); // nece moci glasati jer nije iz Jablanice
+	izbori.AddGlasackiListic(listic2); // nece moci glasati jer nije iz Jablanice
+	izbori.AddGlasackiListic(listic2); // nece moci glasati jer nije iz Jablanice
+	izbori.AddGlasackiListic(listic3); 
+	izbori.AddGlasackiListic(listic4); 
+	izbori.AddGlasackiListic(listic5); // nece moci glasati jer nije punoljetna
 
 
+	//Izbori izboriKopija = izbori;
+	Izbori izboriOperatorDodjele;
+	izboriOperatorDodjele = izbori;
 
-	cout << endl << endl << "||||||||||||||||||||||||||||||||||||||" << endl << endl;
+	cout << izboriOperatorDodjele;
 
-
-	ProglasiPobjednika(izbori);
-	//	
 
 
 	system("pause>0");
 }
-
-
