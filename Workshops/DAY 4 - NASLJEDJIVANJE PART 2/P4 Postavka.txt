@@ -77,8 +77,8 @@ public:
 
     bool IsUserDataValid(const char* username, const char* password)
     {
-        // Funkcija vraca true false u ovisnosti od toga da li su proslijedjeni podaci tacni
-        // Odnosno da li se korisnik moze logirati ili ne
+        // Funkcija vraca true ili false u zavisnosti od toga da li su proslijedjeni podaci tacni
+
     }
 
     bool DodajFilm(Film film)
