@@ -64,7 +64,7 @@ public:
 
 
 class Racun {
-	static int _brojRacuna;
+	int _brojRacuna;
 	StavkaRacuna* _stavke;
 	int _trenutno;
 	int _max;
