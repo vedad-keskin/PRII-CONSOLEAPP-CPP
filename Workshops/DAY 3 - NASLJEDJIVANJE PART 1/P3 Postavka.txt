@@ -49,7 +49,7 @@ class Predmet {
 public:
 	char* _naziv;
 	int _ECTS;
-	Profesor* _PredmetniProfesor;
+	Profesor* _predmetniProfesor;
 	//Kreirati i implementirati
 	//1. Defaultni konstruktor
 	//2. Konstruktor koji prima parametre
@@ -66,9 +66,9 @@ public:
 class Student {
 public:
 	char* _brojIndeksa;
-	Predmet* _PolozeniPredmeti;
-	int _max;
+	Predmet* _polozeniPredmeti;
 	int* _trenutno;
+	int _max;
 	//Kreirati i implementirati
 	//1. Defaultni konstruktor
 	//2. Konstruktor koji prima parametre
