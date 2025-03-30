@@ -7,24 +7,25 @@ class Artikal {
 	double _cijena;
 	int _kolicinaNaSkladistu;
 public:
-	//Kreirati i implementirati
-	//1. Defaultni konstruktor
-	//2. Konstruktor koji prima parametre
-	//3. Konstruktor kopije
-	//4. Operator dodjele
-	//5. Destruktor
-	//6. Operator ispisa 
+	// Kreirati i implementirati
+	// 1. Defaultni konstruktor
+	// 2. Konstruktor koji prima parametre
+	// 3. Konstruktor kopije
+	// 4. Operator dodjele
+	// 5. Destruktor
+	// 6. Operator ispisa 
+	// 7. Dodatne operatore
 
 
-	//Operator -= na način da se stanje na skladištu artikla promijeni za proslijeđenu vrijednost
-
-	//Operator += na način da se stanje na skladištu artikla promijeni za proslijeđenu vrijednost
-
-	//Operator ++ na način da se cijena artikla uveća za 1
-
-	//Operator -- na način da se cijena artikla umanji za 1
-
-	//Operator == koji poredi artikle na osnovu sifre
+	// Operator -= na način da se stanje na skladištu artikla promijeni za proslijeđenu vrijednost
+	   
+	// Operator += na način da se stanje na skladištu artikla promijeni za proslijeđenu vrijednost
+	   
+	// Operator ++ na način da se cijena artikla uveća za 1
+	   
+	// Operator -- na način da se cijena artikla umanji za 1
+	   
+	// Operator == koji poredi artikle na osnovu sifre
 
 
 	int GetKolicinaNaSkladistu() { return _kolicinaNaSkladistu; }
@@ -36,27 +37,28 @@ class StavkaRacuna {
 	Artikal* _artikal;
 	int* _kolicina;
 public:
-	//Kreirati i implementirati
-	//1. Defaultni konstruktor
-	//2. Konstruktor koji prima parametre
-	//3. Konstruktor kopije
-	//4. Operator dodjele
-	//5. Destruktor
-	//6. Operator ispisa 
+	// Kreirati i implementirati
+	// 1. Defaultni konstruktor
+	// 2. Konstruktor koji prima parametre
+	// 3. Konstruktor kopije
+	// 4. Operator dodjele
+	// 5. Destruktor
+	// 6. Operator ispisa 
+	// 7. Dodatne operatore
 
-	//Operator += koji uvećava stanje na skladištu artikla
+	// Operator += koji uvećava stanje na skladištu artikla
+	   
+	// Operator -= koji umanjuje stanje na skladištu artikla
+	   
+	// Operator == koji poredi stavke na osnovu sifre
+	   
+	// Operator ++ koji uvećava količinu stavke racuna
 
-	//Operator -= koji umanjuje stanje na skladištu artikla
 
-	//Operator == koji poredi stavke na osnovu sifre
-
-	//Operator ++ koji uvećava količinu stavke racuna
-
-
-	double GetCijena() { //vraća cijenu stavke racuna (kolicina * cijena artikla) 
+	double GetCijena() { // vraća cijenu stavke racuna (kolicina * cijena artikla) 
 	}
 
-	double GetKolicina() { //vraća količinu stavke računa 
+	double GetKolicina() { // vraća količinu stavke računa 
 
 	}
 
@@ -64,7 +66,7 @@ public:
 
 
 class Racun {
-	int _brojRacuna;
+	static int _brojRacuna;
 	StavkaRacuna* _stavke;
 	int _trenutno;
 	int _max;
@@ -72,21 +74,25 @@ class Racun {
 	double _iznosSaPDV;
 	bool _naplaceno;
 public:
-	//Kreirati i implementirati
-	//1. Defaultni konstruktor
-	//2. Konstruktor koji prima parametre
-	//3. Konstruktor kopije
-	//4. Operator dodjele
-	//5. Destruktor
-	//6. Printanje racuna
+	// Kreirati i implementirati
+	// 1. Defaultni konstruktor
+	// 2. Konstruktor koji prima parametre
+	// 3. Konstruktor kopije
+	// 4. Operator dodjele
+	// 5. Destruktor
+	// 6. Printanje racuna
+	// 7. Dodatne operatore
 
-	//Operator () - dodaje nove artikle u stavke racuna (ulazni parametri su artikal i kolicina)
-	//Voditi računa o tome da li je račun već naplaćen
-	//Prilikom svakog dodavanja artikla, azurirati vrijednosti iznosBezPDV i iznosSaPDV
+	// Operator () - Dodaje nove artikle u _stavke (ulazni parametri su Artikal i kolicina)
+	// Voditi računa o tome da li je račun već naplaćen
+	// Prilikom svakog dodavanja artikla, ažurirati vrijednosti iznosBezPDV i iznosSaPDV
 
 
 	void PrintRacun() {
-		//Ispisuje sve stavke računa zajedno sa iznosom za plaćanje
+		// Ispisuje sve stavke računa zajedno sa iznosom za plaćanje sa i bez PDV-a
+		// Voditi računa da nema duplikata
+		// Voditi računa da nema prekoračenja niza
+		// Voditi računa da se jedan račun ne može dva puta isprintati (paziti na bool _naplaceno)
 
 	}
 
