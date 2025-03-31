@@ -1,58 +1,55 @@
 #include <iostream>
 using namespace std;
 
-class Media
-{
-public:
+class Media {
+protected:
     char* _naslov;
     char* _zanr;
     int _godinaObjavljivanja;
     float _ocjena;
-    //Kreirati i implementirati
-    //1. Defaultni konstruktor
-    //2. Konstruktor koji prima parametre
-    //3. Konstruktor kopije
-    //4. Operator dodjele
-    //5. Destruktor
-    //6. Operator ispisa 
+public:
+    // Kreirati i implementirati
+    // 1. Defaultni konstruktor
+    // 2. Konstruktor koji prima parametre
+    // 3. Konstruktor kopije
+    // 4. Operator dodjele
+    // 5. Destruktor
+    // 6. Operator ispisa 
 
 
 };
 
-class Serija : public Media
-{
+class Serija : public Media {
 public:
     int _brojEpizoda;
     int* _brojSezona;
-    //Kreirati i implementirati
-    //1. Defaultni konstruktor
-    //2. Konstruktor koji prima parametre
-    //3. Konstruktor kopije
-    //4. Operator dodjele
-    //5. Destruktor
-    //6. Operator ispisa
+    // Kreirati i implementirati
+    // 1. Defaultni konstruktor
+    // 2. Konstruktor koji prima parametre
+    // 3. Konstruktor kopije
+    // 4. Operator dodjele
+    // 5. Destruktor
+    // 6. Operator ispisa
 
 
 };
 
-class Film : public Media
-{
+class Film : public Media {
 public:
     int _trajanje; // misli se na trajanje u minutama
-    //Kreirati i implementirati
-    //1. Defaultni konstruktor
-    //2. Konstruktor koji prima parametre
-    //3. Konstruktor kopije
-    //4. Operator dodjele
-    //5. Destruktor
-    //6. Operator ispisa 
-    //7. Potrebne funkcije
+    // Kreirati i implementirati
+    // 1. Defaultni konstruktor
+    // 2. Konstruktor koji prima parametre
+    // 3. Konstruktor kopije
+    // 4. Operator dodjele
+    // 5. Destruktor
+    // 6. Operator ispisa 
+
 
 
 };
 
-class Korisnik
-{
+class Korisnik {
 public:
     char* _korisnickoIme;
     char* _lozinka;
@@ -64,43 +61,55 @@ public:
     Serija* _pregledaneSerije;
     int _maxPregledanihSerija;
     int* _trenutnoPregledanihSerija;
-    //Kreirati i implementirati
-    //1. Defaultni konstruktor
-    //2. Konstruktor koji prima parametre
-    //3. Konstruktor kopije
-    //4. Operator dodjele
-    //5. Destruktor
-    //6. Operator ispisa 
-    //7. Potrebne funkcije
+    // Kreirati i implementirati
+    // 1. Defaultni konstruktor
+    // 2. Konstruktor koji prima parametre
+    // 3. Konstruktor kopije
+    // 4. Operator dodjele
+    // 5. Destruktor
+    // 6. Operator ispisa 
+    // 7. Potrebne funkcije
 
 
 
     bool IsUserDataValid(const char* username, const char* password)
     {
-        // Funkcija vraca true ili false u zavisnosti od toga da li su proslijedjeni podaci tacni
+        // Funkcija vraca true ili false u zavisnosti od toga da li su proslijedjeni podaci tačni
+
 
     }
 
     bool DodajFilm(Film film)
     {
         // Funkcija ima za cilj dodavanje novog filma u niz pregldanih.
-        // Voditi racuna da se ne mogu dodati dva ista filma (to su filmovi koji imaju isti naziv i godinu izdavanja)
+        // Voditi računa da se ne prekorači kapacitet niza
+        // Voditi računa da se ne mogu dodati dva ista filma (to su filmovi koji imaju isti naziv i godinu izdavanja)
+
+
     }
 
     bool DodajSeriju(Serija serija)
     {
         // Funkcija ima za cilj dodavanje nove serije u niz pregldanih.
+        // Voditi računa da se ne prekorači kapacitet niza
         // Voditi racuna da se ne mogu dodati dvije iste serije (to su serije koje imaju isti naziv i godinu izdavanja)
+
+
     }
 
     Film* GetNajnovijiFilm()
     {
-        // Funkcija kao rezultat vraca pokazivac na najnoviji film kojeg je korisnik odgledao
+        // Funkcija kao rezultat vraća pokazivač na najnoviji film kojeg je korisnik odgledao
+
+
+
     }
 
     Serija* GetNajboljaSerija()
     {
-        // Funkcija kao rezultat vraca pokazivac na seriju sa najvecom ocjenu koju je korisnik odgledao
+        // Funkcija kao rezultat vraća pokazivač na seriju sa najvećom ocjenom koju je korisnik odgledao
+
+
 
     }
 };
