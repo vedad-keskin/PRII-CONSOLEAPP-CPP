@@ -2,12 +2,12 @@
 using namespace std;
 
 class Media {
-protected:
+public:
     char* _naslov;
     char* _zanr;
     int _godinaObjavljivanja;
     float _ocjena;
-public:
+
     // Kreirati i implementirati
     // 1. Defaultni konstruktor
     // 2. Konstruktor koji prima parametre
