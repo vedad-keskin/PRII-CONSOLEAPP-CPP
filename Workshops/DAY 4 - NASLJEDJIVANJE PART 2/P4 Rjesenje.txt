@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-char* GetNiZKaraktera(const char* sadrzaj) {
+char* GetNizKaraktera(const char* sadrzaj) {
     if (sadrzaj == nullptr)
         return nullptr;
     int vel = strlen(sadrzaj) + 1;
@@ -10,111 +10,103 @@ char* GetNiZKaraktera(const char* sadrzaj) {
     return novi;
 }
 
-class Media
-{
+class Media {
 public:
-    char* naslov;
-    char* zanr;
-    int godinaObjavljivanja;
-    float ocjena;
+    char* _naslov;
+    char* _zanr;
+    int _godinaObjavljivanja;
+    float _ocjena;
 
-    // Implementirati potrebne konstruktore i destruktor
-
-    Media(const char* Naslov = "Nema naslova", const char* Zanr = "Nema zanr", int GodObjavljivanja = 2000, float Ocjena = 5) {
-        naslov = GetNiZKaraktera(Naslov);
-        zanr = GetNiZKaraktera(Zanr);
-        godinaObjavljivanja = GodObjavljivanja;
-        ocjena = Ocjena;
+    Media(const char* naslov = "Nema naslova", const char* zanr = "Nema zanr", int godina = 2000, float ocjena = 5) {
+        _naslov = GetNizKaraktera(naslov);
+        _zanr = GetNizKaraktera(zanr);
+        _godinaObjavljivanja = godina;
+        _ocjena = ocjena;
     }
 
     Media(const Media& obj)
     {
-        naslov = GetNiZKaraktera(obj.naslov);
-        zanr = GetNiZKaraktera(obj.zanr);
-        godinaObjavljivanja = obj.godinaObjavljivanja;
-        ocjena = obj.ocjena;
+        _naslov = GetNizKaraktera(obj._naslov);
+        _zanr = GetNizKaraktera(obj._zanr);
+        _godinaObjavljivanja = obj._godinaObjavljivanja;
+        _ocjena = obj._ocjena;
     }
 
     Media& operator=(const Media& obj)
     {
         if (this != &obj)
         {
-            delete[]naslov;
-            delete[]zanr;
-            naslov = GetNiZKaraktera(obj.naslov);
-            zanr = GetNiZKaraktera(obj.zanr);
-            godinaObjavljivanja = obj.godinaObjavljivanja;
-            ocjena = obj.ocjena;
+            delete[] _naslov;
+            delete[] _zanr;
+                    
+
+            _naslov = GetNizKaraktera(obj._naslov);
+            _zanr = GetNizKaraktera(obj._zanr);
+            _godinaObjavljivanja = obj._godinaObjavljivanja;
+            _ocjena = obj._ocjena;
         }
         return *this;
     }
 
     ~Media() {
-        delete[]naslov; naslov = nullptr;
-        delete[]zanr; zanr = nullptr;
+
+        delete[]_naslov; 
+        _naslov = nullptr;
+        delete[]_zanr; 
+        _zanr = nullptr;
+
     }
 
 
-
-    void Ispis()
-    {
-        cout << "Naslov: " << naslov << endl;
-        cout << "Zanr: " << zanr << endl;
-        cout << "Godina objavljivanja: " << godinaObjavljivanja << endl;
-        cout << "Ocjena: " << ocjena << endl;
-    }
 
     friend ostream& operator <<(ostream& COUT, const Media& obj) {
-        COUT << obj.naslov << " " << obj.zanr << " " << obj.godinaObjavljivanja << " " << obj.ocjena << endl;
+        COUT << obj._naslov << " (" << obj._godinaObjavljivanja << ") [" << obj._ocjena << "] - " << obj._zanr << endl;
         return COUT;
     }
 
 
 };
 
-class Serija : public Media
-{
+class Serija : public Media {
 public:
-    int brojEpizoda;
-    int brojSezona;
+    int _brojEpizoda;
+    int _brojSezona;
 
-    // Implementirati potrebne konstruktore i destruktor
 
-    Serija(const char* Naslov = "Nema naslova", const char* Zanr = "Nema zanr", int GodObjavljivanja = 2000, float Ocjena = 5, int brEpizoda = 10, int brSezona = 5) : Media(Naslov, Zanr, GodObjavljivanja, Ocjena) {
+    Serija(const char* naslov = "Nema naslova", const char* zanr = "Nema zanr", int godina = 2000, float ocjena = 5, int brEpizoda = 10, int brSezona = 5) : Media(naslov, zanr, godina, ocjena) {
 
-        brojEpizoda = brEpizoda;
-        brojSezona = brSezona;
+        _brojEpizoda = brEpizoda;
+        _brojSezona = brSezona;
     }
 
     Serija(const Serija& obj) : Media(obj) {
-        brojEpizoda = obj.brojEpizoda;
-        brojSezona = obj.brojSezona;
+
+        _brojEpizoda = obj._brojEpizoda;
+        _brojSezona = obj._brojSezona;
+
     }
 
     Serija& operator=(const Serija& obj)
     {
         if (this != &obj)
         {
+
             Media::operator=(obj);
-            brojEpizoda = obj.brojEpizoda;
-            brojSezona = obj.brojSezona;
+
+            _brojEpizoda = obj._brojEpizoda;
+            _brojSezona = obj._brojSezona;
+
         }
         return *this;
     }
 
 
-    void Ispis()
-    {
-        cout << "Naslov: " << naslov << endl;
-        cout << "Zanr: " << zanr << endl;
-        cout << "Godina objavljivanja: " << godinaObjavljivanja << endl;
-        cout << "Ocjena serije: " << ocjena << endl;
-        cout << "Broj epizoda: " << brojEpizoda << endl;
-        cout << "Broj sezona: " << brojSezona << endl;
-    }
+
 
     friend ostream& operator <<(ostream& COUT, const Serija& obj) {
-        COUT << obj.naslov << " " << obj.zanr << " " << obj.godinaObjavljivanja << " " << obj.ocjena << " " << obj.brojEpizoda << " " << obj.brojSezona << endl;
+        COUT << obj._naslov << " (" << obj._godinaObjavljivanja << ") [" << obj._ocjena << "] - " << obj._zanr << endl;
+        COUT << "Broj sezona : " << obj._brojSezona << endl;
+        COUT << "Broj epizoda : " << obj._brojEpizoda << endl;
         return COUT;
     }
 };
@@ -122,40 +114,38 @@ public:
 class Film : public Media
 {
 public:
-    int trajanje; // misli se na trajanje u minutama
+    int _trajanje; // misli se na trajanje u minutama
 
 
-    // Implementirati potrebne konstruktore i destruktor
 
-    Film(const char* Naslov = "Nema naslova", const char* Zanr = "Nema zanr", int GodObjavljivanja = 2000, float Ocjena = 5, int Trajanje = 120) : Media(Naslov, Zanr, GodObjavljivanja, Ocjena) {
-        trajanje = Trajanje;
+    Film(const char* naslov = "Nema naslova", const char* zanr = "Nema zanr", int godina = 2000, float ocjena = 5, int trajanje = 0) : Media(naslov, zanr, godina, ocjena) {
+
+        _trajanje = trajanje;
     }
 
     Film(const Film& obj) : Media(obj)
     {
-        trajanje = obj.trajanje;
+        _trajanje = obj._trajanje;
+
     }
 
     Film& operator=(const Film& obj)
     {
         if (this != &obj) {
+
             Media::operator=(obj);
-            trajanje = obj.trajanje;
+
+            _trajanje = obj._trajanje;
+
+
         }
         return *this;
     }
 
-    void Ispis()
-    {
-        cout << "Naslov: " << naslov << endl;
-        cout << "Zanr: " << zanr << endl;
-        cout << "Godina objavljivanja: " << godinaObjavljivanja << endl;
-        cout << "Ocjena filma: " << ocjena << endl;
-        cout << "Trajanje filma: " << trajanje << endl;
-    }
 
     friend ostream& operator <<(ostream& COUT, const Film& obj) {
-        COUT << obj.naslov << " " << obj.zanr << " " << obj.godinaObjavljivanja << " " << obj.ocjena << " " << obj.trajanje << endl;
+        COUT << obj._naslov << " (" << obj._godinaObjavljivanja << ") [" << obj._ocjena << "] - " << obj._zanr << endl;
+        COUT << "Trajanje : " << obj._trajanje<< "min" << endl;
         return COUT;
     }
 };
@@ -163,130 +153,117 @@ public:
 class Korisnik
 {
 public:
-    char* korisnickoIme;
-    char* lozinka;
+    char* _korisnickoIme;
+    char* _lozinka;
 
-    Film* pregledaniFilmovi;
-    int maxPregledanihFilmova;
-    int trenutnoPregledanihFilmova;
+    Film* _pregledaniFilmovi;
+    int _maxPregledanihFilmova;
+    int _trenutnoPregledanihFilmova;
 
-    Serija* pregledaneSerije;
-    int maxPregledanihSerija;
-    int trenutnoPregledanihSerija;
+    Serija* _pregledaneSerije;
+    int _maxPregledanihSerija;
+    int _trenutnoPregledanihSerija;
 
     // Implementirati potrebne konstruktore i destruktor
 
-    Korisnik(const char* KorisnickoIme = "Dzejla Palalic", const char* Lozinka = "Dzejla", int MaxPF = 4, int MaxPS = 5) {
-        korisnickoIme = GetNiZKaraktera(KorisnickoIme);
-        lozinka = GetNiZKaraktera(Lozinka);
-
-        maxPregledanihFilmova = MaxPF;
-        trenutnoPregledanihFilmova = 0;
-        pregledaniFilmovi = new Film[maxPregledanihFilmova];
-
-        trenutnoPregledanihSerija = 0;
-        maxPregledanihSerija = MaxPS;
-        pregledaneSerije = new Serija[maxPregledanihSerija];
+    Korisnik(const char* KorisnickoIme = "test", const char* Lozinka = "test", int maxPF = 3, int maxPS = 3) {
+        _korisnickoIme = GetNizKaraktera(KorisnickoIme);
+        _lozinka = GetNizKaraktera(Lozinka);
+        
+        _maxPregledanihFilmova = maxPF;
+        _trenutnoPregledanihFilmova = 0;
+        _pregledaniFilmovi = new Film[_maxPregledanihFilmova];
+        
+        _trenutnoPregledanihSerija = 0;
+        _maxPregledanihSerija = maxPS;
+        _pregledaneSerije = new Serija[_maxPregledanihSerija];
     }
 
     Korisnik(const Korisnik& obj)
     {
-        korisnickoIme = GetNiZKaraktera(obj.korisnickoIme);
-        lozinka = GetNiZKaraktera(obj.lozinka);
+        _korisnickoIme = GetNizKaraktera(obj._korisnickoIme);
+        _lozinka = GetNizKaraktera(obj._lozinka);
+        
+        _maxPregledanihFilmova = obj._maxPregledanihFilmova;
+        _trenutnoPregledanihFilmova = obj._trenutnoPregledanihFilmova;
+        _pregledaniFilmovi = new Film[_maxPregledanihFilmova];
 
-        maxPregledanihFilmova = obj.maxPregledanihFilmova;
-        trenutnoPregledanihFilmova = obj.trenutnoPregledanihFilmova;
-        pregledaniFilmovi = new Film[maxPregledanihFilmova];
-        for (int i = 0; i < trenutnoPregledanihFilmova; i++)
+        for (int i = 0; i < _trenutnoPregledanihFilmova; i++)
         {
-            pregledaniFilmovi[i] = obj.pregledaniFilmovi[i];
+            _pregledaniFilmovi[i] = obj._pregledaniFilmovi[i];
         }
 
-        trenutnoPregledanihSerija = obj.trenutnoPregledanihSerija;
-        maxPregledanihSerija = obj.maxPregledanihSerija;
-        pregledaneSerije = new Serija[maxPregledanihSerija];
-        for (int i = 0; i < trenutnoPregledanihSerija; i++)
+        _trenutnoPregledanihSerija = obj._trenutnoPregledanihSerija;
+        _maxPregledanihSerija = obj._maxPregledanihSerija;
+        _pregledaneSerije = new Serija[_maxPregledanihSerija];
+        for (int i = 0; i < _trenutnoPregledanihSerija; i++)
         {
-            pregledaneSerije[i] = obj.pregledaneSerije[i];
+            _pregledaneSerije[i] = obj._pregledaneSerije[i];
         }
     }
 
     Korisnik& operator=(const Korisnik& obj) {
         if (this != &obj)
         {
-            delete[]korisnickoIme;
-            delete[]lozinka;
-            delete[]pregledaniFilmovi;
-            delete[]pregledaneSerije;
+            delete[] _korisnickoIme;
+            delete[] _lozinka;
+            delete[] _pregledaniFilmovi;
+            delete[] _pregledaneSerije;
 
-            korisnickoIme = GetNiZKaraktera(obj.korisnickoIme);
-            lozinka = GetNiZKaraktera(obj.lozinka);
+            _korisnickoIme = GetNizKaraktera(obj._korisnickoIme);
+            _lozinka = GetNizKaraktera(obj._lozinka);
 
-            maxPregledanihFilmova = obj.maxPregledanihFilmova;
-            trenutnoPregledanihFilmova = obj.trenutnoPregledanihFilmova;
-            pregledaniFilmovi = new Film[maxPregledanihFilmova];
-            for (int i = 0; i < trenutnoPregledanihFilmova; i++)
+            _maxPregledanihFilmova = obj._maxPregledanihFilmova;
+            _trenutnoPregledanihFilmova = obj._trenutnoPregledanihFilmova;
+            _pregledaniFilmovi = new Film[_maxPregledanihFilmova];
+
+            for (int i = 0; i < _trenutnoPregledanihFilmova; i++)
             {
-                pregledaniFilmovi[i] = obj.pregledaniFilmovi[i];
+                _pregledaniFilmovi[i] = obj._pregledaniFilmovi[i];
             }
 
-            trenutnoPregledanihSerija = obj.trenutnoPregledanihSerija;
-            maxPregledanihSerija = obj.maxPregledanihSerija;
-            pregledaneSerije = new Serija[maxPregledanihSerija];
-            for (int i = 0; i < trenutnoPregledanihSerija; i++)
+            _trenutnoPregledanihSerija = obj._trenutnoPregledanihSerija;
+            _maxPregledanihSerija = obj._maxPregledanihSerija;
+            _pregledaneSerije = new Serija[_maxPregledanihSerija];
+            for (int i = 0; i < _trenutnoPregledanihSerija; i++)
             {
-                pregledaneSerije[i] = obj.pregledaneSerije[i];
+                _pregledaneSerije[i] = obj._pregledaneSerije[i];
             }
         }
         return *this;
     }
 
     ~Korisnik() {
-        delete[]korisnickoIme; korisnickoIme = nullptr;
-        delete[]lozinka; lozinka = nullptr;
-        delete[]pregledaniFilmovi; pregledaniFilmovi = nullptr;
-        delete[]pregledaneSerije; pregledaneSerije = nullptr;
+        delete[] _korisnickoIme; _korisnickoIme = nullptr;
+        delete[] _lozinka; _lozinka = nullptr;
+        delete[] _pregledaniFilmovi; _pregledaniFilmovi = nullptr;
+        delete[] _pregledaneSerije; _pregledaneSerije = nullptr;
     }
 
-    void Ispis()
-    {
-        cout << "Korisnicko ime: " << korisnickoIme << endl;
-        cout << "Lozinka: " << lozinka << endl;
-        cout << "Pregledane serije: " << endl;
-        for (int i = 0; i < trenutnoPregledanihSerija; i++)
-        {
-            cout << pregledaneSerije[i];
-        }
-        cout << "Pregledani filmovi: " << endl;
-        for (int i = 0; i < trenutnoPregledanihFilmova; i++)
-        {
-            cout << pregledaniFilmovi[i];
-        }
-    }
+
 
     friend ostream& operator <<(ostream& COUT, const Korisnik& obj) {
-        COUT << obj.korisnickoIme << " " << obj.lozinka << endl;
+        COUT << obj._korisnickoIme << " " << obj._lozinka << endl;
         COUT << "Pregledane serije: " << endl;
-        for (int i = 0; i < obj.trenutnoPregledanihSerija; i++)
+        for (int i = 0; i < obj._trenutnoPregledanihSerija; i++)
         {
-            COUT << obj.pregledaneSerije[i];
+            COUT << obj._pregledaneSerije[i];
         }
         COUT << "Pregledani filmovi: " << endl;
-        for (int i = 0; i < obj.trenutnoPregledanihFilmova; i++)
+        for (int i = 0; i < obj._trenutnoPregledanihFilmova; i++)
         {
-            COUT << obj.pregledaniFilmovi[i];
+            COUT << obj._pregledaniFilmovi[i];
         }
 
         return COUT;
     }
 
-    //                         Dzejla     dzejla1234
-    //                           user           pw
-    bool IsUserDataValid(const char* username,const char* password)
+
+    bool IsUserDataValid(const char* username, const char* password)
     {
         // Funkcija vraca true false u ovisnosti od toga da li su proslijedjeni podaci tacni
         // Odnosno da li se korisnik moze logirati ili ne
-        if (strcmp(username, korisnickoIme) == 0 && strcmp(password, lozinka) == 0) {
+        if (strcmp(username, _korisnickoIme) == 0 && strcmp(password, _lozinka) == 0) {
             return true;
         }
         return false;
@@ -300,20 +277,20 @@ public:
         // Funkcija ima za cilj dodavanje novog filma u niz pregldanih.
         // Voditi racuna da se ne mogu dodati dva ista filma (to su filmovi koji imaju isti naziv i godinu izdavanja)
 
-        if (maxPregledanihFilmova == trenutnoPregledanihFilmova) {
+        if (_maxPregledanihFilmova == _trenutnoPregledanihFilmova) {
             return false;
         }
 
-        for (int i = 0; i < trenutnoPregledanihFilmova; i++)
+        for (int i = 0; i < _trenutnoPregledanihFilmova; i++)
         {
-            if (strcmp(pregledaniFilmovi[i].naslov, film.naslov) == 0 && film.godinaObjavljivanja == pregledaniFilmovi[i].godinaObjavljivanja) {
+            if (strcmp(_pregledaniFilmovi[i]._naslov, film._naslov) == 0 && film._godinaObjavljivanja == _pregledaniFilmovi[i]._godinaObjavljivanja) {
                 cout << "Film je vec pregledan" << endl;
                 return false;
             }
         }
 
-        pregledaniFilmovi[trenutnoPregledanihFilmova] = film;
-        trenutnoPregledanihFilmova++;
+        _pregledaniFilmovi[_trenutnoPregledanihFilmova] = film;
+        _trenutnoPregledanihFilmova++;
         return true;
 
     }
@@ -323,20 +300,20 @@ public:
         // Funkcija ima za cilj dodavanje nove serije u niz pregldanih.
         // Voditi racuna da se ne mogu dodati dvije iste serije (to su serije koje imaju isti naziv i godinu izdavanja)
 
-        if (maxPregledanihSerija == trenutnoPregledanihSerija) {
+        if (_maxPregledanihSerija == _trenutnoPregledanihSerija) {
             return false;
         }
 
-        for (int i = 0; i < trenutnoPregledanihSerija; i++)
+        for (int i = 0; i < _trenutnoPregledanihSerija; i++)
         {
-            if (strcmp(pregledaneSerije[i].naslov, serija.naslov) == 0 && serija.godinaObjavljivanja == pregledaneSerije[i].godinaObjavljivanja) {
+            if (strcmp(_pregledaneSerije[i]._naslov, serija._naslov) == 0 && serija._godinaObjavljivanja == _pregledaneSerije[i]._godinaObjavljivanja) {
                 cout << "Serija je vec pregledan" << endl;
                 return false;
             }
         }
 
-        pregledaneSerije[trenutnoPregledanihSerija] = serija;
-        trenutnoPregledanihSerija++;
+        _pregledaneSerije[_trenutnoPregledanihSerija] = serija;
+        _trenutnoPregledanihSerija++;
         return true;
 
 
@@ -345,22 +322,22 @@ public:
     Film* GetNajnovijiFilm() // 0 
     {
         // Funkcija kao rezultat vraca pokazivac na najnoviji film kojeg je korisnik odgledao
-        if (trenutnoPregledanihFilmova == 0) {
+        if (_trenutnoPregledanihFilmova == 0) {
             return nullptr;
         }
 
-        int NajvecaGodina = INT_MIN;  // 2011
+        int najvecaGodina = INT_MIN;  // 2011
         int pozicija = 0;
 
-        for (int i = 0; i < trenutnoPregledanihFilmova; i++)// 2011 2023 2007 2013 1231 123 123 213 123 123 1231231 
+        for (int i = 0; i < _trenutnoPregledanihFilmova; i++)// 2011 2023 2007 2013 1231 123 123 213 123 123 1231231 
         {
-            if (pregledaniFilmovi[i].godinaObjavljivanja > NajvecaGodina) { // 2007 > 2023
-                NajvecaGodina = pregledaniFilmovi[i].godinaObjavljivanja; // 2023
+            if (_pregledaniFilmovi[i]._godinaObjavljivanja > najvecaGodina) { // 2007 > 2023
+                najvecaGodina = _pregledaniFilmovi[i]._godinaObjavljivanja; // 2023
                 pozicija = i;                                              // 1
             }
         }
 
-        return new Film(pregledaniFilmovi[pozicija]);
+        return new Film(_pregledaniFilmovi[pozicija]);
     }
 
 
@@ -371,98 +348,30 @@ public:
     {
         // Funkcija kao rezultat vraca pokazivac na seriju sa najvecom ocjenu koju je korisnik odgledao
 
-        if (trenutnoPregledanihSerija == 0) {
+        if (_trenutnoPregledanihSerija == 0) {
             return nullptr;
         }
-       
-        int NajboljaSerija = INT_MIN;
+
+        int najboljaSerija = INT_MIN;
         int pozicija = 0;
 
-        for (int i = 0; i < trenutnoPregledanihSerija; i++)
+        for (int i = 0; i < _trenutnoPregledanihSerija; i++)
         {
-            if (pregledaneSerije[i].ocjena > NajboljaSerija) { // 9 > 9
-                NajboljaSerija = pregledaneSerije[i].ocjena;
+            if (_pregledaneSerije[i]._ocjena > najboljaSerija) { // 9 > 9
+                najboljaSerija = _pregledaneSerije[i]._ocjena;
                 pozicija = i;
             }
         }
-        return new Serija(pregledaneSerije[pozicija]);
+        return new Serija(_pregledaneSerije[pozicija]);
     }
 };
 
 void main()
 {
-    //Media media;
-    //media.Ispis();
-    //printf("\n");
-    //Media media1("The night agent", "Akcija", 2021, 9);
-    //media1.Ispis();
-    //printf("\n");
-    //Serija serija;
-    //serija.Ispis();
-    //printf("\n");
 
 
-    Serija serija1("You", "Nepoznat", 1900, 4, 8, 4);
-    Serija serija2("Game of Thrones", "Fantasy", 2011, 9, 100, 10);
 
 
-    //serija1.Ispis();
-    //printf("\n");
-    //Film film;
-    //film.Ispis();
-    //printf("\n");
 
-
-    Film film1("Agent", "Horor", 2011, 7, 125);
-    Film film2("Super Mario bros.", "Animation", 2023, 9, 100);
-    Film film3("Into the wild", "Adventure", 2007, 10, 160);
-
- 
-
-
-   /* film1.Ispis();*/
-    printf("\n");
-    Korisnik korisnik;
-    //korisnik.Ispis();
-    printf("\n");
-    Korisnik korisnik1("Dzejla", "dzejla1234", 5 , 5);
-   
-
-
-    //if (korisnik1.IsUserDataValid("Dzejla","dzejla1234")) {
-    //    cout << "Podaci su validni" << endl;
-    //}
-    //else {
-    //    cout << "Podaci nisu validni" << endl;
-    //}
-
-    korisnik1.DodajFilm(film1);
-    korisnik1.DodajFilm(film2);
-    korisnik1.DodajFilm(film3);
-
-    korisnik1.DodajSeriju(serija1);
-    korisnik1.DodajSeriju(serija2);
-
-    cout << korisnik1;
-
-    cout << "Najnoviji film je " << *korisnik1.GetNajnovijiFilm();
-    cout << "Najbolja serija je " <<  *korisnik1.GetNajboljaSerija();
-
-
-    /* Serija* serija = user.GetNajboljaSerija();
-
-     if (serija != nullptr)
-     {
-         cout << "Najbolje ocjenjena serija:" << endl;
-         serija->Ispis();
-     }
-
-     Film* film = user.GetNajnovijiFilm();
-
-     if (film != nullptr)
-     {
-         cout << "Najnoviji film:" << endl;
-         film->Ispis();
-     }*/
     system("PAUSE>0");
 }
