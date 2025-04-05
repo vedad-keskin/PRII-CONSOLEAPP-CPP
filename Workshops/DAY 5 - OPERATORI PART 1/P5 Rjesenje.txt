@@ -62,7 +62,7 @@ public:
 	}
 
 	friend ostream& operator << (ostream& COUT, const Artikal& obj) {
-		COUT << obj._naziv << " ["<<obj._sifra<<"] - "<<obj._cijena<<" KM" << endl;
+		COUT << obj._naziv << " [" << obj._sifra << "] - " << obj._cijena << " KM" << endl;
 		COUT << "Kolicina na skladistu : " << obj._kolicinaNaSkladistu << " kom" << endl;
 		return COUT;
 	}
@@ -92,7 +92,7 @@ public:
 	//Operator += na način da se stanje na skladištu artikla promijeni za proslijeđenu vrijednost
 
 	// artikal1 += 10;
-	 
+
 	Artikal& operator += (int kolicina) {
 
 
@@ -252,7 +252,7 @@ public:
 	bool operator == (const StavkaRacuna& obj) {
 
 
-		if (strcmp(_artikal->GetSifra(),obj._artikal->GetSifra()) == 0) {
+		if (strcmp(_artikal->GetSifra(), obj._artikal->GetSifra()) == 0) {
 
 			return true;
 		}
@@ -302,7 +302,8 @@ public:
 
 
 class Racun {
-	static int _brojRacuna; // 1000 -> 1001 -> 1002
+	static int _id; // --> dijeli se izmedju Racuna, svi rade sa istom varijablom 
+	int _brojRacuna; // 1000 -> 1001 -> 1002 
 	StavkaRacuna* _stavke;
 	int _trenutno;
 	int _max;
@@ -313,7 +314,9 @@ public:
 
 	Racun(int max = 0) {
 
-		_brojRacuna = _brojRacuna + 1;
+		_id++; // povecanje zajednicke varijable 
+
+		_brojRacuna = _id;
 
 		_max = max;
 		_trenutno = 0;
@@ -390,7 +393,7 @@ public:
 
 
 	// racun1(artikal1, 3);
-	
+
 	Racun& operator () (Artikal artikal, int kolicina) {
 
 		if (_max == _trenutno) {
@@ -446,7 +449,7 @@ public:
 
 		for (int i = 0; i < _trenutno; i++)
 		{
-			cout <<endl<< _stavke[i] ;
+			cout << endl << _stavke[i];
 			cout << endl << "========================" << endl;
 		}
 
@@ -461,7 +464,7 @@ public:
 
 };
 
-int Racun::_brojRacuna = 1000; // 1001 , 1002 , 1003
+int Racun::_id = 1000; // 1001 , 1002 , 1003
 
 
 void main() {
@@ -491,6 +494,11 @@ void main() {
 	racun1(artikal3, 1);
 
 	racun1.PrintRacun();
+
+	Racun racun2(3);
+	racun2.PrintRacun();
+	Racun racun3(3);
+	racun3.PrintRacun();
 
 
 

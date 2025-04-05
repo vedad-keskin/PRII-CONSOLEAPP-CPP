@@ -18,13 +18,13 @@ public:
 
 
 	// Operator -= na način da se stanje na skladištu artikla promijeni za proslijeđenu vrijednost
-	   
+
 	// Operator += na način da se stanje na skladištu artikla promijeni za proslijeđenu vrijednost
-	   
+
 	// Operator ++ na način da se cijena artikla uveća za 1
-	   
+
 	// Operator -- na način da se cijena artikla umanji za 1
-	   
+
 	// Operator == koji poredi artikle na osnovu sifre
 
 
@@ -47,11 +47,11 @@ public:
 	// 7. Dodatne operatore
 
 	// Operator += koji uvećava stanje na skladištu artikla
-	   
+
 	// Operator -= koji umanjuje stanje na skladištu artikla
-	   
+
 	// Operator == koji poredi stavke na osnovu sifre
-	   
+
 	// Operator ++ koji uvećava količinu stavke racuna
 
 
@@ -66,7 +66,8 @@ public:
 
 
 class Racun {
-	static int _brojRacuna;
+	static int _id; // unikatni identifikator, koristi se za povećanje broja računa uz osiguravanje unikatnosti 
+	int _brojRacuna;
 	StavkaRacuna* _stavke;
 	int _trenutno;
 	int _max;
