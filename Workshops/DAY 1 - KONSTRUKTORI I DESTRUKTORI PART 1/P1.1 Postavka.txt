@@ -7,13 +7,13 @@ class Predmet {
 public:char* _naziv;
 public:int _ocjena;
 public:int* _ECTS;
-	  //Kreirati i implementirati
-	  //1. Defaultni konstruktor
-	  //2. Konstruktor koji prima parametre
-	  //3. Konstruktor kopije
-	  //4. Operator dodjele
-	  //5. Destruktor
-	  //6. Ispis ili COUT 
+	  // Kreirati i implementirati
+	  // 1. Defaultni konstruktor
+	  // 2. Konstruktor koji prima parametre
+	  // 3. Konstruktor kopije
+	  // 4. Operator dodjele
+	  // 5. Destruktor
+	  // 6. Ispis ili COUT 
 
 
 
@@ -32,14 +32,14 @@ class Student {
 	int _trenutno;
 	int _max;
 public:
-	//Kreirati i implementirati
-	//1. Defaultni konstruktor
-	//2. Konstruktor koji prima parametre
-	//3. Konstruktor kopije
-	//4. Operator dodjele
-	//5. Destruktor
-	//6. Ispis ili COUT 
-	//7. Potrebne funkcije
+	// Kreirati i implementirati
+	// 1. Defaultni konstruktor
+	// 2. Konstruktor koji prima parametre
+	// 3. Konstruktor kopije
+	// 4. Operator dodjele
+	// 5. Destruktor
+	// 6. Ispis ili COUT 
+	// 7. Potrebne funkcije
 
 
 
