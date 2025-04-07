@@ -98,7 +98,11 @@ public:             //      dft      //     user def.    //
 
 	//	predmet5 = predmet1; // <-- operator dodjele
 
-	Predmet& operator = (const Predmet& predmet) {
+	// & --> salje se original tako sto se posalje adresa objekta i onda se poredi sa this (adresom glavnog objekta)
+	// const --> originalni objekat je konstantan i ne moze se mijenjati
+	// vraca se *this ---> dereferencirani objekat
+
+	Predmet& operator = (const Predmet& predmet) { 
 
 		if (this != &predmet) {
 
