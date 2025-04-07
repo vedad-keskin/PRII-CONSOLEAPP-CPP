@@ -85,14 +85,13 @@ public:
 	// 7. Dodatne operatore
 
 	// Operator () - Dodaje nove artikle u _stavke (ulazni parametri su Artikal i kolicina)
-	// Voditi računa o tome da li je račun već naplaćen
+	// Voditi računa da nema duplikata
+	// Voditi računa da nema prekoračenja niza
 	// Prilikom svakog dodavanja artikla, ažurirati vrijednosti iznosBezPDV i iznosSaPDV
 
 
 	void PrintRacun() {
-		// Ispisuje sve stavke računa zajedno sa iznosom za plaćanje sa i bez PDV-a
-		// Voditi računa da nema duplikata
-		// Voditi računa da nema prekoračenja niza
+		// Ispisuje sve stavke računa zajedno sa iznosom za plaćanje sa i bez PDV-a i brojem računa
 		// Voditi računa da se jedan račun ne može dva puta isprintati (paziti na bool _naplaceno)
 
 	}
