@@ -20,7 +20,7 @@ public:
 
 
 class Fudbaler {
-	char* _imePrezime; 
+	char* _imePrezime;
 	char* _pozicija;
 	int _brojDresa;
 	Datum* _datumRodjenja;
@@ -47,17 +47,17 @@ class Tim {
 	int _max;
 public:
 	//Kreirati i implementirati
-	//1. Defaultni konstruktor
-	//2. Konstruktor koji prima parametre
-	//3. Konstruktor kopije
-	//4. Operator dodjele
-	//5. Destruktor
-	//6. Operator ispisa 
-	//7. Potrebne funkcije
-	//8. Operator poredjenja
+	// 1. Defaultni konstruktor
+	// 2. Konstruktor koji prima parametre
+	// 3. Konstruktor kopije
+	// 4. Operator dodjele
+	// 5. Destruktor
+	// 6. Operator ispisa 
+	// 7. Potrebne funkcije
+	// 8. Operator poredjenja
 
 
-	//Operator ( ) na način da se doda igrač u tim gdje je Fudbaler parametar operatora
+	// Operator ( ) na način da se doda igrač u tim gdje je Fudbaler parametar operatora
 
 
 	const char* GetNazivTima() {
@@ -67,30 +67,39 @@ public:
 };
 
 
-class Liga{
+class Liga {
 	char* _naziv;
 	Tim* _timovi;
 	int* _trenutno;
 	int _max;
 public:
 	//Kreirati i implementirati
-	//1. Defaultni konstruktor
-	//2. Konstruktor koji prima parametre
-	//3. Konstruktor kopije
-	//4. Operator dodjele
-	//5. Destruktor
-	//6. Operator ispisa 
-	//7. Potrebne funkcije
-	//8. Operator poredjenja
+	// 1. Defaultni konstruktor
+	// 2. Konstruktor koji prima parametre
+	// 3. Konstruktor kopije
+	// 4. Operator dodjele
+	// 5. Destruktor
+	// 6. Operator ispisa 
+	// 7. Potrebne funkcije
+	// 8. Operator poredjenja
 
 
-	//Operator ( ) na način da se da parametar Tim dodaje u niz _timovi
+	// Operator ( ) na način da se parametar Tim doda u niz _timovi
+	// Obratiti pažnju na dupliranje timova i na opseg niza
+	   
 
+	// Operator [ ] na način da se vraća true ili false u slučaju da Tim postoji ili ne postoji u nizu _timovi
 
-	//Operator [ ] na način da se pronalazi Tim gdje je parametar Tim
- 
+	bool operator [] (Tim tim) {
 
-	//Operator [ ] na način da se pronalazi Tim gdje je parametar naziv tima
+	}
+	   
+	   
+	// Operator [ ] na način da se vraća true ili false u slučaju da postoji ili ne postoji tim sa proslijeđenim nazivom u nizu _timovi
+
+	bool operator [] (const char* nazivTima) {
+
+	}
 
 
 };
@@ -114,6 +123,29 @@ void main()
 	//Fudbaler fudbaler8("Andres Iniesta", "CMF", 8, datum1);
 	//Fudbaler fudbaler9("Ronaldinho", "SS", 10, datum1);
 	//Fudbaler fudbaler10("David Villa", "CF", 9, datum1);
+
+	//Tim tim1("Bayern Munchen", 11);
+
+	//tim1(fudbaler1);
+	//tim1(fudbaler2);
+	//tim1(fudbaler3);
+	//tim1(fudbaler4);
+	//tim1(fudbaler5);
+
+	//Tim tim2("Barcelona", 11);
+	//tim2(fudbaler6);
+	//tim2(fudbaler7);
+	//tim2(fudbaler8);
+	//tim2(fudbaler9);
+	//tim2(fudbaler10);
+
+
+	//Liga liga("Liga Sampiona", 36);
+
+	//liga(tim1);
+	//liga(tim2);
+
+	//cout << liga;
 
 
 
