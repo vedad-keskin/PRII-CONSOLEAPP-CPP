@@ -40,7 +40,7 @@ public:             //      dft      //     user def.    //
 
 		//char tekst1[] = "Nema Predmeta";
 		//string tekst2 = "Nema predmeta";
-		const char* dftNaziv = "Nema predmeta";
+		const char* dftNaziv = "Nema predmeta"; // string literal --> read only tekst
 
 		int vel = strlen(dftNaziv) + 1; // 14 
 
@@ -102,7 +102,7 @@ public:             //      dft      //     user def.    //
 	// const --> originalni objekat je konstantan i ne moze se mijenjati
 	// vraca se *this ---> dereferencirani objekat
 
-	Predmet& operator = (const Predmet& predmet) { 
+	Predmet& operator = (const Predmet& predmet) {
 
 		if (this != &predmet) {
 
