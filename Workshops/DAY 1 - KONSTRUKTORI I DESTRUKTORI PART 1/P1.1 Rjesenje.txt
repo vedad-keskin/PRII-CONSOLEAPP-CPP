@@ -129,7 +129,7 @@ public:             //      dft      //     user def.    //
 
 
 
-	// destructor
+	// destructor ili dealokacija
 	// 
 	// TILDA -> alt gr + 1
 	~Predmet() {
