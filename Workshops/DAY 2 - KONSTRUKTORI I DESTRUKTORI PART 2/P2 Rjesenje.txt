@@ -37,7 +37,7 @@ public:
 	}
 
 	Datum& operator = (const Datum& obj) {	//operator dodjele, kopiramo destruktor + copy konstruktor
-		//(ne stavljamo adresu na nullptr jer cemo svakako nesto novo upisati na nju)
+		//(ne stavljamo adresu na nullptr jer new ce to uraditi za nas)
 		if (this != &obj) {
 
 			delete _dan;
