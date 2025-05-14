@@ -88,6 +88,7 @@ public:
 	// Voditi računa da nema duplikata
 	// Voditi računa da nema prekoračenja niza
 	// Prilikom svakog dodavanja artikla, ažurirati vrijednosti iznosBezPDV i iznosSaPDV
+	// Ažurirati količinu na skladištu artikla nakon svake kupovine
 
 
 	void PrintRacun() {
