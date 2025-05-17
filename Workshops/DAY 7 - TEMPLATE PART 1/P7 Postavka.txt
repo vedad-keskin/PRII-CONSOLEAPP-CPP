@@ -35,7 +35,7 @@ public:
 	}
 
 
-	bool Empty() {
+	bool IsEmpty() {
 		// Vršiti provjeru da li je niz prazan
 
 	}
