@@ -428,14 +428,20 @@ public:
 
 			//}
 			if (bod > 5) {
-				// OVDJE RADIMO THREAD 
-				// THREAD POZIVA MUTEX
 
-				// AKO NAM KAZE NAKON 3 SEKUNDE , 300 MILISEKUNDI
-				// this_thread::sleep_for(chrono::seconds(3));
-				// this_thread::sleep_for(chrono::milliseconds(300));
-				thread t1(&Kupac::PosaljiMail, this, bod);
-				t1.join();
+				 //AKO NAM KAZE NAKON 3 SEKUNDE , 3000 MILISEKUNDI
+				//this_thread::sleep_for(chrono::seconds(3));
+				//// this_thread::sleep_for(chrono::milliseconds(3000));
+				//thread t1(&Kupac::PosaljiMail, this, bod); 
+				//t1.join();
+
+				// tacnije ali kompleksnije rješenje , kada se pauzira t1 thread umjesto main threada
+
+				//thread t1([this, bod]() {
+				//	this_thread::sleep_for(chrono::seconds(3));
+				//	PosaljiMail(bod);
+				//	});
+				//t1.join();
 
 			}
 
@@ -453,12 +459,12 @@ public:
 	//  Zahvaljujemo vam na kupovini.
 	//  Puno pozdrava
 
-	void PosaljiMail(int bodovi) {
+	void PosaljiMail(int bod) {
 		m.lock();
 		cout << "To: " << _emailAdresa << endl;
 		cout << "Subject: Osvareni bodovi" << endl << endl;
 		cout << "Postovani," << endl << endl;
-		cout << "Prilikom posljednje kupovine ste ostvarili " << bodovi << " bodova, tako da trenutno vas ukupan broj bodova iznosi " << GetBodoviUkupno() << endl << endl;
+		cout << "Prilikom posljednje kupovine ste ostvarili " << bod << " bodova, tako da trenutno vas ukupan broj bodova iznosi " << GetBodoviUkupno() << endl << endl;
 		cout << "Zahvaljujemo vam na kupovini." << endl;
 		cout << "Puno pozdrava" << endl;
 		m.unlock();
@@ -543,10 +549,10 @@ public:
 
 			for (int j = 0; j < _kupovine->getElement2(i).GetKomentareKarakteristika().getTrenutno(); j++)
 			{
-                //			NARUDZBA - Nismo mogli odabrati sve potrebne opcije
-                //			KVALITET - Kvalitet je ocekivan
-                //			PAKOVANJE - Pakovanje je bio osteceno
-                //			ISPORUKA - Mada su najavili da ce proizvod biti isporucen u roku od 2 dana, cekali smo 5 dana
+				//			NARUDZBA - Nismo mogli odabrati sve potrebne opcije
+				//			KVALITET - Kvalitet je ocekivan
+				//			PAKOVANJE - Pakovanje je bio osteceno
+				//			ISPORUKA - Mada su najavili da ce proizvod biti isporucen u roku od 2 dana, cekali smo 5 dana
 
 				// Nismo mogli odabrati sve potrebne opcije
 				string komentar = _kupovine->getElement2(i).GetKomentareKarakteristika().getElement2(j);
