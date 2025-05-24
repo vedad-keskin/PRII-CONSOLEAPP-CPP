@@ -48,7 +48,7 @@ public:
 class Predmet {
 public:
 	char* _naziv;
-	int _ECTS;
+	int* _ECTS;
 	Profesor* _predmetniProfesor;
 	//Kreirati i implementirati
 	//1. Defaultni konstruktor
