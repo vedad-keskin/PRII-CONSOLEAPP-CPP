@@ -32,7 +32,7 @@ public:
 
 };
 
-class Osoba {
+class Glasac {
 public:
 	Datum _datumRodjenja;
 	char* _imePrezime;
@@ -51,7 +51,7 @@ public:
 
 class GlasackiListic {
 public:
-	Osoba* _glasac;
+	Glasac* _glasac;
 	Kandidat* _kandidat;
 	//Kreirati i implementirati
 	//1. Defaultni konstruktor
