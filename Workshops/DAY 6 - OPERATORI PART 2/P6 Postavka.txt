@@ -36,7 +36,7 @@ public:
 	//8. Operator poredjenja
 
 
-	//Operator += na način da se mijenja broj dresa fudbalera za proslijeđenu vrijednost
+	//Operator += na način da se mijenja broj dresa fudbalera na proslijeđenu vrijednost
 
 
 };
@@ -86,15 +86,15 @@ public:
 
 	// Operator ( ) na način da se parametar Tim doda u niz _timovi
 	// Obratiti pažnju na dupliranje timova i na opseg niza
-	   
+
 
 	// Operator [ ] na način da se vraća true ili false u slučaju da Tim postoji ili ne postoji u nizu _timovi
 
 	bool operator [] (Tim tim) {
 
 	}
-	   
-	   
+
+
 	// Operator [ ] na način da se vraća true ili false u slučaju da postoji ili ne postoji tim sa proslijeđenim nazivom u nizu _timovi
 
 	bool operator [] (const char* nazivTima) {
