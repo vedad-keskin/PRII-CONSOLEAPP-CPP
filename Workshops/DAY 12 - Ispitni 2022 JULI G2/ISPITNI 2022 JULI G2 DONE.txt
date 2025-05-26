@@ -149,43 +149,25 @@ public:
 	}
 
 
-	//                                    0      10     10
-	Kolekcija<int, int> InsertAt(int lokacija, T1 el1, T2 el2) {
+	Kolekcija<int, int> InsertAt(int lokacija, int el1, int el2) {
 
-		T1* temp1 = _elementi1; // 0 - 9 
-		T2* temp2 = _elementi2;
 
-		_elementi1 = new T1[*_trenutno + 1];
-		_elementi2 = new T2[*_trenutno + 1];
+		Kolekcija<int, int> novakolekcija;
+
 
 		for (int i = 0; i < *_trenutno; i++)
 		{
-			_elementi1[i] = temp1[i];
-			_elementi2[i] = temp2[i];
-		}
-
-		for (int i = *_trenutno; i > lokacija; i--)
-		{
-			_elementi1[i] = _elementi1[i - 1];
-			_elementi2[i] = _elementi2[i - 1];
-		}
-
-		_elementi1[lokacija] = el1;
-		_elementi2[lokacija] = el2;
-
-		(*_trenutno)++;
-
-		Kolekcija<int, int> novakolekcija; // prazan niz 
-
-		for (int i = 0; i < *_trenutno; i++)
-		{
+			if (i == lokacija) {
+				novakolekcija.AddElement(el1, el2);
+			}
 			novakolekcija.AddElement(_elementi1[i], _elementi2[i]);
 		}
+		
+		*this = novakolekcija;
 
 		return novakolekcija;
 
 	}
-
 
 
 	~Kolekcija() {
