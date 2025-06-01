@@ -495,8 +495,10 @@ public:
 			{
 				ukupno++;
 			}
+
 		}
 		return ukupno;
+
 	}
 
 	bool operator == (const Reprezentacija& obj) {
@@ -507,8 +509,8 @@ public:
 	vector<Igrac>& GetIgraci() { return _igraci; }
 
 	friend ostream& operator << (ostream& COUT, const Reprezentacija& obj) {
+		COUT << obj._drzava ;
 
-		COUT << obj._drzava;
 
 		return COUT;
 	}
@@ -518,7 +520,6 @@ mutex m;
 class Prventstvo {
 	Kolekcija<Reprezentacija, Reprezentacija, 20> _utakmice;
 public:
-
 
 	Prventstvo() {
 
@@ -541,10 +542,11 @@ public:
 
 	void AddUtakmicu(Reprezentacija rep1, Reprezentacija rep2) {
 
+
 		for (int i = 0; i < _utakmice.getTrenutno(); i++)
 		{
 			if (rep1 == _utakmice.getElement1(i) && rep2 == _utakmice.getElement2(i)) {
-				throw exception("Utakmica vec dodana");
+				throw exception("Utakmica je vec dodata");
 			}
 		}
 
@@ -559,24 +561,24 @@ public:
 	}
 
 	////nakon svakog evidentiranog pogotka, svim igracima te utakmice (pod pretpostavkom da su validne email adrese sa ID - ovima igraca),
-//    //u zasebnom thread-u, poslati email, u razmaku od 2 sekunde, sa sljedecim sadrzajem :
-   ///*
-   //To: ID#000-1@euro2024.com
-   //From: info@euro2024.com
-   //Subject: Informacija
+// //u zasebnom thread-u, poslati email, u razmaku od 2 sekunde, sa sljedecim sadrzajem :
+///*
+//To: ID#000-1@euro2024.com
+//From: info@euro2024.com
+//Subject: Informacija
 
-   //Postovani,
+//Postovani,
 
-   //U 20:35:16 sati igrac Jasmin Azemovic je zabiljezio svoj 1 pogodak na ovoj utakmici.
-   //Trenutni rezultat je:
+//U 20:35:16 sati igrac Jasmin Azemovic je zabiljezio svoj 1 pogodak na ovoj utakmici.
+//Trenutni rezultat je:
 
-   //BOSNA_I_HERCEGOVINA 2 : 0 ENGLESKA
+//BOSNA_I_HERCEGOVINA 2 : 0 ENGLESKA
 
-   //Puno srece u nastavku susreta.
-   //Neka bolji tim pobijedi.
-   //*/
+//Puno srece u nastavku susreta.
+//Neka bolji tim pobijedi.
+//*/
 
-	void PosaljiMail(const char* ID, Igrac igrac, Vrijeme vrijemePogotka, int brojGola, Reprezentacija rep1, Reprezentacija rep2) {
+	void PosaljiMail(const char* ID, Vrijeme vrijemePogotka, Igrac igracKojiJeDaoGol, int brojGola, Reprezentacija rep1, Reprezentacija rep2) {
 
 		m.lock();
 
@@ -584,9 +586,9 @@ public:
 		cout << "From: info@euro2024.com" << endl;
 		cout << "Subject: Informacija" << endl << endl;
 		cout << "Postovani," << endl << endl;
-		cout << "U " << vrijemePogotka << " sati igrac " << igrac.GetImePrezime() << " je zabiljezio svoj " << brojGola << " pogodak na ovoj utakmici." << endl;
-		cout << "Trenutni rezultat je:" << endl<<endl;
-		cout << rep1 << " " << rep1.GetBrojGolova() << " : "  << rep2.GetBrojGolova() << " " << rep2 << endl << endl;
+		cout << "U " << vrijemePogotka << " sati igrac " << igracKojiJeDaoGol.GetImePrezime() << " je zabiljezio svoj " << brojGola << " pogodak na ovoj utakmici." << endl;
+		cout << "Trenutni rezultat je:" << endl << endl;
+		cout << rep1 << " " << rep1.GetBrojGolova() << " : " << rep2.GetBrojGolova() << " " << rep2 << endl << endl;
 		cout << "Puno srece u nastavku susreta." << endl;
 		cout << "Neka bolji tim pobijedi." << endl;
 
@@ -594,73 +596,73 @@ public:
 
 	}
 
+	bool AddPogodak(Reprezentacija rep1, Reprezentacija rep2, const char* IDIme, Pogodak pogodak) {
 
-	bool AddPogodak(Reprezentacija rep1, Reprezentacija rep2, const char* imeID, Pogodak pogodak) {
-
-
-		// utakmice
+		// sve utakmice
 
 		for (int i = 0; i < _utakmice.getTrenutno(); i++)
 		{
 
-			if (rep1 == _utakmice.getElement1(i).GetDrzava() && rep2 == _utakmice.getElement2(i).GetDrzava()) {
+			// pronaci nasu utakmicu
 
-				// igraci rep1 
+			if (rep1 == _utakmice.getElement1(i) && rep2 == _utakmice.getElement2(i)) {
+
+				// rep1 --> uci u njihove igrace
 
 				for (int j = 0; j < _utakmice.getElement1(i).GetIgraci().size(); j++)
 				{
 
-					// dupli golovi
+					// dupli pogoci
 
 					for (int k = 0; k < _utakmice.getElement1(i).GetIgraci()[j].GetPogoci().size(); k++)
 					{
 						if (pogodak == _utakmice.getElement1(i).GetIgraci()[j].GetPogoci()[k]) {
+
 							return false;
+
 						}
 					}
 
-					// dodavanje gola po ID-u ili imenu i prezimenu
 
-					if (strcmp(imeID, _utakmice.getElement1(i).GetIgraci()[j].GetID()) == 0 ||
-						strcmp(imeID, _utakmice.getElement1(i).GetIgraci()[j].GetImePrezime()) == 0) {
+					// pronaci igraca u rep1 sa ponudjenim ID ili Ime i prezimenom
 
-						// evidencija gola
+					if (strcmp(_utakmice.getElement1(i).GetIgraci()[j].GetID(), IDIme) == 0 ||
+						strcmp(_utakmice.getElement1(i).GetIgraci()[j].GetImePrezime(), IDIme) == 0) {
+
+						// nasli smo igraca kojem trebamo dodati gol
 
 						_utakmice.getElement1(i).GetIgraci()[j].DodajPogodak(pogodak);
 
-
-						// THREAD
+						// THREAD za rep1 
 
 						Igrac igracKojiJeDaoGol = _utakmice.getElement1(i).GetIgraci()[j];
 
-						int brojGolovaIgracaKojiJeDaoGol = igracKojiJeDaoGol.GetPogoci().size();
+						int brojGolovaKojiJeDaoIgrac = igracKojiJeDaoGol.GetPogoci().size();
 
+						// mail igracima rep1
+						
 						for (int k = 0; k < _utakmice.getElement1(i).GetIgraci().size(); k++)
 						{
-
 							Igrac trenutniIgrac = _utakmice.getElement1(i).GetIgraci()[k];
 
 							this_thread::sleep_for(chrono::seconds(2));
 
-							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), igracKojiJeDaoGol, pogodak.GetVrijemePogotka(), brojGolovaIgracaKojiJeDaoGol, _utakmice.getElement1(i), rep2);
+							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, brojGolovaKojiJeDaoIgrac, _utakmice.getElement1(i), _utakmice.getElement2(i));
 
 							t1.join();
-
 						}
 
-						// igraci drugog tima dobivaju mail za gol igraca prvog tima 
+						// rep2 tim koji nije dao gol 
 
 						for (int k = 0; k < _utakmice.getElement2(i).GetIgraci().size(); k++)
 						{
-
 							Igrac trenutniIgrac = _utakmice.getElement2(i).GetIgraci()[k];
 
 							this_thread::sleep_for(chrono::seconds(2));
 
-							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), igracKojiJeDaoGol, pogodak.GetVrijemePogotka(), brojGolovaIgracaKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
+							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, brojGolovaKojiJeDaoIgrac, _utakmice.getElement1(i), _utakmice.getElement2(i));
 
 							t1.join();
-
 						}
 
 
@@ -668,72 +670,82 @@ public:
 						return true;
 
 					}
-
 				}
 
-				// igraci rep2 
+
+				// rep2 --> uci u njihove igrace
 
 				for (int j = 0; j < _utakmice.getElement2(i).GetIgraci().size(); j++)
 				{
 
-					// dupli golovi
+					// dupli pogoci
 
 					for (int k = 0; k < _utakmice.getElement2(i).GetIgraci()[j].GetPogoci().size(); k++)
 					{
 						if (pogodak == _utakmice.getElement2(i).GetIgraci()[j].GetPogoci()[k]) {
+
 							return false;
+
 						}
 					}
 
-					if (strcmp(imeID, _utakmice.getElement2(i).GetIgraci()[j].GetID()) == 0 ||
-						strcmp(imeID, _utakmice.getElement2(i).GetIgraci()[j].GetImePrezime()) == 0) {
+
+					// pronaci igraca u rep1 sa ponudjenim ID ili Ime i prezimenom
+
+					if (strcmp(_utakmice.getElement2(i).GetIgraci()[j].GetID(), IDIme) == 0 ||
+						strcmp(_utakmice.getElement2(i).GetIgraci()[j].GetImePrezime(), IDIme) == 0) {
+
+						// nasli smo igraca kojem trebamo dodati gol
 
 						_utakmice.getElement2(i).GetIgraci()[j].DodajPogodak(pogodak);
 
-						// THREAD
+
+						// THREAD za rep2 
 
 						Igrac igracKojiJeDaoGol = _utakmice.getElement2(i).GetIgraci()[j];
 
-						int brojGolovaIgracaKojiJeDaoGol = igracKojiJeDaoGol.GetPogoci().size();
+						int brojGolovaKojiJeDaoIgrac = igracKojiJeDaoGol.GetPogoci().size();
+
 
 						for (int k = 0; k < _utakmice.getElement2(i).GetIgraci().size(); k++)
 						{
-
 							Igrac trenutniIgrac = _utakmice.getElement2(i).GetIgraci()[k];
 
 							this_thread::sleep_for(chrono::seconds(2));
 
-							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), igracKojiJeDaoGol, pogodak.GetVrijemePogotka(), brojGolovaIgracaKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
+							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, brojGolovaKojiJeDaoIgrac, _utakmice.getElement1(i), _utakmice.getElement2(i));
 
 							t1.join();
-
 						}
 
-						// igraci prvog tima dobivaju mail za gol igraca drugog tima 
+						// mail igracima rep1 ako je gol dala rep2
 
 						for (int k = 0; k < _utakmice.getElement1(i).GetIgraci().size(); k++)
 						{
-
 							Igrac trenutniIgrac = _utakmice.getElement1(i).GetIgraci()[k];
 
 							this_thread::sleep_for(chrono::seconds(2));
 
-							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), igracKojiJeDaoGol, pogodak.GetVrijemePogotka(), brojGolovaIgracaKojiJeDaoGol, _utakmice.getElement1(i),  _utakmice.getElement2(i));
+							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, brojGolovaKojiJeDaoIgrac, _utakmice.getElement1(i), _utakmice.getElement2(i));
 
 							t1.join();
-
 						}
+
 
 
 
 						return true;
 
 					}
-
 				}
 
 
+
+
+
+
 			}
+
 
 
 		}
@@ -741,6 +753,7 @@ public:
 
 	}
 
+///*
 //-------------------------------------------
 //BOSNA_I_HERCEGOVINA 3 : 1 ENGLESKA
 //-------------------------------------------
@@ -752,39 +765,40 @@ public:
 
 	friend ostream& operator << (ostream& COUT, const Prventstvo& obj) {
 
+		// sve utakmice
+
 		for (int i = 0; i < obj._utakmice.getTrenutno(); i++)
 		{
-			
-			COUT << crt << obj._utakmice.getElement1(i) << " " << obj._utakmice.getElement1(i).GetBrojGolova() <<" : " << obj._utakmice.getElement2(i).GetBrojGolova() << " " << obj._utakmice.getElement2(i) << crt ;
+			COUT << crt << obj._utakmice.getElement1(i) << " " << obj._utakmice.getElement1(i).GetBrojGolova() << " : " << obj._utakmice.getElement2(i).GetBrojGolova() << " " << obj._utakmice.getElement2(i) << crt;
 
-			// rep1
+
+			// igraci rep1 
 
 			for (int j = 0; j < obj._utakmice.getElement1(i).GetIgraci().size(); j++)
 			{
 
-				// igraci rep1 
+				// golova igraca rep1
 
 				for (int k = 0; k < obj._utakmice.getElement1(i).GetIgraci()[j].GetPogoci().size(); k++)
 				{
-					// golovi igraca iz rep1
+					// ime i prezime igraca koji je dao gol
 
 					COUT << obj._utakmice.getElement1(i).GetIgraci()[j].GetImePrezime() << endl;
-
 
 				}
 
 			}
 
-			// rep2
+			// igraci rep2
 
 			for (int j = 0; j < obj._utakmice.getElement2(i).GetIgraci().size(); j++)
 			{
 
-				// igraci rep2
+				// golova igraca rep2
 
 				for (int k = 0; k < obj._utakmice.getElement2(i).GetIgraci()[j].GetPogoci().size(); k++)
 				{
-					// golovi igraca iz rep2
+					// ime i prezime igraca koji je dao gol
 
 					COUT << "                          " << obj._utakmice.getElement2(i).GetIgraci()[j].GetImePrezime() << endl;
 
@@ -792,7 +806,10 @@ public:
 				}
 
 			}
+
+
 			COUT << "-------------------------------------------" << endl;
+
 
 
 		}
@@ -800,6 +817,7 @@ public:
 
 		return COUT;
 	}
+
 
 	vector<Igrac*> operator () (Vrijeme vrijemeOD, Vrijeme vrijemeDo) {
 
@@ -839,6 +857,8 @@ public:
 
 
 	}
+
+
 
 };
 const char* GetOdgovorNaPrvoPitanje() {
@@ -964,7 +984,8 @@ void main() {
 		cout << obj.what();
 	}
 
-
+	cout << BIH;
+	cout << ENG;
 
 	Prventstvo euro2024;
 
@@ -982,15 +1003,15 @@ void main() {
 	if (euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "ID#000-1", prviPogodak))
 		cout << "Pogodak uspjesno dodat" << endl;
 	////onemoguciti dodavanje istih pogodaka
-	if (!euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "Denis Music", prviPogodak))
-		cout << "Pogodak NIJE uspjesno dodat" << endl;
-	if (euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "ID#000-2", drugiPogodak))
-		cout << "Pogodak uspjesno dodat" << endl;
-	if (euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "Jasmin Azemovic", treciPogodak))
-		cout << "Pogodak uspjesno dodat" << endl;
-	if (euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "Goran Skondric", cetvrtiPogodak))
-		cout << "Pogodak uspjesno dodat" << endl;
-	//nakon svakog evidentiranog pogotka, svim igracima te utakmice (pod pretpostavkom da su validne email adrese sa ID - ovima igraca),
+	//if (!euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "Denis Music", prviPogodak))
+	//	cout << "Pogodak NIJE uspjesno dodat" << endl;
+	//if (euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "ID#000-2", drugiPogodak))
+	//	cout << "Pogodak uspjesno dodat" << endl;
+	//if (euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "Jasmin Azemovic", treciPogodak))
+	//	cout << "Pogodak uspjesno dodat" << endl;
+	//if (euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "Goran Skondric", cetvrtiPogodak))
+	//	cout << "Pogodak uspjesno dodat" << endl;
+	////nakon svakog evidentiranog pogotka, svim igracima te utakmice (pod pretpostavkom da su validne email adrese sa ID - ovima igraca),
 	// //u zasebnom thread-u, poslati email, u razmaku od 2 sekunde, sa sljedecim sadrzajem :
 	///*
 	//To: ID#000-1@euro2024.com
