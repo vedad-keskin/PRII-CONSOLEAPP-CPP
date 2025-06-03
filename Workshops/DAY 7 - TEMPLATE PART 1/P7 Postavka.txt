@@ -41,7 +41,7 @@ public:
 	}
 
 
-	bool Remove() {
+	bool RemoveLast() {
 		// Uklanja zadnji element iz niza
 
 	}
