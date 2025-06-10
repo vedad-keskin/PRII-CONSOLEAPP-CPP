@@ -600,7 +600,7 @@ public:
 	//Neka bolji tim pobijedi.
 	//*/
 
-	void PosaljiMail(const char* ID, Vrijeme vrijemePogotka, Igrac igracKojiJeDaoGol, int brojGola, Reprezentacija rep1, Reprezentacija rep2) {
+	void PosaljiMail(const char* ID, Vrijeme vrijemePogotka, Igrac igracKojiJeDaoGol, Reprezentacija rep1, Reprezentacija rep2) {
 
 		m.lock();
 
@@ -608,7 +608,7 @@ public:
 		cout << "From: info@euro2024.com" << endl;
 		cout << "Subject: Informacija" << endl << endl;
 		cout << "Postovani," << endl << endl;
-		cout << "U " << vrijemePogotka << " sati igrac " << igracKojiJeDaoGol.GetImePrezime() << " je zabiljezio svoj " << brojGola << " pogodak na ovoj utakmici." << endl;
+		cout << "U " << vrijemePogotka << " sati igrac " << igracKojiJeDaoGol.GetImePrezime() << " je zabiljezio svoj " << igracKojiJeDaoGol.GetPogoci().size() << " pogodak na ovoj utakmici." << endl;
 		cout << "Trenutni rezultat je:" << endl << endl;
 		cout << rep1 << " " << rep1.BrojGolova() << " : " << rep2.BrojGolova() << " " << rep2 << endl << endl;
 		cout << "Puno srece u nastavku susreta." << endl;
@@ -674,7 +674,7 @@ public:
 
 							this_thread::sleep_for(chrono::seconds(2));
 
-							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, brojGolovaKojiJeDaoIgrac, _utakmice.getElement1(i), _utakmice.getElement2(i));
+							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
 
 							t1.join();
 						}
@@ -687,7 +687,7 @@ public:
 
 							this_thread::sleep_for(chrono::seconds(2));
 
-							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, brojGolovaKojiJeDaoIgrac, _utakmice.getElement1(i), _utakmice.getElement2(i));
+							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
 
 							t1.join();
 						}
@@ -744,7 +744,7 @@ public:
 
 							this_thread::sleep_for(chrono::seconds(2));
 
-							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, brojGolovaKojiJeDaoIgrac, _utakmice.getElement1(i), _utakmice.getElement2(i));
+							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
 
 							t1.join();
 						}
@@ -757,7 +757,7 @@ public:
 
 							this_thread::sleep_for(chrono::seconds(2));
 
-							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, brojGolovaKojiJeDaoIgrac, _utakmice.getElement1(i), _utakmice.getElement2(i));
+							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
 
 							t1.join();
 						}
