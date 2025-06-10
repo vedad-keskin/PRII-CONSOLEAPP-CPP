@@ -836,6 +836,49 @@ public:
 		return COUT;
 	}
 
+	////vraca sve igrace koji su na takmicenju postigli broj pogodaka koji je veci ili jednak proslijedjenoj vrijednosti
+
+
+	vector<Igrac*> operator() (int brojGolova) {
+
+		vector<Igrac*> igraci;
+
+		for (int i = 0; i < _utakmice.getTrenutno(); i++)
+		{
+			// rep1 
+
+			for (int j = 0; j < _utakmice.getElement1(i).GetIgraci().size(); j++)
+			{
+				// igrac rep1 ako je dao vise od 2 gola
+
+				if (_utakmice.getElement1(i).GetIgraci()[j].GetPogoci().size() >= 2) {
+
+					igraci.push_back(new Igrac(_utakmice.getElement1(i).GetIgraci()[j]));
+
+				}
+
+			}
+
+			// rep2 
+
+			for (int j = 0; j < _utakmice.getElement2(i).GetIgraci().size(); j++)
+			{
+				// igrac rep2 ako je dao vise od 2 gola
+
+				if (_utakmice.getElement2(i).GetIgraci()[j].GetPogoci().size() >= 2) {
+
+					igraci.push_back(new Igrac(_utakmice.getElement2(i).GetIgraci()[j]));
+
+				}
+			}
+
+		}
+
+		return igraci;
+
+
+	}
+
 
 
 
@@ -982,12 +1025,12 @@ void main() {
 	if (euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "D000M1", prviPogodak))
 		cout << "Pogodak uspjesno dodat" << endl;
 	////onemoguciti dodavanje istih pogodaka
-	//if (!euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "Denis Music", prviPogodak))
-	//	cout << "Pogodak NIJE uspjesno dodat" << endl;
-	//if (euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "J000A2", drugiPogodak))
-	//	cout << "Pogodak uspjesno dodat" << endl;
-	//if (euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "Jasmin Azemovic", treciPogodak))
-	//	cout << "Pogodak uspjesno dodat" << endl;
+	if (!euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "Denis Music", prviPogodak))
+		cout << "Pogodak NIJE uspjesno dodat" << endl;
+	if (euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "J000A2", drugiPogodak))
+		cout << "Pogodak uspjesno dodat" << endl;
+	if (euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "Jasmin Azemovic", treciPogodak))
+		cout << "Pogodak uspjesno dodat" << endl;
 	//if (euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "Goran Skondric", cetvrtiPogodak))
 	//	cout << "Pogodak uspjesno dodat" << endl;
 	////nakon svakog evidentiranog pogotka, svim igracima te utakmice (pod pretpostavkom da su validne email adrese sa ID - ovima igraca),
@@ -1016,9 +1059,12 @@ void main() {
 	//-------------------------------------------
 	//*/
 	////vraca sve igrace koji su na takmicenju postigli broj pogodaka koji je veci ili jednak proslijedjenoj vrijednosti
-	//vector<Igrac*> igraci = euro2024(2);
-	//for (size_t i = 0; i < igraci.size(); i++)
-	//	cout << igraci[i]->GetImePrezime() << endl;
+
+	cout << crt; // separator za zadnju func. 
+
+	vector<Igrac*> igraci = euro2024(2);
+	for (size_t i = 0; i < igraci.size(); i++)
+		cout << igraci[i]->GetImePrezime() << endl;
 
 	cin.get();
 	system("pause>0");
