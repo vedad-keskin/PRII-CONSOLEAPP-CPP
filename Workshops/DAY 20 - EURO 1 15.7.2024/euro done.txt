@@ -509,7 +509,7 @@ public:
 	vector<Igrac>& GetIgraci() { return _igraci; }
 
 	friend ostream& operator << (ostream& COUT, const Reprezentacija& obj) {
-		COUT << obj._drzava ;
+		COUT << obj._drzava;
 
 
 		return COUT;
@@ -578,7 +578,7 @@ public:
 //Neka bolji tim pobijedi.
 //*/
 
-	void PosaljiMail(const char* ID, Vrijeme vrijemePogotka, Igrac igracKojiJeDaoGol, int brojGola, Reprezentacija rep1, Reprezentacija rep2) {
+	void PosaljiMail(const char* ID, Vrijeme vrijemePogotka, Igrac igracKojiJeDaoGol, Reprezentacija rep1, Reprezentacija rep2) {
 
 		m.lock();
 
@@ -586,7 +586,7 @@ public:
 		cout << "From: info@euro2024.com" << endl;
 		cout << "Subject: Informacija" << endl << endl;
 		cout << "Postovani," << endl << endl;
-		cout << "U " << vrijemePogotka << " sati igrac " << igracKojiJeDaoGol.GetImePrezime() << " je zabiljezio svoj " << brojGola << " pogodak na ovoj utakmici." << endl;
+		cout << "U " << vrijemePogotka << " sati igrac " << igracKojiJeDaoGol.GetImePrezime() << " je zabiljezio svoj " << igracKojiJeDaoGol.GetPogoci().size() << " pogodak na ovoj utakmici." << endl;
 		cout << "Trenutni rezultat je:" << endl << endl;
 		cout << rep1 << " " << rep1.GetBrojGolova() << " : " << rep2.GetBrojGolova() << " " << rep2 << endl << endl;
 		cout << "Puno srece u nastavku susreta." << endl;
@@ -637,17 +637,15 @@ public:
 
 						Igrac igracKojiJeDaoGol = _utakmice.getElement1(i).GetIgraci()[j];
 
-						int brojGolovaKojiJeDaoIgrac = igracKojiJeDaoGol.GetPogoci().size();
-
 						// mail igracima rep1
-						
+
 						for (int k = 0; k < _utakmice.getElement1(i).GetIgraci().size(); k++)
 						{
 							Igrac trenutniIgrac = _utakmice.getElement1(i).GetIgraci()[k];
 
 							this_thread::sleep_for(chrono::seconds(2));
 
-							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, brojGolovaKojiJeDaoIgrac, _utakmice.getElement1(i), _utakmice.getElement2(i));
+							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
 
 							t1.join();
 						}
@@ -660,7 +658,7 @@ public:
 
 							this_thread::sleep_for(chrono::seconds(2));
 
-							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, brojGolovaKojiJeDaoIgrac, _utakmice.getElement1(i), _utakmice.getElement2(i));
+							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
 
 							t1.join();
 						}
@@ -704,8 +702,6 @@ public:
 
 						Igrac igracKojiJeDaoGol = _utakmice.getElement2(i).GetIgraci()[j];
 
-						int brojGolovaKojiJeDaoIgrac = igracKojiJeDaoGol.GetPogoci().size();
-
 
 						for (int k = 0; k < _utakmice.getElement2(i).GetIgraci().size(); k++)
 						{
@@ -713,7 +709,7 @@ public:
 
 							this_thread::sleep_for(chrono::seconds(2));
 
-							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, brojGolovaKojiJeDaoIgrac, _utakmice.getElement1(i), _utakmice.getElement2(i));
+							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
 
 							t1.join();
 						}
@@ -726,7 +722,7 @@ public:
 
 							this_thread::sleep_for(chrono::seconds(2));
 
-							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, brojGolovaKojiJeDaoIgrac, _utakmice.getElement1(i), _utakmice.getElement2(i));
+							thread t1(&Prventstvo::PosaljiMail, this, trenutniIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
 
 							t1.join();
 						}
@@ -753,15 +749,15 @@ public:
 
 	}
 
-///*
-//-------------------------------------------
-//BOSNA_I_HERCEGOVINA 3 : 1 ENGLESKA
-//-------------------------------------------
-//Denis Music               Goran Skondric
-//Jasmin Azemovic
-//Jasmin Azemovic
-//-------------------------------------------
-//*/
+	///*
+	//-------------------------------------------
+	//BOSNA_I_HERCEGOVINA 3 : 1 ENGLESKA
+	//-------------------------------------------
+	//Denis Music               Goran Skondric
+	//Jasmin Azemovic
+	//Jasmin Azemovic
+	//-------------------------------------------
+	//*/
 
 	friend ostream& operator << (ostream& COUT, const Prventstvo& obj) {
 
