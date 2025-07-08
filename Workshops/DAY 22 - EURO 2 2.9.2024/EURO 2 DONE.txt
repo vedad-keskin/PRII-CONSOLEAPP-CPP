@@ -97,35 +97,45 @@ treba biti u obrnutom redoslijedu cifara.
  */
 
 
-char* GenerisiID(const char* imePrezime, int id) {
+char* GenerisiID(const char* imeprezime, int id) {
 
-	char FirstLetterN = toupper(imePrezime[0]);
-	char FirstLetterS = toupper(FirstLetterOfSurname(imePrezime));
-	int reverseNumber = ReverseNum(id);
+	char temp[10];
 
-	const char* zeros;
+	char FirstLetterN = toupper(imeprezime[0]);						  // J
+	char FirstLetterS = toupper(FirstLetterOfSurname(imeprezime));	  // A
+	int ReverseN = ReverseNum(id);                                    // 41 
 
-	if (id < 10) {
-		zeros = "000";
+	if (id < 10) { // treba vratiti D000M3
+
+		sprintf_s(temp, "%c000%c%d", FirstLetterN, FirstLetterS, ReverseN);         // %d - decimal , %s - string , %c - char
+
 	}
-	else if (id < 100) {
+	else if (id < 100) { // treba vratiti J00A41
 
-		zeros = "00";
+		sprintf_s(temp, "%c00%c%d", FirstLetterN, FirstLetterS, ReverseN);         // %d - decimal , %s - string , %c - char
+
 	}
-	else if (id < 1000) {
+	else if (id < 1000) { // treba vratiti G0S651
 
-		zeros = "0";
+		sprintf_s(temp, "%c0%c%d", FirstLetterN, FirstLetterS, ReverseN);         // %d - decimal , %s - string , %c - char
+
 	}
-	else {
-		zeros = "";
+	else { // treba vratiti EJ8971
+
+		sprintf_s(temp, "%c%c%d", FirstLetterN, FirstLetterS, ReverseN);         // %d - decimal , %s - string , %c - char
+
 	}
 
-	char result[10];
+	// ako func. ne znamo mozemo je zaobici ovako 
 
-	sprintf_s(result, "%c%s%c%d", FirstLetterN, zeros, FirstLetterS, reverseNumber); // c - char , s - string d - decimal
+	//char temp1[30];
 
-	return GetNizKaraktera(result);
+	//sprintf_s(temp1, "ID%s%d", imeprezime, id);
 
+	//return GetNizKaraktera(temp1);
+
+
+	return GetNizKaraktera(temp);
 }
 
 //cout << GenerisiID("Denis Music", 3) << endl;//treba vratiti D000M3
