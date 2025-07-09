@@ -56,7 +56,7 @@ class Kolekcija {
 public:
 	Kolekcija(bool omoguciDupliranje = true) {
 		_omoguciDupliranje = omoguciDupliranje;
-		_trenutno = _trenutno = new int(0);
+		_trenutno = new int(0);
 	}
 
 	Kolekcija(const Kolekcija& obj) {
@@ -196,13 +196,13 @@ public:
 	}
 
 
-	bool operator == (const Datum obj) { 
+	bool operator == (const Datum obj) {
 		return *_dan == *obj._dan && *_mjesec == *obj._mjesec && *_godina == *obj._godina;
 	}
 
-	
-	int SumaDana() {  
-		return *_dan + *_mjesec * 30 + *_godina + 365;
+
+	int SumaDana() {
+		return *_dan + *_mjesec * 30 + *_godina * 365;
 	}
 
 
@@ -334,7 +334,7 @@ class Potrosac : public Osoba {
 	vector<int> _bodovi; // bodovi sakupljeni tokom kupovine, svakih potrosenih 10KM donosi po 1 bod.
 public:
 	Potrosac(const char* imePrezime = "", Datum datumRodjenja = Datum(), const char* emailAdresa = "")
-		:_kupovine(false) , Osoba(imePrezime,datumRodjenja) {
+		:_kupovine(false), Osoba(imePrezime, datumRodjenja) {
 
 		_emailAdresa = GetNizKaraktera(emailAdresa);
 
@@ -370,7 +370,7 @@ public:
 		_kupovine.AddElement(IznosRacuna, zadovoljstvo);
 
 		if (IznosRacuna > 9) {
-			int bod = IznosRacuna / 10;   
+			int bod = IznosRacuna / 10;
 
 
 			_bodovi.push_back(bod);
