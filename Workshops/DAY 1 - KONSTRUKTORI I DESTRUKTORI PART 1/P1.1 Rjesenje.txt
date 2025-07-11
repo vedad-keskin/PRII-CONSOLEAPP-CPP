@@ -13,7 +13,7 @@ using namespace std;
 
 // ako je jedna vrijednost --> ( ) -->  _ECTS -> 000002205A2481E0 , *_ECTS -> 0 
 
-// ako je vise vrijednosti --> [ ] -->  _naziv --> Nema predmeta
+// ako je vise vrijednosti --> [ ] -->  _naziv --> Nema predmeta , *_naziv --> N
 
 // 3. DEALOCIRANJE / DESKTRUKTOR  --> ( delete , nullptr )
 
