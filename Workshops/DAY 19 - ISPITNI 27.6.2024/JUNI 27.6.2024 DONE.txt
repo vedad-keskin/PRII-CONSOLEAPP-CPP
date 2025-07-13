@@ -49,7 +49,7 @@ char* GetNizKaraktera(const char* sadrzaj, bool dealociraj = false) {
 
 template<class T1, class T2>
 class Kolekcija {
-	T1* _elementi1[50];
+	T1* _elementi1[50]; // isto kao zadaci s maxom
 	T2* _elementi2[50];
 	int* _trenutno;
 	bool _omoguciDupliranje;
