@@ -6,8 +6,8 @@
 #include <thread>
 #include <fstream>
 #include <memory>
-#include <chrono>
 #include <ctime>
+#include <sstream>
 
 
 using namespace std;
@@ -36,7 +36,7 @@ enum Specializacija { KARDIOLOGIJA, ORTOPEDIJA, DERMATOLOGIJA, PEDIJATRIJA, OPST
 
 const char* SpecializacijaNazivi[] = { "KARDIOLOGIJA", "ORTOPEDIJA", "DERMATOLOGIJA", "PEDIJATRIJA", "OPSTA MEDICINA" };
 
-ostream& operator<< (ostream& COUT, Specializacija& obj) {
+ostream& operator<< (ostream& COUT, const Specializacija& obj) {
 
 	COUT << SpecializacijaNazivi[obj];
 
@@ -64,10 +64,10 @@ BBB → trocifreni redni broj ucesnika kreiran na osnovu _id-a (npr. 001, 023, 1
 validnom sifrom treba smatrati i onu koja umjesto znaka crtica '-' ima znak razmak npr: 25 DM 003 ili 25 DM-003
 */
 
-//cout << GenerisiSifru("Denis Music", 3) << endl;//treba vratiti 25 - DM - 003
-//cout << GenerisiSifru("Jasmin Azemovic", 14) << endl;//treba vratiti 25 - JA - 014
-//cout << GenerisiSifru("Goran skondric", 156) << endl;//treba vratiti 25 - GS - 156
-//cout << GenerisiSifru("emina junuz", 798) << endl;//treba vratiti 25 - EJ - 798
+//cout << GenerisiSifru("Denis Music", 3) << endl;//treba vratiti 25-DM-003
+//cout << GenerisiSifru("Jasmin Azemovic", 14) << endl;//treba vratiti 25-JA-014
+//cout << GenerisiSifru("Goran skondric", 156) << endl;//treba vratiti 25-GS-156
+//cout << GenerisiSifru("emina junuz", 798) << endl;//treba vratiti 25-EJ-798
 
 char GetFirstLetterOfSurname(const char* imePrezime) {
 
@@ -101,23 +101,39 @@ char* GenerisiSifru(const char* imePrezime, int id) {
 
 	if (id < 10) { // treba vratiti 25 - DM - 003
 
-		sprintf_s(temp, "%d - %c%c - 00%d", CurrentYear, FirstLetterN, FirstLetterS, id);
+		sprintf_s(temp, "%d-%c%c-00%d", CurrentYear, FirstLetterN, FirstLetterS, id);
 
 	}
 	else if (id < 100) {
 
-		sprintf_s(temp, "%d - %c%c - 0%d", CurrentYear, FirstLetterN, FirstLetterS, id);
+		sprintf_s(temp, "%d-%c%c-0%d", CurrentYear, FirstLetterN, FirstLetterS, id);
 
 	}
 	else {
 
-		sprintf_s(temp, "%d - %c%c - %d", CurrentYear, FirstLetterN, FirstLetterS, id);
+		sprintf_s(temp, "%d-%c%c-%d", CurrentYear, FirstLetterN, FirstLetterS, id);
 
 	}
 
 	return AlocirajNiz(temp);
 
 }
+
+//cout << GenerisiSifru("Denis Music", 3) << endl;     //treba vratiti 25- DM-003
+//cout << GenerisiSifru("Jasmin Azemovic", 14) << endl;//treba vratiti 25- JA-014
+//cout << GenerisiSifru("Goran skondric", 156) << endl;//treba vratiti 25- GS-156
+//cout << GenerisiSifru("emina junuz", 798) << endl;   //treba vratiti 25- EJ-798
+
+////Za validaciju sifre koristiti funkciju ValidirajSifru koja treba, koristeci regex, osigurati postivanje osnovnih pravila
+////vezanih za format koja su definisana u prethodnom dijelu zadatka.Pored navedenih,	validnom sifrom treba smatrati i onu koja umjesto znaka crtica '-' ima znak razmak npr: 25 DM 003 ili 25 DM-003
+
+bool ValidirajSifru(const char* sifra) {
+
+	regex reg("[0-9]{2}[- ][A-Z]{2}[- ][0-9]{3}");
+
+	return regex_match(sifra, reg);
+}
+
 
 
 template<class T1, class T2, int max>
@@ -305,47 +321,169 @@ public:
 		return COUT;
 	}
 };
-//class Dogadjaj {
-//protected:
-//	Termin _termin;
-//public:
-//	Dogadjaj(Termin termin) : _termin(termin) {}
-//	virtual ~Dogadjaj() {}
-//	virtual string Info() const = 0;
-//	const Termin& getTermin() const { return _termin; }
-//};
-//class Predavanje {
-//	char* _tema;
-//	Specializacija _specijalizacija;
-//public:
-//	~Predavanje() {
-//		delete[] _tema;
-//	}
-//	const char* GetTema() const { return _tema; }
-//	Specializacija GetSpecijalizacija() const {
-//		return _specijalizacija;
-//	}
-//};
-//class Ucesnik {
-//	static int _id; //iskoristiti za praćenje rednog broja ucesnika i generisanje jedinstvene sifre
-//	char* _sifra; //sifra u formatu GG-IN-BBB, pojasnjena u main funkciji, generisati prilikom kreiranja objekta
-//	char* _imePrezime;
-//	vector<Dogadjaj*> _prijavljeni;
-//public:
-//	Ucesnik(const char* imePrezime) {
-//		_imePrezime = AlocirajNiz(imePrezime);
-//	}
-//	~Ucesnik() {
-//		delete[] _imePrezime;
-//		delete[] _sifra;
-//		for (auto prijava : _prijavljeni)
-//			delete prijava;
-//		_prijavljeni.clear();
-//	}
-//	const char* getSifra() const { return _sifra; }
-//	const char* getImePrezime() const { return _imePrezime; }
-//	vector<Dogadjaj*>& getDogadjaji() { return _prijavljeni; }
-//};
+class Dogadjaj {
+protected:
+	Termin _termin;
+public:
+	Dogadjaj(Termin termin) : _termin(termin) {}
+	
+	Dogadjaj(const Dogadjaj& obj) {
+
+		_termin = obj._termin;
+
+	}
+
+	Dogadjaj& operator = (const Dogadjaj& obj) {
+		if (this != &obj) {
+
+
+			_termin = obj._termin;
+
+		}
+		return *this;
+	}
+
+	bool operator == (const Dogadjaj& obj) {
+
+		return _termin == obj._termin;
+
+	}
+
+	virtual ~Dogadjaj() {}
+	virtual string Info() const = 0;
+
+	const Termin& getTermin() const { return _termin; }
+
+	friend ostream& operator << (ostream& COUT, const Dogadjaj& obj) {
+		COUT << obj._termin << endl;
+		return COUT;
+	}
+
+};
+class Predavanje : public Dogadjaj {
+	char* _tema;
+	Specializacija _specijalizacija;
+public:
+
+	// Predavanje oboljenja_srca(termin1, "Oboljenja srca", KARDIOLOGIJA);
+	
+	Predavanje(Termin termin, const char* tema, Specializacija specijalizacija): Dogadjaj(termin) {
+
+		_tema = AlocirajNiz(tema);
+		_specijalizacija = specijalizacija;
+
+	}
+
+	Predavanje(const Predavanje& obj): Dogadjaj(obj) {
+
+		_tema = AlocirajNiz(obj._tema);
+		_specijalizacija = obj._specijalizacija;
+
+	}
+
+	Predavanje& operator = (const Predavanje& obj) {
+		if (this != &obj) {
+
+			delete[] _tema;
+
+			Dogadjaj::operator=(obj);
+
+			_tema = AlocirajNiz(obj._tema);
+			_specijalizacija = obj._specijalizacija;
+		}
+		return *this;
+	}
+
+	bool operator == (const Predavanje& obj) {
+
+		return strcmp(_tema, obj._tema) == 0 && _specijalizacija == obj._specijalizacija && _termin == obj._termin;
+
+	}
+
+	~Predavanje() {
+		delete[] _tema;
+		_tema = nullptr;
+	}
+
+	string Info()const {
+		stringstream stringStream;
+		stringStream << *this; // works if operator << is defined
+		return stringStream.str();
+	}
+
+
+	const char* GetTema() const { return _tema; }
+	Specializacija GetSpecijalizacija() const {
+		return _specijalizacija;
+	}
+
+	friend ostream& operator << (ostream& COUT, const Predavanje& obj) {
+		COUT <<"Tema : " << obj._tema << endl;
+		COUT <<"Specijalizacija : " << obj._specijalizacija << endl;
+		COUT <<"Termin : " << obj._termin << endl;
+		return COUT;
+	}
+
+
+};
+class Ucesnik {
+	static int _id; //iskoristiti za praćenje rednog broja ucesnika i generisanje jedinstvene sifre
+	char* _sifra; //sifra u formatu GG-IN-BBB, pojasnjena u main funkciji, generisati prilikom kreiranja objekta
+	char* _imePrezime;
+	vector<Dogadjaj*> _prijavljeni;
+public:
+	Ucesnik(const char* imePrezime) {
+		_imePrezime = AlocirajNiz(imePrezime);
+
+		_id++;
+
+		_sifra = GenerisiSifru(_imePrezime, _id);
+
+	}
+
+	Ucesnik(const Ucesnik& obj) {
+
+		_imePrezime = AlocirajNiz(obj._imePrezime);
+		_sifra = AlocirajNiz(obj._sifra);
+
+		for (int i = 0; i < obj._prijavljeni.size(); i++)
+		{
+			_prijavljeni.push_back(new Dogadjaj(*obj._prijavljeni[i]));
+		}
+
+	}
+
+	void PrijaviSe(Dogadjaj dogadjaj) {
+
+
+
+	}
+
+	~Ucesnik() {
+		delete[] _imePrezime;
+		delete[] _sifra;
+		for (auto prijava : _prijavljeni)
+			delete prijava;
+		_prijavljeni.clear();
+	}
+
+	const char* getSifra() const { return _sifra; }
+	const char* getImePrezime() const { return _imePrezime; }
+	vector<Dogadjaj*>& getDogadjaji() { return _prijavljeni; }
+
+	friend ostream& operator << (ostream& COUT, const Ucesnik& obj) {
+		COUT << obj._imePrezime << " - "<< obj._sifra << endl;
+
+		for (int i = 0; i < obj._prijavljeni.size(); i++)
+		{
+			COUT << *obj._prijavljeni[i] << endl;
+		}
+
+		return COUT;
+	}
+	
+};
+int Ucesnik::_id = 0;
 //class Tim {
 //	char* _naziv;
 //	vector<Ucesnik> _clanovi;
@@ -398,23 +536,23 @@ int main() {
 	IN - inicijali ucesnika, velika slova(prvo slovo imena i prezimena)
 	BBB → trocifreni redni broj ucesnika kreiran na osnovu _id-a (npr. 001, 023, 105)
 
-	validnom sifrom treba smatrati i onu koja umjesto znaka crtica '-' ima znak razmak npr: 25 DM 003 ili 25 DM-003
 	*/
 
-	cout << GenerisiSifru("Denis Music", 3) << endl;//treba vratiti 25 - DM - 003
-	cout << GenerisiSifru("Jasmin Azemovic", 14) << endl;//treba vratiti 25 - JA - 014
-	cout << GenerisiSifru("Goran skondric", 156) << endl;//treba vratiti 25 - GS - 156
-	cout << GenerisiSifru("emina junuz", 798) << endl;//treba vratiti 25 - EJ - 798
+	cout << GenerisiSifru("Denis Music", 3) << endl;//treba vratiti 25-DM-003
+	cout << GenerisiSifru("Jasmin Azemovic", 14) << endl;//treba vratiti 25-JA-014
+	cout << GenerisiSifru("Goran skondric", 156) << endl;//treba vratiti 25-GS-156
+	cout << GenerisiSifru("emina junuz", 798) << endl;//treba vratiti 25-EJ-798
 
 	////Za validaciju sifre koristiti funkciju ValidirajSifru koja treba, koristeci regex, osigurati postivanje osnovnih pravila
-	////vezanih za format koja su definisana u prethodnom dijelu zadatka.Pored navedenih,
+	////vezanih za format koja su definisana u prethodnom dijelu zadatka.Pored navedenih,	validnom sifrom treba smatrati i onu koja umjesto znaka crtica '-' ima znak razmak npr: 25 DM 003 ili 25 DM-003
 
-	//if (ValidirajSifru("25-DM-003"))
-	//		cout << "SIFRA VALIDNA" << endl;
-	//if (ValidirajSifru("25-JA-014") && ValidirajSifru("25-JA 014"))
-	//	cout << "SIFRA VALIDNA" << endl;
-	//if (!ValidirajSifru("25-GS-15") || !ValidirajSifru("25-Gs-135") || !ValidirajSifru("25-GS-153G"))
-	//	cout << "SIFRA NIJE VALIDNA" << endl;
+
+	if (ValidirajSifru("25-DM-003"))
+		cout << "SIFRA VALIDNA" << endl;
+	if (ValidirajSifru("25-JA-014") && ValidirajSifru("25-JA 014"))
+		cout << "SIFRA VALIDNA" << endl;
+	if (!ValidirajSifru("25-GS-15") || !ValidirajSifru("25-Gs-135") || !ValidirajSifru("25-GS-153G"))
+		cout << "SIFRA NIJE VALIDNA" << endl;
 
 	int kolekcijaTestSize = 9;
 	KolekcijaG1<int, string, 10> kolekcija1;
@@ -448,27 +586,34 @@ int main() {
 		cout << "Exception: " << e.what() << crt;
 	}
 
-	//delete kolekcija3;
-	//kolekcija1 = kolekcija2;
-	//cout << kolekcija1 << crt;
+	delete kolekcija3;
+	kolekcija1 = kolekcija2;
+	cout << kolekcija1 << crt;
 
-	//Termin termin1(19, 02, 30), termin2(10, 30, 40), termin3(14, 15, 20), termin4(16, 45, 20);
-	//
-	//Predavanje oboljenja_srca(termin1, "Oboljenja srca", KARDIOLOGIJA);
-	//Predavanje uv_zracenja(termin2, "Uloga UV zracenja u koznim oboljenjima", DERMATOLOGIJA);
-	//Predavanje anemije(termin3, "Anemije u svakodnevnoj praksi", OPSTA_MEDICINA);
+	Termin termin1(19, 02, 30), termin2(10, 30, 40), termin3(14, 15, 20), termin4(16, 45, 20);
+	
+	Predavanje oboljenja_srca(termin1, "Oboljenja srca", KARDIOLOGIJA);
+	Predavanje uv_zracenja(termin2, "Uloga UV zracenja u koznim oboljenjima", DERMATOLOGIJA);
+	Predavanje anemije(termin3, "Anemije u svakodnevnoj praksi", OPSTA_MEDICINA);
 
-	//Ucesnik emina("Emina Junuz"), goran("Goran Skondric"), azra("Azra Maric"), tajib("Tajib Hero");
-	////metoda PrijaviSe dodaje prijavu na predavanje ucesniku, ukoliko je prijava uspjesna, vraca true, a u suprotnom false.
-	////onemoguciti dupliranje prijava na isto predavanje
-	//
+	//cout << oboljenja_srca;
+	//cout << oboljenja_srca.Info();
+
+	Ucesnik emina("Emina Junuz"), goran("Goran Skondric"), azra("Azra Maric"), tajib("Tajib Hero");
+	//metoda PrijaviSe dodaje prijavu na predavanje ucesniku, ukoliko je prijava uspjesna, vraca true, a u suprotnom false.
+	//onemoguciti dupliranje prijava na isto predavanje
+	
+
 	//emina.PrijaviSe(oboljenja_srca);
 	//emina.PrijaviSe(anemije);
 	//goran.PrijaviSe(oboljenja_srca);
 	//goran.PrijaviSe(uv_zracenja);
 	//tajib.PrijaviSe(uv_zracenja);
+
+	cout << emina << endl;
+
 	//
-	////info metoda vraca sve detalje o dogadjaju u string formatu npr.: 19:02 : 30 Oboljenja srca KARDIOLOGIJA
+	////info metoda vraca sve detalje o dogadjaju u string formatu npr.: 19:02:30 Oboljenja srca KARDIOLOGIJA
 	//	
 	//if (!emina.PrijaviSe(oboljenja_srca)) {
 	//		cout << "Ucesnik " << emina.getImePrezime() << " vec prijavljen na predavanje " << oboljenja_srca.Info() << crt;
