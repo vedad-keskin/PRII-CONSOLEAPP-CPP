@@ -530,17 +530,17 @@ public:
 		// Red ---> string ----> int
 
 		char Red[20];          // Red
-		string PomociTekst;    // string
+		string PomocniTekst;    // string
 		int broj;              // int
 
 
 		while (!fajl.eof()) {
 
 			fajl.getline(Red, 20); // 12 
-			PomociTekst = Red;     // "12"
+			PomocniTekst = Red;     // "12"
 
 			//     string to integer
-			broj = stoi(PomociTekst); // 12 
+			broj = stoi(PomocniTekst); // 12 
 
 			_bodovi.push_back(broj);
 
