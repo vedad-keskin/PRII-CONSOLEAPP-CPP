@@ -329,30 +329,23 @@ public:
 	Dogadjaj(Termin termin) : _termin(termin) {}
 
 	Dogadjaj(const Dogadjaj& obj) {
-
 		_termin = obj._termin;
-
 	}
 
 	Dogadjaj& operator = (const Dogadjaj& obj) {
 		if (this != &obj) {
-
-
 			_termin = obj._termin;
-
 		}
 		return *this;
 	}
 
 	bool operator == (const Dogadjaj& obj) {
-
 		return _termin == obj._termin;
-
 	}
 
 	virtual ~Dogadjaj() {}
 	virtual string Info() const = 0;
-	virtual Dogadjaj* Clone() const = 0;
+	virtual Dogadjaj* Clone() const = 0; 
 
 	const Termin& getTermin() const { return _termin; }
 
@@ -409,14 +402,13 @@ public:
 
 	string Info()const {
 		stringstream stringStream;
-		stringStream << *this; // works if operator << is defined
+		stringStream << *this; 
 		return stringStream.str();
 	}
 
-	Predavanje* Clone() const  {
+	Dogadjaj* Clone() const {
 		return new Predavanje(*this);
 	}
-
 
 	const char* GetTema() const { return _tema; }
 	Specializacija GetSpecijalizacija() const {
@@ -437,18 +429,15 @@ class Ucesnik {
 	vector<Dogadjaj*> _prijavljeni;
 public:
 	Ucesnik(const char* imePrezime) {
-
 		_imePrezime = AlocirajNiz(imePrezime);
-
 		_id++;
-
 		_sifra = GenerisiSifru(_imePrezime, _id);
-
 	}
 
 	Ucesnik(const Ucesnik& obj) {
 		_imePrezime = AlocirajNiz(obj._imePrezime);
 		_sifra = AlocirajNiz(obj._sifra);
+
 		for (int i = 0; i < obj._prijavljeni.size(); i++)
 		{
 			_prijavljeni.push_back(obj._prijavljeni[i]->Clone());
@@ -457,14 +446,12 @@ public:
 
 	Ucesnik& operator = (const Ucesnik& obj) {
 		if (this != &obj) {
-
 			delete[] _imePrezime;
 			delete[] _sifra;
 			for (auto prijava : _prijavljeni) {
 				delete prijava;
 			}
 			_prijavljeni.clear();
-
 			_imePrezime = AlocirajNiz(obj._imePrezime);
 			_sifra = AlocirajNiz(obj._sifra);
 
@@ -477,24 +464,21 @@ public:
 	}
 
 	bool operator == (const Ucesnik& obj) {
-
 		return strcmp(_sifra, obj._sifra) == 0;
-
 	}
 
 	bool PrijaviSe(Predavanje predavanje) {
+		for (int i = 0; i < _prijavljeni.size(); i++)
+		{
+			Predavanje* castedPredavanje = dynamic_cast<Predavanje*>(_prijavljeni[i]);
 
-		//for (int i = 0; i < _prijavljeni.size(); i++)
-		//{
-		//	if (predavanje == *_prijavljeni[i]) {
-		//		return false;
-		//	}
-		//}
+			if (predavanje == *castedPredavanje) {
+				return false;
+			}
+		}
 
-		_prijavljeni.push_back(new Predavanje(predavanje));
-
+		_prijavljeni.push_back(predavanje.Clone());
 		return true;
-
 	}
 
 	~Ucesnik() {
@@ -508,19 +492,18 @@ public:
 
 	const char* getSifra() const { return _sifra; }
 	const char* getImePrezime() const { return _imePrezime; }
-	vector<Dogadjaj*>& getDogadjaji() { return _prijavljeni; }
+	vector<Dogadjaj*>& getPredavanja() { return _prijavljeni; }
 
 	friend ostream& operator << (ostream& COUT, const Ucesnik& obj) {
 		COUT << obj._imePrezime << " - " << obj._sifra << endl;
 
 		for (int i = 0; i < obj._prijavljeni.size(); i++)
 		{
-			COUT << *obj._prijavljeni[i] << endl;
+			COUT << obj._prijavljeni[i]->Info() << endl;
 		}
 
 		return COUT;
 	}
-
 };
 int Ucesnik::_id = 0;
 class Tim {
@@ -700,7 +683,7 @@ public:
 			for (int j = 0; j < _timovi.getElement1(i)->getClanove().size(); j++)
 			{
 
-				if (_timovi.getElement1(i)->getClanove()[j].getDogadjaji().size() >= brojPredavanja) {
+				if (_timovi.getElement1(i)->getClanove()[j].getPredavanja().size() >= brojPredavanja) {
 
 					Ucesnik ucesnik = _timovi.getElement1(i)->getClanove()[j];
 
@@ -714,7 +697,7 @@ public:
 			for (int j = 0; j < _timovi.getElement2(i)->getClanove().size(); j++)
 			{
 
-				if (_timovi.getElement2(i)->getClanove()[j].getDogadjaji().size() >= brojPredavanja) {
+				if (_timovi.getElement2(i)->getClanove()[j].getPredavanja().size() >= brojPredavanja) {
 
 					Ucesnik ucesnik = _timovi.getElement2(i)->getClanove()[j];
 
