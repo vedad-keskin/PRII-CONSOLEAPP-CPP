@@ -73,16 +73,6 @@ int ReverseNum(int id) {
 	return temp;
 }
 
-char FirstLetterOfSurname(const char* imeprezime) {
-
-	for (int i = 0; i < strlen(imeprezime); i++)
-	{
-		if (isspace(imeprezime[i])) {
-			return imeprezime[i + 1];
-		}
-	}
-}
-
 /*
 Globalna funkcija GenerisiID vraca ID igraca na osnovu vrijednosti
 proslijedjenih parametara. Funkcija generise
@@ -97,45 +87,42 @@ treba biti u obrnutom redoslijedu cifara.
  */
 
 
-char* GenerisiID(const char* imeprezime, int id) {
+char* GenerisiID(string imeprezime, int id) {
 
-	char temp[10];
+	char FirstLetterN = toupper(imeprezime[0]);						      // J
+	char FirstLetterS = toupper(imeprezime[imeprezime.find(' ') + 1]);	  // A
+	int ReverseN = ReverseNum(id);                                        // 41 
 
-	char FirstLetterN = toupper(imeprezime[0]);						  // J
-	char FirstLetterS = toupper(FirstLetterOfSurname(imeprezime));	  // A
-	int ReverseN = ReverseNum(id);                                    // 41 
+	string ID;
+
+	ID += FirstLetterN;
 
 	if (id < 10) { // treba vratiti D000M3
 
-		sprintf_s(temp, "%c000%c%d", FirstLetterN, FirstLetterS, ReverseN);         // %d - decimal , %s - string , %c - char
+		ID += "000";
 
 	}
 	else if (id < 100) { // treba vratiti J00A41
 
-		sprintf_s(temp, "%c00%c%d", FirstLetterN, FirstLetterS, ReverseN);         // %d - decimal , %s - string , %c - char
+		ID += "00";
 
 	}
 	else if (id < 1000) { // treba vratiti G0S651
 
-		sprintf_s(temp, "%c0%c%d", FirstLetterN, FirstLetterS, ReverseN);         // %d - decimal , %s - string , %c - char
+		ID += "0";
 
 	}
 	else { // treba vratiti EJ8971
 
-		sprintf_s(temp, "%c%c%d", FirstLetterN, FirstLetterS, ReverseN);         // %d - decimal , %s - string , %c - char
+		ID += "";
 
 	}
 
-	// ako func. ne znamo mozemo je zaobici ovako 
-
-	//char temp1[30];
-
-	//sprintf_s(temp1, "ID%s%d", imeprezime, id);
-
-	//return GetNizKaraktera(temp1);
+	ID += FirstLetterS;
+	ID += to_string(ReverseN);
 
 
-	return GetNizKaraktera(temp);
+	return GetNizKaraktera(ID.c_str());
 }
 
 //cout << GenerisiID("Denis Music", 3) << endl;//treba vratiti D000M3
