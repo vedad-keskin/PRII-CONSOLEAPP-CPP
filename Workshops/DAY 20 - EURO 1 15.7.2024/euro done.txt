@@ -39,7 +39,7 @@ enum Drzava {
 
 ostream& operator << (ostream& COUT, const Drzava& obj) {
 
-	const char* KopijeDrzava[] {
+	const char* KopijeDrzava[]{
 		"ENGLESKA", "SPANIJA", "HOLANDIJA", "FRANCUSKA",
 		"BOSNA_I_HERCEGOVINA"
 	};
@@ -68,50 +68,54 @@ racunajuci ostale, podrazumijevane, znakove.
  Podrazumijeva se da ce uvijek biti proslijedjena validna int
 vrijednost.
  */
+ //cout << GenerisiID(3) << endl;//treba vratiti ID#000-3
+ //cout << GenerisiID(14) << endl;//treba vratiti ID#00-14
+ //cout << GenerisiID(156) << endl;//treba vratiti ID#0-156
+ //cout << GenerisiID(1798) << endl;//treba vratiti ID#1798
+
+	 //Za validaciju ID-a koristiti funkciju ValidirajID koja treba, koristeci regex, osigurati postivanje osnovnih pravila
+	 //vezanih za format koja su definisana u prethodnom dijelu zadatka.
+
+char* GenerisiID(int id) {
+
+	string ID;
+
+	ID += "ID#";
+
+	if (id < 10) { // ID#000-3
+
+		ID += "000";
+
+	}
+	else if (id < 100) { // ID#00-14
+
+		ID += "00";
+
+	}
+	else if (id < 1000) { // ID#0-156
+
+		ID += "0";
+
+	}
+	else { // ID#1798
+
+		ID += "";
+
+	}
+
+	ID += to_string(id);
+
+	return GetNizKaraktera(ID.c_str());
+
+}
+
 //cout << GenerisiID(3) << endl;//treba vratiti ID#000-3
 //cout << GenerisiID(14) << endl;//treba vratiti ID#00-14
 //cout << GenerisiID(156) << endl;//treba vratiti ID#0-156
 //cout << GenerisiID(1798) << endl;//treba vratiti ID#1798
 
-	//Za validaciju ID-a koristiti funkciju ValidirajID koja treba, koristeci regex, osigurati postivanje osnovnih pravila
-	//vezanih za format koja su definisana u prethodnom dijelu zadatka.
-
-char* GenerisiID(int id) {
-
-	char temp[10];
-
-	if (id < 10) { // ID#000-3
-
-		sprintf_s(temp, "ID#000-%d", id ); // %d - decimal , %s - string , %c - char
-
-	}
-	else if (id < 100) { // ID#00-14
-
-		sprintf_s(temp, "ID#00-%d", id); // %d - decimal , %s - string , %c - char
-
-	}
-	else if (id < 1000) { // ID#0-156
-
-		sprintf_s(temp, "ID#0-%d", id); // %d - decimal , %s - string , %c - char
-
-	}
-	else { // ID#1798
-
-		sprintf_s(temp, "ID#%d", id); // %d - decimal , %s - string , %c - char
-
-	}
-
-	return GetNizKaraktera(temp);
-
-}
-
-	//cout << GenerisiID(3) << endl;//treba vratiti ID#000-3
-	//cout << GenerisiID(14) << endl;//treba vratiti ID#00-14
-	//cout << GenerisiID(156) << endl;//treba vratiti ID#0-156
-	//cout << GenerisiID(1798) << endl;//treba vratiti ID#1798
-
-	//Za validaciju ID-a koristiti funkciju ValidirajID koja treba, koristeci regex, osigurati postivanje osnovnih pravila
-	//vezanih za format koja su definisana u prethodnom dijelu zadatka.
+//Za validaciju ID-a koristiti funkciju ValidirajID koja treba, koristeci regex, osigurati postivanje osnovnih pravila
+//vezanih za format koja su definisana u prethodnom dijelu zadatka.
 
 bool ValidirajID(const char* ID) {
 
@@ -421,7 +425,7 @@ public:
 
 	Igrac& operator = (const Igrac& obj) {
 		if (this != &obj) {
-			delete[]_ID; 
+			delete[]_ID;
 			delete[]_imePrezime;
 
 
@@ -441,7 +445,7 @@ public:
 
 	bool operator == (const Igrac& obj) {
 
-		return strcmp(_ID , obj._ID) == 0;
+		return strcmp(_ID, obj._ID) == 0;
 
 	}
 
@@ -553,7 +557,7 @@ public:
 	Prventstvo() {
 
 	}
-	
+
 	Prventstvo(const Prventstvo& obj) {
 
 		_utakmice = obj._utakmice;
@@ -626,7 +630,7 @@ public:
 		cout << "From: info@euro2024.com" << endl;
 		cout << "Subject: Informacija" << endl << endl;
 		cout << "Postovani," << endl << endl;
-		cout << "U "<< vrijemePogotka << " sati igrac " << igracKojiJeDaoGol.GetImePrezime() << " je zabiljezio svoj " << igracKojiJeDaoGol.GetPogoci().size() << " pogodak na ovoj utakmici." << endl;
+		cout << "U " << vrijemePogotka << " sati igrac " << igracKojiJeDaoGol.GetImePrezime() << " je zabiljezio svoj " << igracKojiJeDaoGol.GetPogoci().size() << " pogodak na ovoj utakmici." << endl;
 		cout << "Trenutni rezultat je:" << endl << endl;
 		cout << rep1 << " " << rep1.GetBrojGolova() << " : " << rep2.GetBrojGolova() << " " << rep2 << endl << endl;
 		cout << "Puno srece u nastavku susreta." << endl;
@@ -857,7 +861,7 @@ public:
 	//	cetvrtiPogodak210654(21, 6, 54);
 
 	//                          Vrijeme(20, 15, 15), Vrijeme(20, 24, 15));
-	vector<Igrac*> operator () (Vrijeme vrijemeOd , Vrijeme vrijemeDo) {
+	vector<Igrac*> operator () (Vrijeme vrijemeOd, Vrijeme vrijemeDo) {
 
 		vector<Igrac*> igraci;
 
@@ -878,7 +882,7 @@ public:
 
 					// pronasli pogodak u datom range-u
 
-					if (pogodak.GetVrijemePogotka().SumaSekundi() >= vrijemeOd.SumaSekundi() 
+					if (pogodak.GetVrijemePogotka().SumaSekundi() >= vrijemeOd.SumaSekundi()
 						&& pogodak.GetVrijemePogotka().SumaSekundi() <= vrijemeDo.SumaSekundi()) {
 
 						igraci.push_back(new Igrac(igracKojiJeDaoPogodak));
