@@ -258,9 +258,9 @@ public:
 
 	}
 
-	KolekcijaG1<int, string, 10>* RemoveRange(int lokacijaOd, int lokacijaDo) { // 1 3 
+	KolekcijaG1<int, string, 10>* RemoveRange(int lokacijaOd, int brojElemenata) { // 1 3 
 
-		if (lokacijaOd < 0 || lokacijaDo > _trenutno) {
+		if (lokacijaOd < 0 || lokacijaOd + brojElemenata > _trenutno) {
 			throw exception("Opseg ne postoji");
 		}
 
@@ -269,20 +269,18 @@ public:
 		KolekcijaG1<int, string, 10> kolekcija1;
 
 
-		for (int i = 0; i < _trenutno; i++)
-		{
+		for (int i = 0; i < _trenutno; i++) {
+			// Ako je i u opsegu koji treba ukloniti
+			if (i >= lokacijaOd && i < lokacijaOd + brojElemenata) {
 
-			if (i >= lokacijaOd && i <= lokacijaDo) {
-
-				kolekcija3->AddElement(*_elementi1[i], *_elementi2[i]);
+				kolekcija3->AddElement(*_elementi1[i], *_elementi2[i]); // dodaj u uklonjene
 
 			}
 			else {
 
-				kolekcija1.AddElement(*_elementi1[i], *_elementi2[i]);
+				kolekcija1.AddElement(*_elementi1[i], *_elementi2[i]); // zadrži ostale
 
 			}
-
 		}
 
 		*this = kolekcija1;
