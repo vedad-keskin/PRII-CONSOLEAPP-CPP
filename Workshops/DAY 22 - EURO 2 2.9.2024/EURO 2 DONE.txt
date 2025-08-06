@@ -125,6 +125,60 @@ char* GenerisiID(string imeprezime, int id) {
 	return GetNizKaraktera(ID.c_str());
 }
 
+//char FirstLetterOfSurname(const char* imeprezime) {
+//
+//	for (int i = 0; i < strlen(imeprezime); i++)
+//	{
+//		if (isspace(imeprezime[i])) {
+//			return imeprezime[i + 1];
+//		}
+//	}
+//}
+//
+//
+//	char* GenerisiID(const char* imeprezime, int id) {
+//
+//		char FirstLetterN = toupper(imeprezime[0]);						  // J
+//		char FirstLetterS = toupper(FirstLetterOfSurname(imeprezime));	  // A
+//		int ReverseN = ReverseNum(id);                                    // 41 
+//
+//		char temp[10];
+//
+//
+//		if (id < 10) { // treba vratiti D000M3
+//
+//			sprintf_s(temp, "%c000%c%d", FirstLetterN, FirstLetterS, ReverseN);         // %d - decimal , %s - string , %c - char
+//
+//		}
+//		else if (id < 100) { // treba vratiti J00A41
+//
+//			sprintf_s(temp, "%c00%c%d", FirstLetterN, FirstLetterS, ReverseN);         // %d - decimal , %s - string , %c - char
+//
+//		}
+//		else if (id < 1000) { // treba vratiti G0S651
+//
+//			sprintf_s(temp, "%c0%c%d", FirstLetterN, FirstLetterS, ReverseN);         // %d - decimal , %s - string , %c - char
+//
+//		}
+//		else { // treba vratiti EJ8971
+//
+//			sprintf_s(temp, "%c%c%d", FirstLetterN, FirstLetterS, ReverseN);         // %d - decimal , %s - string , %c - char
+//
+//		}
+//
+//		// ako func. ne znamo mozemo je zaobici ovako 
+//
+//		//char temp1[30];
+//
+//		//sprintf_s(temp1, "ID%s%d", imeprezime, id);
+//
+//		//return GetNizKaraktera(temp1);
+//
+//
+//		return GetNizKaraktera(temp);
+//	}
+
+
 //cout << GenerisiID("Denis Music", 3) << endl;//treba vratiti D000M3
 //cout << GenerisiID("Jasmin Azemovic", 14) << endl;//treba vratiti J00A41
 //cout << GenerisiID("Goran Skondric", 156) << endl;//treba vratiti G0S651
