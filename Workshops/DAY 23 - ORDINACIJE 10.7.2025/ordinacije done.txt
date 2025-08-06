@@ -68,18 +68,6 @@ validnom sifrom treba smatrati i onu koja umjesto znaka crtica '-' ima znak razm
 //cout << GenerisiSifru("Jasmin Azemovic", 14) << endl;//treba vratiti 25-JA-014
 //cout << GenerisiSifru("Goran skondric", 156) << endl;//treba vratiti 25-GS-156
 //cout << GenerisiSifru("emina junuz", 798) << endl;//treba vratiti 25-EJ-798
-
-char GetFirstLetterOfSurname(const char* imePrezime) {
-
-	for (int i = 0; i < strlen(imePrezime); i++)
-	{
-		if (isspace(imePrezime[i])) {
-			return imePrezime[i + 1];
-		}
-	}
-
-}
-
 int GetCurrentYearLast2Digits() {
 
 	time_t currentTime = time(nullptr); // ili 0
@@ -91,33 +79,81 @@ int GetCurrentYearLast2Digits() {
 
 }
 
-char* GenerisiSifru(const char* imePrezime, int id) {
+char* GenerisiSifru(string imePrezime, int id) {
 
 	char FirstLetterN = toupper(imePrezime[0]);
-	char FirstLetterS = toupper(GetFirstLetterOfSurname(imePrezime));
+	char FirstLetterS = toupper(imePrezime[imePrezime.find(' ') + 1]);	  // A
 	int CurrentYear = GetCurrentYearLast2Digits();
 
-	char temp[20];
+	string ID;
 
-	if (id < 10) { // treba vratiti 25 - DM - 003
+	ID += to_string(CurrentYear) += "-";
+	ID += FirstLetterN;
+	ID += FirstLetterS;
+	ID += "-";
 
-		sprintf_s(temp, "%d-%c%c-00%d", CurrentYear, FirstLetterN, FirstLetterS, id);
+	if (id < 10) { // treba vratiti 25-DM-003
+
+		ID += "00";
 
 	}
 	else if (id < 100) {
 
-		sprintf_s(temp, "%d-%c%c-0%d", CurrentYear, FirstLetterN, FirstLetterS, id);
+		ID += "0";
 
 	}
 	else {
 
-		sprintf_s(temp, "%d-%c%c-%d", CurrentYear, FirstLetterN, FirstLetterS, id);
+		ID += "";
 
 	}
 
-	return AlocirajNiz(temp);
+	ID += to_string(id);
+
+	return AlocirajNiz(ID.c_str());
 
 }
+
+
+//char GetFirstLetterOfSurname(const char* imePrezime) {
+//
+//	for (int i = 0; i < strlen(imePrezime); i++)
+//	{
+//		if (isspace(imePrezime[i])) {
+//			return imePrezime[i + 1];
+//		}
+//	}
+//
+//}
+//
+//
+//char* GenerisiSifru(const char* imePrezime, int id) {
+//
+//	char FirstLetterN = toupper(imePrezime[0]);
+//	char FirstLetterS = toupper(GetFirstLetterOfSurname(imePrezime));
+//	int CurrentYear = GetCurrentYearLast2Digits();
+//
+//	char temp[20];
+//
+//	if (id < 10) { // treba vratiti 25 - DM - 003
+//
+//		sprintf_s(temp, "%d-%c%c-00%d", CurrentYear, FirstLetterN, FirstLetterS, id);
+//
+//	}
+//	else if (id < 100) {
+//
+//		sprintf_s(temp, "%d-%c%c-0%d", CurrentYear, FirstLetterN, FirstLetterS, id);
+//
+//	}
+//	else {
+//
+//		sprintf_s(temp, "%d-%c%c-%d", CurrentYear, FirstLetterN, FirstLetterS, id);
+//
+//	}
+//
+//	return AlocirajNiz(temp);
+//
+//}
 
 //cout << GenerisiSifru("Denis Music", 3) << endl;     //treba vratiti 25- DM-003
 //cout << GenerisiSifru("Jasmin Azemovic", 14) << endl;//treba vratiti 25- JA-014
@@ -345,7 +381,7 @@ public:
 
 	virtual ~Dogadjaj() {}
 	virtual string Info() const = 0;
-	virtual Dogadjaj* Clone() const = 0; 
+	virtual Dogadjaj* Clone() const = 0;
 
 	const Termin& getTermin() const { return _termin; }
 
@@ -402,7 +438,7 @@ public:
 
 	string Info()const {
 		stringstream stringStream;
-		stringStream << *this; 
+		stringStream << *this;
 		return stringStream.str();
 	}
 
