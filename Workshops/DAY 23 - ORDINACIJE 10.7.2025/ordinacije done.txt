@@ -1115,31 +1115,31 @@ int main() {
 	for (auto ucesnik : vrijedniUcesnici)
 		cout << ucesnik->getImePrezime() << "\n";
 
-	///*
-	//Funkcija UcitajUcesnike ima zadatak ucitati podatke o ucesnicima i njihovim timovima iz fajla cije ime se proslijedjuje kao parametar
-	//(fajl mozete pronaci zajedno sa ispitnim zadatkom). Svaka linija u fajlu treba biti u formatu "ime i prezime|naziv tima". Funkcija za
-	//svaki red u fajlu:
+	/*
+	Funkcija UcitajUcesnike ima zadatak ucitati podatke o ucesnicima i njihovim timovima iz fajla cije ime se proslijedjuje kao parametar
+	(fajl mozete pronaci zajedno sa ispitnim zadatkom). Svaka linija u fajlu treba biti u formatu "ime i prezime|naziv tima". Funkcija za
+	svaki red u fajlu:
 
-	//- unutar vector-a, po nazivu, pronadje ranije dodati ili kreira novi tim,
-	//- kreira novog ucesnika ukoliko vec nije dio tog tima,
-	//- dodaje ucesnika u odgovarajuci tim (onemoguciti dupliciranje korisnika u istom timu).
+	- unutar vector-a, po nazivu, pronadje ranije dodati ili kreira novi tim,
+	- kreira novog ucesnika ukoliko vec nije dio tog tima,
+	- dodaje ucesnika u odgovarajuci tim (onemoguciti dupliciranje korisnika u istom timu).
 
-	//Na kraju, svi timovi sa svojim clanovima se nalaze u proslijedjenom vektoru timovi.
-	//Funkcija vraca true ako je ucitavanje podataka bilo ouspjesno, a false ako se desilo nesto neocekivano.
-	//Primjer sadrzaja fajla:
+	Na kraju, svi timovi sa svojim clanovima se nalaze u proslijedjenom vektoru timovi.
+	Funkcija vraca true ako je ucitavanje podataka bilo ouspjesno, a false ako se desilo nesto neocekivano.
+	Primjer sadrzaja fajla:
 
-	//Goran Skondric|Tim Alpha
-	//Emina Junuz|Tim Alpha
-	//Azra Maric|Tim Beta
-	//Tajib Hero|Tim Beta
-	//*/
-	//vector<Tim> timoviIzFajla;
-	//if (UcitajUcesnike("ucesnici.txt", timoviIzFajla))
-	//	cout << "Ucitavanje podataka USPJESNO.\n";
-	//else
-	//	cout << "Ucitavanje podataka NEUSPJESNO.\n";
-	//for (auto& tim : timoviIzFajla)
-	//	cout << tim << crt;
+	Goran Skondric|Tim Alpha
+	Emina Junuz|Tim Alpha
+	Azra Maric|Tim Beta
+	Tajib Hero|Tim Beta
+	*/
+	vector<Tim> timoviIzFajla;
+	if (UcitajUcesnike("ucesnici.txt", timoviIzFajla))
+		cout << "Ucitavanje podataka USPJESNO.\n";
+	else
+		cout << "Ucitavanje podataka NEUSPJESNO.\n";
+	for (auto& tim : timoviIzFajla)
+		cout << tim << crt;
 
 	cin.get();
 	return 0;
