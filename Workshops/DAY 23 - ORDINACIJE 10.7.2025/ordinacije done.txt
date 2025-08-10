@@ -480,7 +480,8 @@ public:
 
 	}
 
-	Dogadjaj* Clone() const {
+	Dogadjaj* Clone() const override { // nije obavezan override al govori programu da je override-ana func. i lakse kompajler to razumije
+
 		return new Predavanje(*this);
 	}
 
@@ -505,11 +506,17 @@ class Ucesnik {
 	char* _sifra; //sifra u formatu GG-IN-BBB, pojasnjena u main funkciji, generisati prilikom kreiranja objekta
 	char* _imePrezime;
 
-	// PRISTUP: iz bazne klase prelazimo u izvedenu koristeći dynamic_cast 
-	// BAZNA -> IZVEDENA 
-	  
-	// POHRANA I KOPIRANJE: Dogadjaj je apstraktna klasa, pa ga ne možemo direktno instancirati; koristimo Clone() da napravimo kopiju i sačuvamo stvarni (izvedeni) tip objekta u baznu varijablu.
-	// IZVEDENA -> BAZNA
+	// PRISTUP: (BAZNA -> IZVEDENA) - DYNAMIC_CAST
+	// iz bazne klase prelazimo u izvedenu koristeći dynamic_cast (BAZNA -> IZVEDENA)
+
+	// POLIMORFNO KOPIRANJE: (BAZNA koja pokazuje na IZVEDENU -> nova BAZNA koja pokazuje na IZVEDENU) - CAST
+	// Dogadjaj je apstraktna klasa, pa ga ne možemo direktno instancirati;
+	// koristimo Clone() da polimorfno napravimo novi objekat istog izvedenog tipa
+	 
+	// POHRANA: (IZVEDENA -> BAZNA) - CAST ILI KLASCINA POHRANA
+	// ako znamo tačan tip (npr. Predavanje), možemo direktno kreirati izvedenu: new Predavanje(predavanje);
+	// ako tip ne znamo ili želimo da kod radi za bilo koji izvedeni tip (polimorfno), koristimo Clone()
+	// U oba slučaja, u vector<Dogadjaj*> pohranjujemo pokazivač bazne klase koji pokazuje na izvedenu
 
 	vector<Dogadjaj*> _prijavljeni;
 public:
@@ -529,7 +536,7 @@ public:
 
 		for (int i = 0; i < obj._prijavljeni.size(); i++)
 		{
-			// IZVEDENA -> BAZNA -> kloniranje
+			// (BAZNA koja pokazuje na IZVEDENU -> nova BAZNA koja pokazuje na IZVEDENU)
 
 			_prijavljeni.push_back(obj._prijavljeni[i]->Clone());
 		}
@@ -550,7 +557,7 @@ public:
 
 			for (int i = 0; i < obj._prijavljeni.size(); i++)
 			{
-				// IZVEDENA -> BAZNA -> kloniranje
+				// (BAZNA koja pokazuje na IZVEDENU -> nova BAZNA koja pokazuje na IZVEDENU)
 
 				_prijavljeni.push_back(obj._prijavljeni[i]->Clone());
 			}
