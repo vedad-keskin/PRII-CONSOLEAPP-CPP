@@ -197,17 +197,15 @@ int main() {
 	* ....
 	*/
 
-	KolekcijaG1<int, string, 10> kolekcija2 = kolekcija1.InsertAt(1,
-		10, "Vrijednost -> 10");
+	KolekcijaG1<int, string, 10> kolekcija2 = kolekcija1.InsertAt(1, 10, "Vrijednost -> 10");
 	cout << kolekcija2 << crt;
 
-	/*Metoda RemoveRange kao prvi parametar prihvata pocetnu lokaciju a kao drugi parametar broj elemenata koje, od pocetne lokacije uklanja
-   iz kolekcije koja je pozvala tu metodu. U slucaju da zahtijevani broj elemenata ne postoji u kolekciji metoda treba baciti izuzetak. Na kraju, metoda treba da vrati pokazivac na novi objekat tipa Kolekcija koji sadrzi samo uklonjene elemente*/
+	/*Metoda RemoveRange kao prvi parametar prihvata pocetnu lokaciju a kao drugi parametar broj elemenata koje, od pocetne lokacije uklanja iz kolekcije koja je pozvala tu metodu. U slucaju da zahtijevani broj elemenata ne postoji u kolekciji metoda treba baciti izuzetak. Na kraju, metoda treba da vrati pokazivac na novi objekat tipa Kolekcija koji sadrzi samo uklonjene elemente*/
 
 	KolekcijaG1<int, string, 10>* kolekcija3 =
-		kolekcija1.RemoveRange(1, 3);//uklanja 3 elementa pocevsi od lokacije
-	1
-		cout << "Uklonjeni:\n" << *kolekcija3;
+		kolekcija1.RemoveRange(1, 3);//uklanja 3 elementa pocevsi od lokacije 1
+	
+	cout << "Uklonjeni:\n" << *kolekcija3;
 	cout << "Preostali:\n" << kolekcija1;
 
 	try {
