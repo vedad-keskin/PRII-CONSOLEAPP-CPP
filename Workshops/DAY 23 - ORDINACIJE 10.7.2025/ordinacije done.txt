@@ -563,7 +563,8 @@ public:
 
 		for (int i = 0; i < _prijavljeni.size(); i++)
 		{
-			// 
+
+			// BAZNA -> IZVEDENA 
 			Predavanje* castedPredavanje = dynamic_cast<Predavanje*>(_prijavljeni[i]);
 
 
@@ -575,7 +576,10 @@ public:
 
 		}
 
+		// oboje radi
+
 		_prijavljeni.push_back(new Predavanje(predavanje));
+		//_prijavljeni.push_back(predavanje.Clone());
 
 		return true;
 
