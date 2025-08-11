@@ -509,11 +509,11 @@ class Ucesnik {
 	// PRISTUP: (BAZNA -> IZVEDENA) - DYNAMIC_CAST
 	// iz bazne klase prelazimo u izvedenu koristeći dynamic_cast (BAZNA -> IZVEDENA)
 
-	// POLIMORFNO KOPIRANJE: (BAZNA koja pokazuje na IZVEDENU -> nova BAZNA koja pokazuje na IZVEDENU) - CAST
+	// POLIMORFNO KOPIRANJE: (BAZNA koja pokazuje na IZVEDENU -> nova BAZNA koja pokazuje na IZVEDENU) - KLONIRANJE
 	// Dogadjaj je apstraktna klasa, pa ga ne možemo direktno instancirati;
 	// koristimo Clone() da polimorfno napravimo novi objekat istog izvedenog tipa
-	 
-	// POHRANA: (IZVEDENA -> BAZNA) - CAST ILI KLASCINA POHRANA
+
+	// POHRANA: (IZVEDENA -> BAZNA) - KLONIRANJE ILI KLASCINA POHRANA
 	// ako znamo tačan tip (npr. Predavanje), možemo direktno kreirati izvedenu: new Predavanje(predavanje);
 	// ako tip ne znamo ili želimo da kod radi za bilo koji izvedeni tip (polimorfno), koristimo Clone()
 	// U oba slučaja, u vector<Dogadjaj*> pohranjujemo pokazivač bazne klase koji pokazuje na izvedenu
@@ -807,6 +807,7 @@ public:
 							Predavanje* castedPredavanje = dynamic_cast<Predavanje*>(_timovi.getElement2(i)->getClanovi()[j].getDogadjaji()[k]);
 
 							if (predavanje == *castedPredavanje) {
+							//if (predavanje == *_timovi.getElement2(i)->getClanovi()[j].getDogadjaji()[k]) { // moze i ovako ako nije implementiran op == u klasi Predavanje, pa se onda poredi preko op = iz Dogadjaja
 
 								return false;
 
