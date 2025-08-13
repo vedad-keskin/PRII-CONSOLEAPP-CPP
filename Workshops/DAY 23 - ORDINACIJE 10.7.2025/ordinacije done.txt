@@ -762,21 +762,21 @@ public:
 
 						// da li odabrani ucesnik vec ima odabrano predavanje (duplikati)
 
-						for (int k = 0; k < _timovi.getElement1(i)->getClanovi()[j].getDogadjaji().size(); k++)
-						{
-							Predavanje* castedPredavanje = dynamic_cast<Predavanje*>(_timovi.getElement1(i)->getClanovi()[j].getDogadjaji()[k]);
+						//for (int k = 0; k < _timovi.getElement1(i)->getClanovi()[j].getDogadjaji().size(); k++)
+						//{
+						//	Predavanje* castedPredavanje = dynamic_cast<Predavanje*>(_timovi.getElement1(i)->getClanovi()[j].getDogadjaji()[k]);
 
-							if (predavanje == *castedPredavanje) {
+						//	if (predavanje == *castedPredavanje) {
 
-								return false;
+						//		return false;
 
-							}
-						}
+						//	}
+						//}
 
 
-						_timovi.getElement1(i)->getClanovi()[j].PrijaviSe(predavanje);
+						// skracena verzija toga
 
-						return true;
+						return _timovi.getElement1(i)->getClanovi()[j].PrijaviSe(predavanje) ? true : false;
 
 
 					}
@@ -800,21 +800,23 @@ public:
 
 					if (strcmp(_timovi.getElement2(i)->getClanovi()[j].getSifra(), sifraUcesnika) == 0) {
 
-						// da li odabrani ucesnik vec ima odabrano predavanje (duplikati)
+						//// da li odabrani ucesnik vec ima odabrano predavanje (duplikati)
 
-						for (int k = 0; k < _timovi.getElement2(i)->getClanovi()[j].getDogadjaji().size(); k++)
-						{
-							Predavanje* castedPredavanje = dynamic_cast<Predavanje*>(_timovi.getElement2(i)->getClanovi()[j].getDogadjaji()[k]);
+						//for (int k = 0; k < _timovi.getElement2(i)->getClanovi()[j].getDogadjaji().size(); k++)
+						//{
+						//	Predavanje* castedPredavanje = dynamic_cast<Predavanje*>(_timovi.getElement2(i)->getClanovi()[j].getDogadjaji()[k]);
 
-							if (predavanje == *castedPredavanje) {
-							//if (predavanje == *_timovi.getElement2(i)->getClanovi()[j].getDogadjaji()[k]) { // moze i ovako ako nije implementiran op == u klasi Predavanje, pa se onda poredi preko op = iz Dogadjaja
+						//	if (predavanje == *castedPredavanje) {
+						//		//if (predavanje == *_timovi.getElement2(i)->getClanovi()[j].getDogadjaji()[k]) { // moze i ovako ako nije implementiran op == u klasi Predavanje, pa se onda poredi preko op = iz Dogadjaja
 
-								return false;
+						//		return false;
 
-							}
-						}
+						//	}
+						//}
 
-						_timovi.getElement2(i)->getClanovi()[j].PrijaviSe(predavanje);
+						// skracena verzija toga
+
+						return _timovi.getElement2(i)->getClanovi()[j].PrijaviSe(predavanje) ? true : false;
 
 						return true;
 
