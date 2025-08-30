@@ -1,12 +1,17 @@
 #include <iostream>
-#include <string>
+
 #include <vector>
 #include <regex>
+#include <string>
+
 #include <thread>
 #include <mutex>
+
 #include <fstream>
 #include <memory>
 
+#include <sstream>
+#include <ctime>
 
 
 using namespace std;
@@ -37,16 +42,14 @@ enum Drzava {
 
 ostream& operator << (ostream& COUT, const Drzava& obj) {
 
-	const char* KopijaDrzava[]{
+	const char* KopijaDrzava[] {
 		"ENGLESKA", "SPANIJA", "HOLANDIJA", "FRANCUSKA", "BOSNA_I_HERCEGOVINA"
 	};
 
 	COUT << KopijaDrzava[obj];
 
-
 	return COUT;
 }
-
 
 
 char* GetNizKaraktera(const char* sadrzaj, bool dealociraj = false) {
@@ -56,20 +59,6 @@ char* GetNizKaraktera(const char* sadrzaj, bool dealociraj = false) {
 	strcpy_s(temp, vel, sadrzaj);
 	if (dealociraj)
 		delete[]sadrzaj;
-	return temp;
-}
-
-int ReverseNum(int id) {
-
-	int temp = 0;
-
-	while (id != 0)
-	{
-		temp *= 10;
-		temp += id % 10;
-		id /= 10;
-	}
-
 	return temp;
 }
 
@@ -87,45 +76,8 @@ treba biti u obrnutom redoslijedu cifara.
  */
 
 
-//char* GenerisiID(string imeprezime, int id) {
-//
-//	char FirstLetterN = toupper(imeprezime[0]);						      // J
-//	char FirstLetterS = toupper(imeprezime[imeprezime.find(' ') + 1]);	  // A
-//	int ReverseN = ReverseNum(id);                                        // 41 
-//
-//	string ID;
-//
-//	ID += FirstLetterN;
-//
-//	if (id < 10) { // treba vratiti D000M3
-//
-//		ID += "000";
-//
-//	}
-//	else if (id < 100) { // treba vratiti J00A41
-//
-//		ID += "00";
-//
-//	}
-//	else if (id < 1000) { // treba vratiti G0S651
-//
-//		ID += "0";
-//
-//	}
-//	else { // treba vratiti EJ8971
-//
-//		ID += "";
-//
-//	}
-//
-//	ID += FirstLetterS;
-//	ID += to_string(ReverseN);
-//
-//
-//	return GetNizKaraktera(ID.c_str());
-//}
 
-char FirstLetterOfSurname(const char* imeprezime) {
+char FindFirstLetterSurname(const char* imeprezime) {
 
 	for (int i = 0; i < strlen(imeprezime); i++)
 	{
@@ -133,65 +85,155 @@ char FirstLetterOfSurname(const char* imeprezime) {
 			return imeprezime[i + 1];
 		}
 	}
+
 }
 
+int ReverseNum(int id) {
 
-	char* GenerisiID(const char* imeprezime, int id) {
+	int temp = 0;
 
-		char FirstLetterN = toupper(imeprezime[0]);						  // J
-		char FirstLetterS = toupper(FirstLetterOfSurname(imeprezime));	  // A
-		int ReverseN = ReverseNum(id);                                    // 41 
+	while (id != 0) {
 
-		char temp[10];
+		temp *= 10;
+		temp += id % 10;
+		id /= 10;
 
-
-		if (id < 10) { // treba vratiti D000M3
-
-			sprintf_s(temp, "%c000%c%d", FirstLetterN, FirstLetterS, ReverseN);         // %d - decimal , %s - string , %c - char
-
-		}
-		else if (id < 100) { // treba vratiti J00A41
-
-			sprintf_s(temp, "%c00%c%d", FirstLetterN, FirstLetterS, ReverseN);         // %d - decimal , %s - string , %c - char
-
-		}
-		else if (id < 1000) { // treba vratiti G0S651
-
-			sprintf_s(temp, "%c0%c%d", FirstLetterN, FirstLetterS, ReverseN);         // %d - decimal , %s - string , %c - char
-
-		}
-		else { // treba vratiti EJ8971
-
-			sprintf_s(temp, "%c%c%d", FirstLetterN, FirstLetterS, ReverseN);         // %d - decimal , %s - string , %c - char
-
-		}
-
-		// ako func. ne znamo mozemo je zaobici ovako 
-
-		//char temp1[30];
-
-		//sprintf_s(temp1, "ID%s%d", imeprezime, id);
-
-		//return GetNizKaraktera(temp1);
-
-
-		return GetNizKaraktera(temp);
 	}
 
+	return temp;
 
-//cout << GenerisiID("Denis Music", 3) << endl;//treba vratiti D000M3
-//cout << GenerisiID("Jasmin Azemovic", 14) << endl;//treba vratiti J00A41
-//cout << GenerisiID("Goran Skondric", 156) << endl;//treba vratiti G0S651
-//cout << GenerisiID("emina junuz", 1798) << endl;//treba vratiti EJ8971
+}
+
+//cout << GenerisiID("Denis Music", 3) << endl;      //treba vratiti D000M3
+//cout << GenerisiID("Jasmin Azemovic", 14) << endl; //treba vratiti J00A41
+//cout << GenerisiID("Goran Skondric", 156) << endl; //treba vratiti G0S651
+//cout << GenerisiID("emina junuz", 1798) << endl;   //treba vratiti EJ8971
+
+
+char* GenerisiID(const char* imeprezime, int id) {
+
+	char FirstLetterN = toupper(imeprezime[0]); // E
+
+	//char PrvoSlovoPrezimena = toupper(imeprezime[imeprezime.find(' ') + 1]); // J 
+	char FirstLetterLN = toupper(FindFirstLetterSurname(imeprezime));         // J 
+
+	int ReversedNum = ReverseNum(id); // 41 
+
+	char temp[10];
+
+	if (id < 10) { // treba vratiti D000M3
+
+		sprintf_s(temp, "%c000%c%d", FirstLetterN, FirstLetterLN, ReversedNum); // %c - char , %s - string , %d - decimal
+
+	}
+	else if (id < 100) { // treba vratiti J00A41
+
+		sprintf_s(temp, "%c00%c%d", FirstLetterN, FirstLetterLN, ReversedNum); // %c - char , %s - string , %d - decimal
+
+	}
+	else if (id < 1000) { // treba vratiti G0S651
+
+
+		sprintf_s(temp, "%c0%c%d", FirstLetterN, FirstLetterLN, ReversedNum); // %c - char , %s - string , %d - decimal
+
+	}
+	else { // treba vratiti EJ8971
+
+		sprintf_s(temp, "%c%c%d", FirstLetterN, FirstLetterLN, ReversedNum); // %c - char , %s - string , %d - decimal
+
+	}
+
+	return GetNizKaraktera(temp);
+
+}
+
+////Za validaciju ID-a koristiti funkciju ValidirajID koja treba, koristeci regex, osigurati postivanje osnovnih pravila
+////vezanih za format koja su definisana u prethodnom dijelu zadatka.
+
+//cout << GenerisiID("Denis Music", 3) << endl;      //treba vratiti D 000M3
+//cout << GenerisiID("Jasmin Azemovic", 14) << endl; //treba vratiti J 00A41
+//cout << GenerisiID("Goran Skondric", 156) << endl; //treba vratiti G 0S651
+//cout << GenerisiID("emina junuz", 1798) << endl;   //treba vratiti E J8971
+
+// 1. [ ] ---> RANGE ... [A-Z] , [0-9] , [a-z] , [A-Za-z0-9] , [- ] <--- uvijek same znaci da je jedno ono sto se nalazi unutra
+
+// 2. { } ---> VELICINA ... [A-Z]{2} , {2,5} , {5,} , {,5}
+
+// 3. ( ) ---> TACAN TEKST ... (gmail) , (com|ba) 
 
 bool ValidirajID(const char* ID) {
 
-	regex reg("[A-Z](000[A-Z][1-9]|00[A-Z][0-9]{2}|0[A-Z][0-9]{3}|[A-Z][0-9]{4})");
+	//               D      000M3            00A41        0S651           J8971
+	regex pattern("[A-Z](000[A-Z][0-9]|00[A-Z][0-9]{2}|0[A-Z][0-9]{3}|[A-Z][0-9]{4})");
 
-	return regex_match(ID, reg);
+	return regex_match(ID, pattern);
 
 }
 
+/*
+Globalna funkcija GenerisiID vraca ID igraca (format: ID#00-ID) na
+osnovu int vrijednosti proslijedjene
+ kao parametar. Funkcija generise ID sa maksimalno 4 cifre, ne
+racunajuci ostale, podrazumijevane, znakove.
+ Podrazumijeva se da ce uvijek biti proslijedjena validna int
+vrijednost.
+ */
+ //cout << GenerisiID(3) << endl;//treba vratiti ID#000-3
+ //cout << GenerisiID(14) << endl;//treba vratiti ID#00-14
+ //cout << GenerisiID(156) << endl;//treba vratiti ID#0-156
+ //cout << GenerisiID(1798) << endl;//treba vratiti ID#1798
+
+char* GenerisiID2(int id) {
+
+	char temp[10];
+
+	if (id < 10) { // treba vratiti ID#000-3
+
+		sprintf_s(temp, "ID#000-%d", id); // %c - char , %s - string , %d - decimal
+
+	}
+	else if (id < 100) { // treba vratiti ID#00-14
+
+		sprintf_s(temp, "ID#00-%d", id); // %c - char , %s - string , %d - decimal
+
+
+	}
+	else if (id < 1000) { // treba vratiti ID#0-156
+
+
+		sprintf_s(temp, "ID#0-%d", id); // %c - char , %s - string , %d - decimal
+
+	}
+	else { // treba vratiti ID#1798
+
+		sprintf_s(temp, "ID#%d", id); // %c - char , %s - string , %d - decimal
+
+	}
+
+	return GetNizKaraktera(temp);
+
+}
+
+
+// 1. [ ] ---> RANGE ... [A-Z] , [0-9] , [a-z] , [A-Za-z0-9] , [- ] <--- uvijek same znaci da je jedno ono sto se nalazi unutra
+
+// 2. { } ---> VELICINA ... [A-Z]{2} , {2,5} , {5,} , {,5}
+
+// 3. ( ) ---> TACAN TEKST ... (gmail) , (com|ba) 
+
+//cout << GenerisiID2(3) << endl;     // treba vratiti ID# 000-3
+//cout << GenerisiID2(14) << endl;    // treba vratiti ID# 00-14
+//cout << GenerisiID2(156) << endl;   // treba vratiti ID# 0-156
+//cout << GenerisiID2(1798) << endl;  // treba vratiti ID# 1798
+
+bool ValidirajID2(const char* ID) {
+
+	//             ID#   000-3       00-14          0-156         1798
+	regex pattern("ID#(000-[1-9]|00-[1-9][0-9]|0-[1-9][0-9]{2}|[1-9][0-9]{3})");
+
+	return regex_match(ID, pattern);
+
+}
 
 
 
@@ -205,6 +247,8 @@ public:
 	Kolekcija() {
 
 		_trenutno = new int(0);
+
+		// ako su zadaci sa maxom ovdje ne radite nista
 
 	}
 
@@ -225,7 +269,6 @@ public:
 
 			delete _trenutno;
 
-
 			_trenutno = new int(*obj._trenutno);
 
 			for (int i = 0; i < *_trenutno; i++)
@@ -233,6 +276,7 @@ public:
 				_elementi1[i] = obj._elementi1[i];
 				_elementi2[i] = obj._elementi2[i];
 			}
+
 		}
 		return *this;
 	}
@@ -244,54 +288,138 @@ public:
 		_elementi2[*_trenutno] = el2;
 
 		(*_trenutno)++;
+
 	}
 
-	Kolekcija<int, int, 10> InsertAt(T1 el1, T2 el2, int lokacija) {
+	/* metoda InsertAt treba da doda vrijednosti prvog i drugog
+parametra na lokaciju koja je definisana trecim parametrom. Povratna
+vrijednost metode
+ je objekat (pozivaoc metode, u konkretnom slucaju objekat
+kolekcija1) u okviru koga su, na definisanu lokaciju, dodati
+zahtijevani parametri.
+ Nakon izvrsenja metode InsertAt, oba objekta, kolekcija1 i
+kolekcija2, bi trebali posjedovati sljedeci sadrzaj:
+ 10 10
+ 0 0
+ 1 1
+ 2 2
+ * ....
+ */
+ //Kolekcija<int, int, 10> kolekcija2 = kolekcija1.InsertAt(10, 10, 0);
+ //cout << kolekcija2 << crt;
 
-		Kolekcija<int, int, 10> kolekcija2; // prazna kolekcija
+	Kolekcija InsertAt(T1 el1, T2 el2, int lokacija) { // 10 10 0 
 
-		for (int i = 0; i < *_trenutno; i++)
+		Kolekcija kolekcija2;
+
+		for (int i = 0; i < *_trenutno; i++) // 0 1 2 3 4 5 6 7 8
 		{
-			if (lokacija == i) {
+			if (i == lokacija) {
+
 				kolekcija2.AddElement(el1, el2);
+
 			}
+
 			kolekcija2.AddElement(_elementi1[i], _elementi2[i]);
 
 		}
 
-		*this = kolekcija2; // op = Kol
+		*this = kolekcija2; // op = 
 
 		return kolekcija2;
 
 	}
 
-	Kolekcija<int, int, 10> RemoveRange(int pocetak, int kraj) {
+	/*Metoda RemoveRange prihvata lokacija OD i DO, te u tom opsegu
+uklanja sve elemente iz kolekcije. U slucaju da zahtijevani opseg ne
+postoji u kolekciji
+ metoda treba baciti izuzetak. Na kraju, metoda treba da vrati
+pokazivac na novi objekat tipa kolekcija koji sadrzi samo uklonjene
+elemente
 
-		if (pocetak < 0 || kraj >= *_trenutno) {
-			throw exception("Ne postoji odabrani range u nizu");
-		}
+// Not the professor here, ovdje ne treba vratiti pokazivac,
+// to je izgleda greska tokom pravljenja postavke za ispit ostala
+	//Kolekcija<int, int, 10> kolekcija3 = kolekcija1.RemoveRange(1, 3);
+	//cout << kolekcija3 << endl;
+	//cout << kolekcija1 << crt;
+	/*kolekcija3 bi trebala sadrzavati sljedece elemente:
+	0 0
+	1 1
+	2 2
+	dok bi kolekcija1 trebala sadrzavati sljedece elemente:
+	10 10
+	3 3
+	4 4
+	......
+*/
+	Kolekcija RemoveRange(int lokacijaOd, int lokacijaDo) { // 1 , 3 
 
-		Kolekcija<int, int, 10> kolekcija3;
 
-		Kolekcija<int, int, 10> kolekcija1; // prazna kolekcija
+		Kolekcija kolekcija3;
+
+		Kolekcija kolekcija1;
 
 
 		for (int i = 0; i < *_trenutno; i++)
 		{
-			if (i >= pocetak && i <= kraj) {
+
+			if (i >= lokacijaOd && i <= lokacijaDo) { // 1 2 3 
+
 				kolekcija3.AddElement(_elementi1[i], _elementi2[i]);
+
 			}
 			else {
+
 				kolekcija1.AddElement(_elementi1[i], _elementi2[i]);
+
 			}
+
 		}
 
 		*this = kolekcija1;
 
+
 		return kolekcija3;
+
 
 	}
 
+
+	//Kolekcija<int, int, 10>* kolekcija3 = kolekcija1.RemoveRange(1, 3);
+	//cout << *kolekcija3 << endl;
+	//cout << kolekcija1 << crt;
+
+	//Kolekcija* RemoveRange(int lokacijaOd, int lokacijaDo) { // 1 , 3 
+
+
+	//	Kolekcija* kolekcija3 = new Kolekcija();
+
+	//	Kolekcija kolekcija1;
+
+
+	//	for (int i = 0; i < *_trenutno; i++)
+	//	{
+
+	//		if (i >= lokacijaOd && i <= lokacijaDo) { // 1 2 3 
+
+	//			kolekcija3->AddElement(_elementi1[i], _elementi2[i]);
+
+	//		}
+	//		else {
+
+	//			kolekcija1.AddElement(_elementi1[i], _elementi2[i]);
+
+	//		}
+
+	//	}
+
+	//	*this = kolekcija1;
+
+
+	//	return kolekcija3;
+
+
+	//}
 
 	~Kolekcija() {
 		delete _trenutno; _trenutno = nullptr;
@@ -301,15 +429,13 @@ public:
 	T2& getElement2(int lokacija) { return _elementi2[lokacija]; }
 	int getTrenutno() const { return *_trenutno; }
 
-
 	friend ostream& operator<< (ostream& COUT, Kolekcija& obj) {
 		for (size_t i = 0; i < *obj._trenutno; i++)
-			COUT << obj.getElement1(i) << " " << obj.getElement2(i) <<
-			endl;
+			COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
 		return COUT;
 	}
 };
-class Vrijeme {
+class Vrijeme { // Datum ili Vrijeme(Termin)
 	int* _sat, * _minuta, * _sekunda;
 public:
 	Vrijeme(int sat = 10, int minuta = 0, int sekunda = 0) {
@@ -328,14 +454,15 @@ public:
 
 	Vrijeme& operator = (const Vrijeme& obj) {
 		if (this != &obj) {
+
 			delete _sat;
 			delete _minuta;
 			delete _sekunda;
 
-
 			_sat = new int(*obj._sat);
 			_minuta = new int(*obj._minuta);
 			_sekunda = new int(*obj._sekunda);
+
 		}
 		return *this;
 	}
@@ -346,18 +473,18 @@ public:
 
 	}
 
-	int SumaSekundi() {
+	int toSeconds() {
 
 		return *_sekunda + *_minuta * 60 + *_sat * 3600;
 
 	}
-
 
 	~Vrijeme() {
 		delete _sat; _sat = nullptr;
 		delete _minuta; _minuta = nullptr;
 		delete _sekunda; _sekunda = nullptr;
 	}
+
 	friend ostream& operator<< (ostream& COUT, const Vrijeme& obj) {
 		COUT << *obj._sat << ":" << *obj._minuta << ":" << *obj._sekunda;
 		return COUT;
@@ -387,6 +514,7 @@ public:
 
 			_napomena = GetNizKaraktera(obj._napomena);
 			_vrijemePogotka = new Vrijeme(*obj._vrijemePogotka);
+
 		}
 		return *this;
 	}
@@ -396,7 +524,6 @@ public:
 		return *_vrijemePogotka == *obj._vrijemePogotka && strcmp(_napomena, obj._napomena) == 0;
 
 	}
-
 
 	~Pogodak() {
 		delete[] _napomena; _napomena = nullptr;
@@ -411,8 +538,6 @@ public:
 		return COUT;
 	}
 };
-
-
 class Igrac {
 	static int _id;
 	char* _ID; // za inicijalizaciju _ID-a iskoristiti funkciju GenerisiID tj.atributa _imePrezime(inicijala imena i prezimena) i statickog clana _id
@@ -420,20 +545,33 @@ class Igrac {
 	vector<Pogodak*> _pogoci;
 public:
 	Igrac(const char* imePrezime) {
-
-		_id++; // 0 -> 1 
-
-		_ID = GenerisiID(imePrezime, _id);
-
 		_imePrezime = GetNizKaraktera(imePrezime);
 
+		_id++; // 0 --> 1 
 
+		_ID = GenerisiID(_imePrezime, _id);
+
+	}
+
+	bool DodajPogodak(Pogodak pogodak) {
+
+		for (int i = 0; i < _pogoci.size(); i++)
+		{
+			if (pogodak == *_pogoci[i]) {
+
+				return false;
+
+			}
+		}
+
+		_pogoci.push_back(new Pogodak(pogodak));
+
+		return true;
 	}
 
 	Igrac(const Igrac& obj) {
 
 		_ID = GetNizKaraktera(obj._ID);
-
 		_imePrezime = GetNizKaraktera(obj._imePrezime);
 
 
@@ -442,24 +580,21 @@ public:
 			_pogoci.push_back(new Pogodak(*obj._pogoci[i]));
 		}
 
-
 	}
 
 	Igrac& operator = (const Igrac& obj) {
 		if (this != &obj) {
 
-			delete[]_ID;
+			delete[]_ID; 
 			delete[]_imePrezime;
-
-
 			for (size_t i = 0; i < _pogoci.size(); i++) {
 				delete _pogoci[i];
 			}
 
 
 			_ID = GetNizKaraktera(obj._ID);
-
 			_imePrezime = GetNizKaraktera(obj._imePrezime);
+
 
 			for (int i = 0; i < obj._pogoci.size(); i++)
 			{
@@ -469,18 +604,11 @@ public:
 		return *this;
 	}
 
-	void DodajPogodak(Pogodak pogodak) {
-
-		_pogoci.push_back(new Pogodak(pogodak));
-
-	}
-
 	bool operator == (const Igrac& obj) {
 
-		return strcmp(_ID, obj._ID) == 0;
+		return strcmp(_ID , obj._ID) == 0;
 
 	}
-
 
 	~Igrac() {
 		delete[]_ID; _ID = nullptr;
@@ -489,18 +617,14 @@ public:
 			delete _pogoci[i];
 			_pogoci[i] = nullptr;
 		}
-		_pogoci.clear();
 	}
-
-
 
 	char* GetImePrezime() { return _imePrezime; }
 	char* GetID() { return _ID; }
 	vector<Pogodak*>& GetPogoci() { return _pogoci; }
 
-
 	friend ostream& operator<< (ostream& COUT, Igrac& obj) {
-		COUT << obj._ID << " -> " << obj._imePrezime << endl;
+		COUT << obj._ID << " -> " << obj._imePrezime;
 		for (size_t i = 0; i < obj._pogoci.size(); i++)
 			cout << *obj._pogoci[i] << endl;
 		return COUT;
@@ -509,11 +633,11 @@ public:
 int Igrac::_id = 0;
 
 
-
 class Reprezentacija {
 	Drzava _drzava;
 	vector<Igrac> _igraci;
 public:
+
 	Reprezentacija(Drzava drzava = BOSNA_I_HERCEGOVINA) {
 		_drzava = drzava;
 	}
@@ -528,21 +652,23 @@ public:
 	Reprezentacija& operator = (const Reprezentacija& obj) {
 		if (this != &obj) {
 
+
 			_drzava = obj._drzava;
 			_igraci = obj._igraci;
+
 		}
 		return *this;
 	}
 
-	~Reprezentacija() {
+	bool operator == (const Reprezentacija& obj) {
+
+		return _drzava == obj._drzava;
 
 	}
 
-
-	int BrojGolova() {
+	int GetBrojGolova() {
 
 		int ukupno = 0;
-
 
 		for (int i = 0; i < _igraci.size(); i++)
 		{
@@ -558,37 +684,35 @@ public:
 
 	}
 
-
 	void AddIgrac(Igrac igrac) {
 
 		for (int i = 0; i < _igraci.size(); i++)
 		{
 			if (igrac == _igraci[i]) {
-				throw exception("Igrac je vec dodan u reprezentaciju");
+
+				throw exception("Igrac je vec u reprezentaciji");
+
 			}
 		}
-
 
 		_igraci.push_back(igrac);
 
 	}
 
-	bool operator == (const Reprezentacija& obj) {
-
-		return _drzava == obj._drzava;
+	~Reprezentacija() {
 
 	}
-
 
 	Drzava GetDrzava() { return _drzava; }
 	vector<Igrac>& GetIgraci() { return _igraci; }
 
 	friend ostream& operator << (ostream& COUT, const Reprezentacija& obj) {
 
-		COUT << obj._drzava;
+		COUT << obj._drzava ;
 
 		return COUT;
 	}
+
 
 };
 
@@ -610,11 +734,18 @@ public:
 	Prventstvo& operator = (const Prventstvo& obj) {
 		if (this != &obj) {
 
+
 			_utakmice = obj._utakmice;
 
 		}
 		return *this;
 	}
+
+	~Prventstvo() {
+
+
+	}
+
 
 	Kolekcija<Reprezentacija, Reprezentacija, 20>& GetUtakmice() {
 		return _utakmice;
@@ -622,103 +753,92 @@ public:
 
 	void AddUtakmicu(Reprezentacija rep1, Reprezentacija rep2) {
 
-
 		for (int i = 0; i < _utakmice.getTrenutno(); i++)
 		{
 			if (rep1 == _utakmice.getElement1(i) && rep2 == _utakmice.getElement2(i)) {
-
-				throw exception("Utakmica vec postoji");
-
+				throw exception("Utakmica je vec dodana");
 			}
-
 		}
-
 
 
 		_utakmice.AddElement(rep1, rep2);
 
 	}
 
+	////nakon svakog evidentiranog pogotka, svim igracima te utakmice (pod pretpostavkom da su validne email adrese sa ID - ovima igraca),
+	////u zasebnom thread-u, poslati email. u razmaku od 2 sekunde, sa sljedecim sadrzajem :
+	///*
 	//To: D000M1@euro2024.com
 	//From: info@euro2024.com
 	//Subject: Informacija
-
+	// 
 	//Postovani,
-
+	// 
 	//U 20:35:16 sati igrac Jasmin Azemovic je zabiljezio svoj 1 pogodak na ovoj utakmici.
-	//Trenutni rezultat je:
+	// 
+    //Trenutni rezultat je:
+    //BOSNA_I_HERCEGOVINA 2 : 0 ENGLESKA
+    // 
+    //Puno srece u nastavku susreta.
+    //Neka bolji tim pobijedi.
+    //*/
 
-	//BOSNA_I_HERCEGOVINA 2 : 0 ENGLESKA
-
-	//Puno srece u nastavku susreta.
-	//Neka bolji tim pobijedi.
-	//*/
-
-	void PosaljiMail(const char* ID, Vrijeme vrijemePogotka, Igrac igracKojiJeDaoGol, Reprezentacija rep1, Reprezentacija rep2) {
+	void SendMail(const char* svakiID, Vrijeme vrijemePogotka, Igrac igracKojiJeDaoGol, Reprezentacija rep1, Reprezentacija rep2) {
 
 		m.lock();
 
-		cout << endl << "To: " << ID << "@euro2024.com" << endl;
+		cout << endl << "To: " << svakiID << "@euro2024.com" << endl;
 		cout << "From: info@euro2024.com" << endl;
 		cout << "Subject: Informacija" << endl << endl;
 		cout << "Postovani," << endl << endl;
-		cout << "U " << vrijemePogotka << " sati igrac " << igracKojiJeDaoGol.GetImePrezime() << " je zabiljezio svoj " << igracKojiJeDaoGol.GetPogoci().size() << " pogodak na ovoj utakmici." << endl;
-		cout << "Trenutni rezultat je:" << endl << endl;
-		cout << rep1 << " " << rep1.BrojGolova() << " : " << rep2.BrojGolova() << " " << rep2 << endl << endl;
+		cout << "U "<< vrijemePogotka << " sati igrac " << igracKojiJeDaoGol.GetImePrezime() <<" je zabiljezio svoj "<< igracKojiJeDaoGol.GetPogoci().size() << " pogodak na ovoj utakmici." << endl << endl;
+		cout << "Trenutni rezultat je:" << endl;
+		cout << rep1 << " " << rep1.GetBrojGolova() << " : "<< rep2.GetBrojGolova() << " "<< rep2 << endl << endl;
 		cout << "Puno srece u nastavku susreta." << endl;
-		cout << "Neka bolji tim pobijedi." << endl;
+		cout << "Neka bolji tim pobijedi." << endl << endl;
 
 		m.unlock();
 
 	}
 
 
+	bool AddPogodak(Reprezentacija rep1, Reprezentacija rep2, const char* IDiliIP, Pogodak pogodak) {
 
-	bool AddPogodak(Reprezentacija rep1, Reprezentacija rep2, const char* IDiliImePrezime, Pogodak pogodak) {
-
+		// proci kroz sve utakmice
 
 		for (int i = 0; i < _utakmice.getTrenutno(); i++)
 		{
-			// pronalazak utakmice
+
+			// pronaci utakmicu gdje je domacin rep1 a gost rep2
 
 			if (rep1 == _utakmice.getElement1(i) && rep2 == _utakmice.getElement2(i)) {
 
 
-				// igraci rep1 
+				// proci kroz igrace rep1
 
 				for (int j = 0; j < _utakmice.getElement1(i).GetIgraci().size(); j++)
 				{
 
-					// dupli pogoci
+					// pronaci igraca koji ima IP ili ID isti onog koji je proslijedjen
 
-					for (int k = 0; k < _utakmice.getElement1(i).GetIgraci()[j].GetPogoci().size(); k++)
-					{
-						if (pogodak == *_utakmice.getElement1(i).GetIgraci()[j].GetPogoci()[k]) {
+					if (strcmp(IDiliIP, _utakmice.getElement1(i).GetIgraci()[j].GetID()) == 0 || 
+						strcmp(IDiliIP, _utakmice.getElement1(i).GetIgraci()[j].GetImePrezime()) == 0) {
 
+						// kada smo pronasli igraca sada mu trebamo dodati pogodak
+
+						
+
+						// ako zelite da i tekst dobijete
+						//return _utakmice.getElement1(i).GetIgraci()[j].DodajPogodak(pogodak) ? true : false;
+
+
+						if (!_utakmice.getElement1(i).GetIgraci()[j].DodajPogodak(pogodak)) {
 							return false;
-
 						}
-					}
-
-
-
-
-					// pronalazak igraca koji je dao gol preko ID ili imePre
-
-					if (strcmp(IDiliImePrezime, _utakmice.getElement1(i).GetIgraci()[j].GetImePrezime()) == 0
-						||
-						strcmp(IDiliImePrezime, _utakmice.getElement1(i).GetIgraci()[j].GetID()) == 0) {
-
-
-						_utakmice.getElement1(i).GetIgraci()[j].DodajPogodak(pogodak);
-
-
-
-						// THREAD za rep1 
 
 						Igrac igracKojiJeDaoGol = _utakmice.getElement1(i).GetIgraci()[j];
 
-						// mail igracima rep1
+						// poslati mail svakom igracu rep1
 
 						for (int k = 0; k < _utakmice.getElement1(i).GetIgraci().size(); k++)
 						{
@@ -726,12 +846,14 @@ public:
 
 							this_thread::sleep_for(chrono::seconds(2));
 
-							thread t1(&Prventstvo::PosaljiMail, this, svakiIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
+							thread t1(&Prventstvo::SendMail, this, svakiIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
 
 							t1.join();
+
+
 						}
 
-						// rep2 tim koji nije dao gol 
+						// poslati mail svakom igracu rep2
 
 						for (int k = 0; k < _utakmice.getElement2(i).GetIgraci().size(); k++)
 						{
@@ -739,67 +861,41 @@ public:
 
 							this_thread::sleep_for(chrono::seconds(2));
 
-							thread t1(&Prventstvo::PosaljiMail, this, svakiIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
+							thread t1(&Prventstvo::SendMail, this, svakiIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
 
 							t1.join();
+
 						}
 
-
-
-
-
 						return true;
+
 
 					}
 
 				}
 
-
-				// igraci rep2
+				// proci kroz igrace rep2
 
 				for (int j = 0; j < _utakmice.getElement2(i).GetIgraci().size(); j++)
 				{
 
-					// dupli pogoci
+					// pronaci igraca koji ima IP ili ID isti onog koji je proslijedjen
 
-					for (int k = 0; k < _utakmice.getElement2(i).GetIgraci()[j].GetPogoci().size(); k++)
-					{
-						if (pogodak == *_utakmice.getElement2(i).GetIgraci()[j].GetPogoci()[k]) {
+					if (strcmp(IDiliIP, _utakmice.getElement2(i).GetIgraci()[j].GetID()) == 0 ||
+						strcmp(IDiliIP, _utakmice.getElement2(i).GetIgraci()[j].GetImePrezime()) == 0) {
 
+						// kada smo pronasli igraca sada mu trebamo dodati pogodak
+
+						//_utakmice.getElement1(i).GetIgraci()[j].GetPogoci().push_back(new Pogodak(pogodak));
+
+						if (!_utakmice.getElement2(i).GetIgraci()[j].DodajPogodak(pogodak)) {
 							return false;
-
 						}
-					}
 
-
-
-					// pronalazak igraca koji je dao gol preko ID ili imePre
-
-					if (strcmp(IDiliImePrezime, _utakmice.getElement2(i).GetIgraci()[j].GetImePrezime()) == 0
-						||
-						strcmp(IDiliImePrezime, _utakmice.getElement2(i).GetIgraci()[j].GetID()) == 0) {
-
-
-						_utakmice.getElement2(i).GetIgraci()[j].DodajPogodak(pogodak);
-
-
-						// THREAD za rep2 
 
 						Igrac igracKojiJeDaoGol = _utakmice.getElement2(i).GetIgraci()[j];
 
-
-						for (int k = 0; k < _utakmice.getElement2(i).GetIgraci().size(); k++)
-						{
-							Igrac svakiIgrac = _utakmice.getElement2(i).GetIgraci()[k];
-
-							this_thread::sleep_for(chrono::seconds(2));
-
-							thread t1(&Prventstvo::PosaljiMail, this, svakiIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
-
-							t1.join();
-						}
-
-						// mail igracima rep1 ako je gol dala rep2
+						// poslati mail svakom igracu rep1
 
 						for (int k = 0; k < _utakmice.getElement1(i).GetIgraci().size(); k++)
 						{
@@ -807,14 +903,30 @@ public:
 
 							this_thread::sleep_for(chrono::seconds(2));
 
-							thread t1(&Prventstvo::PosaljiMail, this, svakiIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
+							thread t1(&Prventstvo::SendMail, this, svakiIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
 
 							t1.join();
+
+
+						}
+
+						// poslati mail svakom igracu rep2
+
+						for (int k = 0; k < _utakmice.getElement2(i).GetIgraci().size(); k++)
+						{
+							Igrac svakiIgrac = _utakmice.getElement2(i).GetIgraci()[k];
+
+							this_thread::sleep_for(chrono::seconds(2));
+
+							thread t1(&Prventstvo::SendMail, this, svakiIgrac.GetID(), pogodak.GetVrijemePogotka(), igracKojiJeDaoGol, _utakmice.getElement1(i), _utakmice.getElement2(i));
+
+							t1.join();
+
 						}
 
 
-
 						return true;
+
 
 					}
 
@@ -822,86 +934,106 @@ public:
 
 
 
+
+
+
 			}
-
-
-
 		}
-
-
 
 	}
 
-
-
+	///*
 	//-------------------------------------------
 	//(3) BOSNA_I_HERCEGOVINA : ENGLESKA (1)
 	//-------------------------------------------
-	//Denis Music               
+	//Denis Music               Goran Skondric
 	//Jasmin Azemovic
 	//Jasmin Azemovic
-	// 	                        Goran Skondric
 	//-------------------------------------------
+	//*/
 
 	friend ostream& operator << (ostream& COUT, Prventstvo& obj) {
 
 
+		// proci kroz sve utakmice
+
 		for (int i = 0; i < obj._utakmice.getTrenutno(); i++)
-		{
+		{	
+			//-------------------------------------------
+			//(3) BOSNA_I_HERCEGOVINA : ENGLESKA (1)
+			//-------------------------------------------
 
-			COUT << crt << "(" << obj._utakmice.getElement1(i).BrojGolova() << ") " << obj._utakmice.getElement1(i) << " : " << obj._utakmice.getElement2(i) << " (" << obj._utakmice.getElement2(i).BrojGolova() << ")" << crt;
+			COUT << crt << "(" << obj._utakmice.getElement1(i).GetBrojGolova() << ") " << obj._utakmice.getElement1(i) << " : " << obj._utakmice.getElement2(i) << " (" << obj._utakmice.getElement2(i).GetBrojGolova() << ")" << crt;
 
+			//Denis Music               
+			//Jasmin Azemovic
+			//Jasmin Azemovic
+			//                          Goran Skondric
+			//-------------------------------------------
 
-			// igraci rep1 
+			// proci kroz igrace rep1
 
 			for (int j = 0; j < obj._utakmice.getElement1(i).GetIgraci().size(); j++)
 			{
-				// golovi rep1
+
+				// proci kroz golove igraca rep1
 
 				for (int k = 0; k < obj._utakmice.getElement1(i).GetIgraci()[j].GetPogoci().size(); k++)
 				{
-					COUT << obj._utakmice.getElement1(i).GetIgraci()[j].GetImePrezime() << endl;
-				}
 
+					COUT << obj._utakmice.getElement1(i).GetIgraci()[j].GetImePrezime() << endl;
+
+				}
+			
 			}
 
-			// igraci rep2
+			// proci kroz igrace rep2
 
 			for (int j = 0; j < obj._utakmice.getElement2(i).GetIgraci().size(); j++)
 			{
-				// golovi rep2
+
+				// proci kroz golove igraca rep2
 
 				for (int k = 0; k < obj._utakmice.getElement2(i).GetIgraci()[j].GetPogoci().size(); k++)
 				{
-					COUT << " 	                  " << obj._utakmice.getElement2(i).GetIgraci()[j].GetImePrezime() << endl;
+
+					COUT << "                          " << obj._utakmice.getElement2(i).GetIgraci()[j].GetImePrezime() << endl;
+
 				}
 
 			}
 
+			COUT << "-------------------------------------------" << endl << endl;
+
 
 		}
-
 
 
 		return COUT;
 	}
 
-	////vraca sve igrace koji su na takmicenju postigli broj pogodaka koji je veci ili jednak proslijedjenoj vrijednosti
 
+	//vraca sve igrace koji su na takmicenju postigli broj pogodaka koji je veci ili jednak proslijedjenoj vrijednosti
+	//vector<Igrac*> igraci = euro2024(2);
+	//for (size_t i = 0; i < igraci.size(); i++)
+	//	cout << igraci[i]->GetImePrezime() << endl;
 
-	vector<Igrac*> operator() (int brojGolova) {
+	vector<Igrac*> operator () (int brPogodaka) {
 
 		vector<Igrac*> igraci;
 
+		// proci kroz sve utakmice
+
 		for (int i = 0; i < _utakmice.getTrenutno(); i++)
 		{
-			// rep1 
+			// proci kroz igrace rep1
 
 			for (int j = 0; j < _utakmice.getElement1(i).GetIgraci().size(); j++)
 			{
-				// igrac rep1 ako je dao vise od 2 gola
 
-				if (_utakmice.getElement1(i).GetIgraci()[j].GetPogoci().size() >= brojGolova) {
+				// provjeriti da li je igrac dao vise ili jednako pogodaka od proslijedjene vrijednosti
+
+				if (_utakmice.getElement1(i).GetIgraci()[j].GetPogoci().size() >= brPogodaka) {
 
 					igraci.push_back(new Igrac(_utakmice.getElement1(i).GetIgraci()[j]));
 
@@ -909,26 +1041,96 @@ public:
 
 			}
 
-			// rep2 
+			// proci kroz igrace rep2
 
 			for (int j = 0; j < _utakmice.getElement2(i).GetIgraci().size(); j++)
 			{
-				// igrac rep2 ako je dao vise od 2 gola
 
-				if (_utakmice.getElement2(i).GetIgraci()[j].GetPogoci().size() >= brojGolova) {
+				// provjeriti da li je igrac dao vise ili jednako pogodaka od proslijedjene vrijednosti
+
+				if (_utakmice.getElement2(i).GetIgraci()[j].GetPogoci().size() >= brPogodaka) {
 
 					igraci.push_back(new Igrac(_utakmice.getElement2(i).GetIgraci()[j]));
 
 				}
+
 			}
 
+
 		}
+
 
 		return igraci;
 
 
 	}
 
+	//Vrijeme
+//	prviPogodak201633(20, 16, 33),
+//	drugiPogodak202319(20, 23, 19),
+//	treciPogodak205108(20, 51, 8),
+//	cetvrtiPogodak210654(21, 6, 54);
+
+//                          Vrijeme(20, 15, 15), Vrijeme(20, 24, 15));
+	vector<Igrac*> operator () (Vrijeme vrijemeOd, Vrijeme vrijemeDo) {
+
+		vector<Igrac*> igraci;
+
+		// prolazak kroz sve utakmice
+
+		for (int i = 0; i < _utakmice.getTrenutno(); i++)
+		{
+			// proci kroz igrace rep1
+
+			for (int j = 0; j < _utakmice.getElement1(i).GetIgraci().size(); j++)
+			{
+				// proci kroz golove igraca rep1
+
+				for (int k = 0; k < _utakmice.getElement1(i).GetIgraci()[j].GetPogoci().size(); k++)
+				{
+					Igrac igracKojiJeDaoPogodak = _utakmice.getElement1(i).GetIgraci()[j];
+					Pogodak pogodak = *_utakmice.getElement1(i).GetIgraci()[j].GetPogoci()[k];
+
+					// pronasli pogodak u datom range-u
+
+					if (pogodak.GetVrijemePogotka().toSeconds() >= vrijemeOd.toSeconds()
+						&& pogodak.GetVrijemePogotka().toSeconds() <= vrijemeDo.toSeconds()) {
+
+						igraci.push_back(new Igrac(igracKojiJeDaoPogodak));
+
+					}
+				}
+			}
+
+			// proci kroz igrace rep2
+
+			for (int j = 0; j < _utakmice.getElement2(i).GetIgraci().size(); j++)
+			{
+				// proci kroz golove igraca rep2
+
+				for (int k = 0; k < _utakmice.getElement2(i).GetIgraci()[j].GetPogoci().size(); k++)
+				{
+					Igrac igracKojiJeDaoPogodak = _utakmice.getElement2(i).GetIgraci()[j];
+					Pogodak pogodak = *_utakmice.getElement2(i).GetIgraci()[j].GetPogoci()[k];
+
+					// pronasli pogodak u datom range-u
+
+					if (pogodak.GetVrijemePogotka().toSeconds() >= vrijemeOd.toSeconds()
+						&& pogodak.GetVrijemePogotka().toSeconds() <= vrijemeDo.toSeconds()) {
+
+						igraci.push_back(new Igrac(igracKojiJeDaoPogodak));
+
+					}
+				}
+			}
+
+
+		}
+
+
+
+		return igraci;
+	}
 
 
 
@@ -961,14 +1163,18 @@ void main() {
    treba biti u obrnutom redoslijedu cifara.
 	*/
 
+	cout << GenerisiID("Denis Music", 3) << endl;      //treba vratiti D000M3
+	cout << GenerisiID("Jasmin Azemovic", 14) << endl; //treba vratiti J00A41
+	cout << GenerisiID("Goran Skondric", 156) << endl; //treba vratiti G0S651
+	cout << GenerisiID("emina junuz", 1798) << endl;   //treba vratiti EJ8971
 
-	cout << GenerisiID("Denis Music", 3) << endl;//treba vratiti D000M3
-	cout << GenerisiID("Jasmin Azemovic", 14) << endl;//treba vratiti J00A41
-	cout << GenerisiID("Goran Skondric", 156) << endl;//treba vratiti G0S651
-	cout << GenerisiID("emina junuz", 1798) << endl;//treba vratiti EJ8971
+	cout << GenerisiID2(3) << endl;     // treba vratiti ID#000-3
+	cout << GenerisiID2(14) << endl;    // treba vratiti ID#00-14
+	cout << GenerisiID2(156) << endl;   // treba vratiti ID#0-156
+	cout << GenerisiID2(1798) << endl;  // treba vratiti ID#1798
 
-	//Za validaciju ID-a koristiti funkciju ValidirajID koja treba, koristeci regex, osigurati postivanje osnovnih pravila
-	//vezanih za format koja su definisana u prethodnom dijelu zadatka.
+	////Za validaciju ID-a koristiti funkciju ValidirajID koja treba, koristeci regex, osigurati postivanje osnovnih pravila
+	////vezanih za format koja su definisana u prethodnom dijelu zadatka.
 	if (ValidirajID("D000M3"))
 		cout << "ID VALIDAN" << endl;
 	if (ValidirajID("J00A41"))
@@ -977,53 +1183,77 @@ void main() {
 		cout << "ID NIJE VALIDAN" << endl;
 	if (!ValidirajID("Ej8971"))
 		cout << "ID NIJE VALIDAN" << endl;
+
+	//Za validaciju ID-a koristiti funkciju ValidirajID koja treba, koristeci regex, osigurati postivanje osnovnih pravila
+//vezanih za format koja su definisana u prethodnom dijelu zadatka.
+
+	if (ValidirajID2("ID#000-3"))
+		cout << "ID VALIDAN" << endl;
+	if (ValidirajID2("ID#0-156"))
+		cout << "ID VALIDAN" << endl;
+	if (!ValidirajID2("ID#120-3"))
+		cout << "ID NIJE VALIDAN" << endl;
+	if (!ValidirajID2("ID#00-02"))
+		cout << "ID NIJE VALIDAN" << endl;
+
+
+
 	int kolekcijaTestSize = 9;
 	Kolekcija<int, int, 10> kolekcija1;
+
 	for (int i = 0; i < kolekcijaTestSize; i++)
 		kolekcija1.AddElement(i, i);//dodaje vrijednosti u kolekciju
-
-
 	cout << kolekcija1 << crt;
 
-	///* metoda InsertAt treba da doda vrijednosti prvog i drugog
- //  parametra na lokaciju koja je definisana trecim parametrom. Povratna
- //  vrijednost metode
-	//je objekat (pozivaoc metode, u konkretnom slucaju objekat
- //  kolekcija1) u okviru koga su, na definisanu lokaciju, dodati
- //  zahtijevani parametri.
-	//Nakon izvrsenja metode InsertAt, oba objekta, kolekcija1 i
- //  kolekcija2, bi trebali posjedovati sljedeci sadrzaj:
-	//10 10
-	//0 0
-	//1 1
-	//2 2
-	//* ....
-	//*/
+
+	/* metoda InsertAt treba da doda vrijednosti prvog i drugog
+   parametra na lokaciju koja je definisana trecim parametrom. Povratna
+   vrijednost metode
+	je objekat (pozivaoc metode, u konkretnom slucaju objekat
+   kolekcija1) u okviru koga su, na definisanu lokaciju, dodati
+   zahtijevani parametri.
+	Nakon izvrsenja metode InsertAt, oba objekta, kolekcija1 i
+   kolekcija2, bi trebali posjedovati sljedeci sadrzaj:
+	10 10
+	0 0
+	1 1
+	2 2
+	* ....
+	*/
 	Kolekcija<int, int, 10> kolekcija2 = kolekcija1.InsertAt(10, 10, 0);
 	cout << kolekcija2 << crt;
 	cout << kolekcija1 << crt;
-	///*Metoda RemoveRange prihvata lokacija OD i DO, te u tom opsegu
- //  uklanja sve elemente iz kolekcije. U slucaju da zahtijevani opseg ne
- //  postoji u kolekciji
-	//metoda treba baciti izuzetak. Na kraju, metoda treba da vrati
- //  pokazivac na novi objekat tipa kolekcija koji sadrzi samo uklonjene
- //  elemente*/
 
- //  // Not the professor here, ovdje ne treba vratiti pokazivac, 
- //  // to je izgleda greska tokom pravljenja postavke za ispit ostala
+
+
+	/*Metoda RemoveRange prihvata lokacija OD i DO, te u tom opsegu
+   uklanja sve elemente iz kolekcije. U slucaju da zahtijevani opseg ne
+   postoji u kolekciji
+	metoda treba baciti izuzetak. Na kraju, metoda treba da vrati
+   pokazivac na novi objekat tipa kolekcija koji sadrzi samo uklonjene
+   elemente*/
+
+   // Not the professor here, ovdje ne treba vratiti pokazivac, 
+   // to je izgleda greska tokom pravljenja postavke za ispit ostala
 	Kolekcija<int, int, 10> kolekcija3 = kolekcija1.RemoveRange(1, 3);
 	cout << kolekcija3 << endl;
 	cout << kolekcija1 << crt;
-	///*kolekcija3 bi trebala sadrzavati sljedece elemente:
-	//0 0
-	//1 1
-	//2 2
-	//dok bi kolekcija1 trebala sadrzavati sljedece elemente:
-	//10 10
-	//3 3
-	//4 4
-	//......
-	//*/
+
+	//Kolekcija<int, int, 10>* kolekcija3 = kolekcija1.RemoveRange(1, 3);
+	//cout << *kolekcija3 << endl;
+	//cout << kolekcija1 << crt;
+
+
+	/*kolekcija3 bi trebala sadrzavati sljedece elemente:
+	0 0
+	1 1
+	2 2
+	dok bi kolekcija1 trebala sadrzavati sljedece elemente:
+	10 10
+	3 3
+	4 4
+	......
+	*/
 	kolekcija1 = kolekcija3;
 	cout << kolekcija1;
 	Vrijeme
@@ -1031,27 +1261,39 @@ void main() {
 		drugiPogodak202319(20, 23, 19),
 		treciPogodak205108(20, 51, 8),
 		cetvrtiPogodak210654(21, 6, 54);
+
+
 	Igrac denis("Denis Music"), jasmin("Jasmin Azemovic"),
 		goran("Goran Skondric"), adil("Adil Joldic");
 
 
 
+
+
+
 	if (strcmp(denis.GetID(), "D000M1") == 0 && strcmp(jasmin.GetID(), "J000A2") == 0)
 		cout << "ID se uspjesno generise!" << endl;
+
 	Pogodak prviPogodak(prviPogodak201633, "podaci o prvom pogotku"),
 		drugiPogodak(drugiPogodak202319, "podaci o drugom pogotku"),
 		treciPogodak(treciPogodak205108, "podaci o trecem pogotku"),
 		cetvrtiPogodak(cetvrtiPogodak210654, "podaci o cetvrtom pogotku");
 
+	//denis.GetPogoci().push_back(new Pogodak(prviPogodak));
+	//denis.DodajPogodak(drugiPogodak);
+
+	//Igrac igracKopija = denis;
+
+	//cout << igracKopija << endl;
+	//cout << jasmin << endl;
+	//cout << goran << endl;
+	//cout << adil << endl;
 
 	Reprezentacija BIH(BOSNA_I_HERCEGOVINA), ENG(ENGLESKA);
 	BIH.AddIgrac(denis);
 	BIH.AddIgrac(jasmin);
 	ENG.AddIgrac(goran);
 	ENG.AddIgrac(adil);
-
-	cout << ENG << endl;
-	cout << BIH << endl;
 
 	try
 	{
@@ -1061,6 +1303,7 @@ void main() {
 	{
 		cout << obj.what();
 	}
+
 	Prventstvo euro2024;
 	euro2024.AddUtakmicu(BIH, ENG);
 	try
@@ -1071,10 +1314,10 @@ void main() {
 	{
 		cout << obj.what();
 	}
-	////omoguciti dodavanje pogotka po ID-u ili imenu i prezimenu
+	//omoguciti dodavanje pogotka po ID-u ili imenu i prezimenu
 	if (euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "D000M1", prviPogodak))
 		cout << "Pogodak uspjesno dodat" << endl;
-	////onemoguciti dodavanje istih pogodaka
+	//onemoguciti dodavanje istih pogodaka
 	if (!euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "Denis Music", prviPogodak))
 		cout << "Pogodak NIJE uspjesno dodat" << endl;
 	if (euro2024.AddPogodak(BOSNA_I_HERCEGOVINA, ENGLESKA, "J000A2", drugiPogodak))
@@ -1108,13 +1351,20 @@ void main() {
 	//Jasmin Azemovic
 	//-------------------------------------------
 	//*/
-	////vraca sve igrace koji su na takmicenju postigli broj pogodaka koji je veci ili jednak proslijedjenoj vrijednosti
-
-	cout << crt; // separator za zadnju func. 
-
+	//vraca sve igrace koji su na takmicenju postigli broj pogodaka koji je veci ili jednak proslijedjenoj vrijednosti
 	vector<Igrac*> igraci = euro2024(2);
 	for (size_t i = 0; i < igraci.size(); i++)
 		cout << igraci[i]->GetImePrezime() << endl;
+
+	////vraca sve igrace koji su na takmicenju postigli pogodak u vremenu koje se nalazi izmedju proslijedjenih vrijednosti
+
+	cout << crt;
+
+	vector<Igrac*> igraci2 = euro2024(Vrijeme(20, 15, 15), Vrijeme(20, 24, 15));
+
+	for (size_t i = 0; i < igraci2.size(); i++)
+		cout << igraci2[i]->GetImePrezime() << endl;
+
 
 	cin.get();
 	system("pause>0");
