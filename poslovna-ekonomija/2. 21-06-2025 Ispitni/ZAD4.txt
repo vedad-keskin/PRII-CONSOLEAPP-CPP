@@ -1,0 +1,133 @@
+#include <iostream>
+
+using namespace std;
+
+char* GetNizKaraktera(const char* tekst ) {
+
+	// V e d a d \n
+	int vel = strlen(tekst) + 1;
+
+	// alociramo (daj mi memoriju) da imamo onokilko karakteraa koliko smo izracunali da nam treba
+	char* temp = new char[vel]; 
+
+	// prekopirati tekst u neku varijablu 
+
+	strcpy_s(temp, vel, tekst);
+
+	return temp;
+
+}
+
+// BAZNA KLASA -> KLSA KOJA SE NASLJEDJUJE 
+class Osoba { // 2 RAZLIKE 
+protected: // 1. RAZLIKA
+	char* _imePrezime;
+	char* _JMBG; 
+public:
+
+
+	//Zaposlenik zaposlenik("Vedad Keskin", "1212998150001",
+	Osoba(const char* imeprezime = "---", const char* jmbg = "---") {
+
+		_imePrezime = GetNizKaraktera(imeprezime);
+		_JMBG = GetNizKaraktera(jmbg);
+
+	}
+
+	Osoba(const Osoba& obj) {
+
+		_imePrezime = GetNizKaraktera(obj._imePrezime);
+		_JMBG = GetNizKaraktera(obj._JMBG);
+
+
+	}
+
+
+	virtual ~Osoba() { // 2. Razlika moras daodati zbog specijalnog slucaja 
+
+		cout << "BAZNI DESTRUKTOR" << endl;
+
+		delete[] _imePrezime;
+		_imePrezime = nullptr;
+		delete[] _JMBG;
+		_JMBG = nullptr;
+
+	}
+
+
+};
+
+
+// IZVEDENA KLASA -> KLSA KOJA NASLIJEDJI BAZNU KLASU 
+
+// 1. korak javno nasljedjivanje bazne klase osoba
+class Zaposlenik : public Osoba { // 3 KORAKA IMAJU
+	char* _radnoMjesto;
+	char* _nazivOdjela;
+public:
+
+	//Zaposlenik zaposlenik("Vedad Keskin", "1212998150001", "Programer", "IT");
+
+	Zaposlenik(const char* imeprezime = "---", const char* jmbg = "---", const char* mjesto = "---", const char* odjel = "---") : Osoba(imeprezime,jmbg) { // 2. korak 
+
+		_radnoMjesto = GetNizKaraktera(mjesto);
+		_nazivOdjela = GetNizKaraktera(odjel);
+
+
+	}
+
+	Zaposlenik(const Zaposlenik& obj) : Osoba(obj) { // 3. KORAK
+
+		_radnoMjesto = GetNizKaraktera(obj._radnoMjesto);
+		_nazivOdjela = GetNizKaraktera(obj._nazivOdjela);
+
+	}
+
+
+	~Zaposlenik() { // IZVEDNEI DESKT BRISE SAMO IZVEDENE PARAMETRE JER CE SE SAM BAZNI DESTRUKTOR POZVATI I POBRISATI SVOJE
+
+		cout << "IZVEDENI DESTRKTOR" << endl;
+
+		delete[]_radnoMjesto;
+		_radnoMjesto = nullptr;
+		delete[]_nazivOdjela;
+		_nazivOdjela = nullptr;
+
+	}
+
+	void PrikaziPodatke() {
+
+		cout << "Zaposlenik: " << _imePrezime << endl;
+		cout << "JMBG: " << _JMBG << endl;
+		cout << "Radno mjesto: " << _radnoMjesto << endl;
+		cout << "Naziv odjela: " << _nazivOdjela << endl;
+
+
+	}
+
+
+
+};
+
+
+void main() {
+
+	//Osoba osoba1("Vedad Keskin", "1212998150001");
+
+	//Osoba osobaKopija = osoba1;
+
+	// SPECIJALNI SLUCAJ KOJI ZAHTJEVA DA DESTRUTKRO BAZNE KASLE BUDE VIRTUAL (vama nije bitno)
+	Osoba* zaposlenik2 = new Zaposlenik("Nidal Keskin", "123313213", "Developer", "IT");
+	delete zaposlenik2; // rucno birsanje pokazivaca bazne klase koja pokazuje na izvedenu (isto vama nije bitno)
+
+	Zaposlenik zaposlenik1("Vedad Keskin", "1212998150001", "Full Stack Developer", "IT");
+	zaposlenik1.PrikaziPodatke();
+
+	Zaposlenik zaspolenikKopija = zaposlenik1;
+
+	zaspolenikKopija.PrikaziPodatke();
+
+
+	system("pause>0");
+	return;
+}

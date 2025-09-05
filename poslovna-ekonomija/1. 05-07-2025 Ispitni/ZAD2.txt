@@ -1,0 +1,72 @@
+#include <iostream>
+using namespace std;
+
+
+char* GetNizKaraktera(const char* tekst) {
+
+	int vel = strlen(tekst) + 1;
+	char* novi = new char[vel];
+	strcpy_s(novi, vel, tekst);
+	return novi;
+}
+
+class Student {
+	char* _ime;
+	char* _indeks;
+	float _prosjek;
+public:
+
+	Student(const char* ime = "---", const char* indeks = "---", float prosjek = 0.0) {
+
+		_ime = GetNizKaraktera(ime);
+		_indeks = GetNizKaraktera(indeks);
+
+		_prosjek = prosjek;
+	}
+
+	Student(const Student& obj) {
+
+		_ime = GetNizKaraktera(obj._ime);
+		_indeks = GetNizKaraktera(obj._indeks);
+
+		_prosjek = obj._prosjek;
+
+	}
+
+	~Student() {
+
+		delete[] _ime;
+		_ime = nullptr;
+		delete[] _indeks;
+		_indeks = nullptr;
+
+	}
+
+	void ispisi() {
+
+		cout << "Ime: " << _ime << endl;
+		cout << "Indeks: " << _indeks << endl;
+		cout << "Prosjek: " << _prosjek << endl;
+
+	}
+
+};
+
+
+
+
+void main() {
+
+	Student student("Vedad", "IB180079", 8.88); // spojeni constr. (default + user-def constr)
+
+	//Student studentKopija = student;	 // copy constr.
+	Student studentKopija(student);		 // copy constr.
+
+	studentKopija.ispisi(); // klasicni void ispis
+
+
+
+
+	system("pause>0");
+
+}

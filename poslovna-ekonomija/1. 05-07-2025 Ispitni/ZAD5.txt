@@ -1,0 +1,245 @@
+#include <iostream>
+using namespace std;
+
+
+const char* crt = "\n----------------------------\n";
+
+char* GetNizKaraktera(const char* tekst) {
+
+	int vel = strlen(tekst) + 1;
+	char* novi = new char[vel];
+	strcpy_s(novi, vel, tekst);
+	return novi;
+}
+
+template <typename T>
+T minimum(T a, T b, T c) {
+
+	if (b > a && c > a) {
+		return a;
+	}
+	else if (a > b && c > b) {
+		return b;
+	}
+	else {
+		return c;
+	}
+
+}
+
+class Proizvod {
+private: // ne mora se pisati jer je po defaultu ako nema nista private
+	char* _naziv;
+	float _cijena;
+	int* _kolicina;
+public:
+
+
+	//     "George Karelias\n",                 6.50,               1);
+	Proizvod(const char* naziv = "---", float cijena = 0.0, int kolicina = 0) {
+
+		_naziv = GetNizKaraktera(naziv);
+
+		_cijena = cijena;
+
+		_kolicina = new int(kolicina);
+
+	}
+
+	// copy constr.
+
+	//Proizvod proizvodKopija2(proizvod1); // 
+
+	Proizvod(const Proizvod& obj) {
+
+		_cijena = obj._cijena;
+
+		_kolicina = new int(*obj._kolicina);
+
+		_naziv = GetNizKaraktera(obj._naziv);
+	}
+
+	Proizvod& operator = (const Proizvod& obj) {
+		if (this != &obj) {
+
+			delete _kolicina;
+			delete[] _naziv;
+
+
+			_cijena = obj._cijena;
+
+			_kolicina = new int(*obj._kolicina);
+
+			_naziv = GetNizKaraktera(obj._naziv);
+
+
+		}
+		return *this;
+	}
+
+	~Proizvod() {
+
+		//cout << "DESTRUKTOR SE POZVAO" << endl;
+
+		// naziv je niz 
+
+		delete[] _naziv;
+		_naziv = nullptr;
+
+		// kolicina nije niz (jedna vrijednost)
+
+		delete _kolicina;
+		_kolicina = nullptr;
+
+	}
+
+
+
+	void Ispis() {
+
+		cout << "Naziv proizvoda: " << _naziv << endl;
+		cout << "Cijena proizvoda: " << _cijena << " KM" << endl;
+		cout << "Kolicina proizvoda: " << *_kolicina << " kom" << endl;
+
+	}
+
+	friend ostream& operator << (ostream& COUT, const Proizvod& obj) {
+		COUT << "Naziv proizvoda: " << obj._naziv << endl;
+		COUT << "Cijena proizvoda: " << obj._cijena << " KM" << endl;
+		COUT << "Kolicina proizvoda: " << *obj._kolicina << " kom" << endl;
+		return COUT;
+	}
+
+
+
+
+};
+
+template<class T>
+class Skladiste {
+	T* _niz;
+	int _brojElemenata; // koliko trenutno imamo elemenata u nizu
+	int _kapcitet; // koliko cemo maksimlano imati elemenata u nizu
+public:
+
+	Skladiste(int kapacitet = 5) {
+
+		_kapcitet = kapacitet; // moze se proslijediti iz maina, ako ne bit ce do defaultu 5 a ako se proslijedi bit ce ta vrijednost
+
+		_brojElemenata = 0; // na pocetku nam treba prazan niz tako da se stavi na 0
+
+		_niz = new T[_kapcitet]; // alociramo niz (dajemo mu adresu) koja ce imati onliko mjesta u memoriji koliko je datom kapacitet varijablom 
+
+	}
+
+	~Skladiste() {
+
+		delete[] _niz;
+		_niz = nullptr;
+
+	}
+
+
+
+	//         Proizvod proizvod1("George Karelias", 6.50, 100);
+	void dodaj(T element) {
+
+		// niz je pun
+		if (_brojElemenata == _kapcitet) {
+
+
+			T* temp = _niz; // napravimo neki privremeni niz koji ce imati nase stare elemente
+
+			_kapcitet = _kapcitet * 2;
+
+			_niz = new T[_kapcitet]; // prosirimo niz da sada moze imati duplo elementa
+
+			for (int i = 0; i < _brojElemenata; i++)
+			{
+				_niz[i] = temp[i];
+			}
+
+			delete[] temp;
+		}
+
+
+		_niz[_brojElemenata] = element; // _niz[0] = GK , _niz[1] = Banane
+
+		_brojElemenata++; // 0 ---> 1 ---> 2 ---> 3
+
+
+	}
+
+
+	void ispisSvih() {
+
+		for (int i = 0; i < _brojElemenata; i++) // 0 1 2  
+		{
+			cout << _niz[i] << endl;
+		}
+
+	}
+
+
+
+
+};
+
+
+void main() {
+
+	// Generics parametri (T) mijenjaju bilo koji drugi parametar
+
+	cout <<"Najmanje slovo: "<< minimum('b', 'c', 'a') << endl; // najmanje slovo je slovo koje ima najmanji ascii broj
+	cout <<"Najmanji broj: "<< minimum(1, 2, 3) << endl;
+	cout <<"Najmanji double: "<< minimum(1.6, 2.3, 3.7) << endl;
+
+	cout << crt;
+
+	// Primjer generics klase sa nekom drugom klasom (ne treba ti za ispita poznavati ovu logiku al lakse da razumijes kako ovo radi)
+
+	Proizvod proizvod1("George Karelias", 6.50, 100);
+	Proizvod proizvod2("Pikant", 0.60, 80);
+	Proizvod proizvod3("Fast Energy", 1.10, 30);
+
+	Proizvod proizvod4("Monster", 2.80, 40);
+	Proizvod proizvod5("Hell", 1.10, 50);
+	Proizvod proizvod6("King", 0.90, 80);
+	Proizvod proizvod7("Ronin", 0.90, 70);
+
+
+	Skladiste<Proizvod> skladiste(3);
+
+	skladiste.dodaj(proizvod1);	// dodavanje prva 3
+	skladiste.dodaj(proizvod2);	// dodavanje prva 3
+	skladiste.dodaj(proizvod3);	// dodavanje prva 3
+	
+	skladiste.dodaj(proizvod4); // nakon toga iduci dupla kapacitet niza na 6
+	skladiste.dodaj(proizvod5); 
+	skladiste.dodaj(proizvod6);
+
+	skladiste.dodaj(proizvod7); // iduci dupla kapcitet niza na 12 
+
+	skladiste.ispisSvih();
+
+	cout << crt;
+
+	// Klasicni primjer genericsa sa primitivnim paramterima
+
+	Skladiste<char> skladisteSlova(5);
+
+	int ascii = 65; // ASCII kod za veliko slovo A je 65
+
+	for (int i = 0; i < 10; i++)
+	{
+		skladisteSlova.dodaj(ascii + i);
+	}
+
+	skladisteSlova.ispisSvih();
+
+
+
+
+	system("pause>0");
+
+}

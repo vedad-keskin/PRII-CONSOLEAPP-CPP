@@ -1,0 +1,136 @@
+#include <iostream>
+using namespace std;
+
+char* GetNizKaraktera(const char* tekst) {
+
+	int vel = strlen(tekst) + 1;
+	char* temp = new char[vel];
+	strcpy_s(temp, vel, tekst);
+	return temp;
+
+}
+
+class Automobil {
+private:
+	char* _marka;
+	char* _model;
+	float _cijena;
+	int _godina;
+public:
+
+	Automobil(const char* marka = "---", const char* model = "---", float cijena = 0.0, int godina = 0) {
+
+		_marka = GetNizKaraktera(marka);
+		_model = GetNizKaraktera(model);
+
+		_cijena = cijena;
+		_godina = godina;
+
+	}
+
+	// autoOperatorDodjele = auto1; // ovo je operator dodjele
+
+	Automobil& operator =  (const Automobil& obj) {
+
+		// da se ne bi prekopiralo ista instanca u istu instancu
+		if (this != &obj) {
+
+			// ne mora se raditi, al preporuka
+
+			//delete[] _marka;
+			//delete[] _model;
+
+
+			_marka = GetNizKaraktera(obj._marka);
+			_model = GetNizKaraktera(obj._model);
+
+			_cijena = obj._cijena;
+			_godina = obj._godina;
+
+		}
+		return *this;
+
+	}
+
+
+
+
+	~Automobil() {
+
+		delete[] _marka;
+		_marka = nullptr;
+		delete[] _model;
+		_model = nullptr;
+
+	}
+
+
+	//cin >> auto1;
+	friend istream& operator >> (istream& CIN, Automobil& obj) {
+		// Temporary buffers to read user input
+		char tempMarka[50];
+		char tempModel[50];
+
+		cout << "Unesite marku automobila: ";
+		CIN.getline(tempMarka, 50);
+
+		cout << "Unesite model automobila: ";
+		CIN.getline(tempModel, 50);
+
+		cout << "Unesite cijenu automobila: ";
+		CIN >> obj._cijena;
+
+		cout << "Unesite godiste automobila: ";
+		CIN >> obj._godina;
+
+		// konkretno ovdje nepotrebno ali kad ides sa numerickog na nesto sot nije numericko onda ovo mora
+		// 		//CIN.ignore();
+
+
+		obj._marka = GetNizKaraktera(tempMarka);
+
+		obj._model = GetNizKaraktera(tempModel);
+
+		return CIN;
+	}
+
+
+
+	// cout << auto1; 
+
+	friend ostream& operator << (ostream& COUT,const Automobil& obj) {
+
+		COUT << "Marka automobila: " << obj._marka << endl;
+		COUT << "Model automobila: " << obj._model << endl;
+		COUT << "Cijena automobila: " << obj._cijena << " KM" << endl;
+		COUT << "Godiste automobila: " << obj._godina <<" god"<< endl;
+
+
+		return COUT;
+	}
+
+
+
+
+							
+
+
+};
+
+void main() {
+
+
+	//Automobil autoKopija = auto1; // copy cons.
+
+	//Automobil autoOperatorDodjele;
+
+	//auto1 = auto1; // ovo je operator dodjele
+
+	Automobil auto1;
+	
+	cin >> auto1;
+
+	cout << auto1;
+
+	system("pause>0");
+}

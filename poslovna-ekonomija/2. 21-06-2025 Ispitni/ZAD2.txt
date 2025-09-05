@@ -1,0 +1,105 @@
+#include <iostream>
+using namespace std;
+
+char* GetNizKaraktera(const char* tekst) {
+
+	int vel = strlen(tekst) + 1; // 16   
+
+	char* temp = new char[vel];
+
+	strcpy_s(temp, vel, tekst); // 1. gdje hoces da pohranis tekst , 2. koliko slova hoces 
+
+	return temp;
+}
+
+
+struct Radnik {
+	char* _ime;
+	char* _prezime;
+	float _plata;
+public:
+
+};
+
+
+class Proizvod {
+private: // ne mora se pisati jer je po defaultu ako nema nista private
+	char* _naziv;
+	float _cijena;
+	int* _kolicina;
+public:
+
+
+	//     "George Karelias\n",                 6.50,               1);
+	Proizvod(const char* naziv = "---", float cijena = 0.0, int kolicina = 0) {
+
+		_naziv = GetNizKaraktera(naziv);
+
+		_cijena = cijena;
+
+		_kolicina = new int(kolicina);
+
+	}
+
+	// copy constr.
+
+	//Proizvod proizvodKopija2(proizvod1); // 
+
+	Proizvod(const Proizvod& obj) {
+
+		_cijena = obj._cijena;
+
+		_kolicina = new int(*obj._kolicina);
+
+		_naziv = GetNizKaraktera(obj._naziv);
+	}
+
+
+	~Proizvod() {
+
+		//cout << "DESTRUKTOR SE POZVAO" << endl;
+
+		// naziv je niz 
+
+		delete[] _naziv;
+		_naziv = nullptr;
+
+		// kolicina nije niz (jedna vrijednost)
+
+		delete _kolicina;
+		_kolicina = nullptr;
+
+	}
+
+
+
+	void Ispis() {
+
+		cout << "Naziv proizvoda: " << _naziv << endl;
+		cout << "Cijena proizvoda: " << _cijena << " KM" << endl;
+		cout << "Kolicina proizvoda: " << *_kolicina <<" kom" << endl;
+
+	}
+
+
+
+
+};
+
+
+
+void main() {
+
+	Proizvod proizvod1("George Karelias", 6.50, 1);
+
+	Proizvod proizvodKopija = proizvod1; // 
+	//Proizvod proizvodKopija2 (proizvod1); // 
+
+
+	proizvod1.Ispis();
+	proizvodKopija.Ispis();
+
+
+	system("pause>0");
+}
+
