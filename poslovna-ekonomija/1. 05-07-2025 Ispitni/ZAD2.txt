@@ -45,7 +45,7 @@ public:
 	void ispisi() {
 
 		cout << "Ime: " << _ime << endl;
-		cout << "Indeks: " << _indeks << endl;
+		cout << "Broj indeksa: " << _indeks << endl;
 		cout << "Prosjek: " << _prosjek << endl;
 
 	}
