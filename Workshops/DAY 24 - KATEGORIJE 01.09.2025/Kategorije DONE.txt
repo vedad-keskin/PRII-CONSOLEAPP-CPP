@@ -112,6 +112,26 @@ string GenerisiSifru(string imePrezime, int id) {
 }
 
 
+////za validaciju sifre koristiti funkciju ValidirajSifru koja treba, koristeci regex, osigurati postivanje osnovnih pravila
+////vezanih za format koja su definisana u prethodnom dijelu zadatka.
+
+//if (ValidirajSifru("AB:2025-003"))
+//cout << "SIFRA VALIDNA\n";
+//if (!ValidirajSifru("Ab:2025-003") && !ValidirajSifru("AB2025/003") && !ValidirajSifru("AB-003:2025"))
+//cout << "SIFRA NIJE VALIDNA\n";
+
+
+bool ValidirajSifru(const char* sifra) {
+
+	regex pattern("[A-Z]{2}:[1-9]{1}[0-9]{3}-[0-9]{3}");
+
+	return regex_match(sifra, pattern);
+
+}
+
+
+
+
 
 
 template<class T1, class T2, int max>
@@ -956,10 +976,10 @@ int main() {
 	////za validaciju sifre koristiti funkciju ValidirajSifru koja treba, koristeci regex, osigurati postivanje osnovnih pravila
 	////vezanih za format koja su definisana u prethodnom dijelu zadatka.
 
-	//if (ValidirajSifru("AB:2025-003"))
-	//		cout << "SIFRA VALIDNA\n";
-	//if (!ValidirajSifru("Ab:2025-003") && !ValidirajSifru("AB2025/003") && !ValidirajSifru("AB-003:2025"))
-	//	cout << "SIFRA NIJE VALIDNA\n";
+	if (ValidirajSifru("AB:2025-003"))
+			cout << "SIFRA VALIDNA\n";
+	if (!ValidirajSifru("Ab:2025-003") && !ValidirajSifru("AB2025/003") && !ValidirajSifru("AB-003:2025"))
+		cout << "SIFRA NIJE VALIDNA\n";
 
 	KolekcijaParova<int, string, 20> listaProizvoda;
 	for (int i = 0; i < 10; i++)
