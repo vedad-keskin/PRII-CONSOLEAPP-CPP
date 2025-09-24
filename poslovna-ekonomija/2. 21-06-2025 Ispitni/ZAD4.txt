@@ -4,7 +4,7 @@ using namespace std;
 
 char* GetNizKaraktera(const char* tekst ) {
 
-	// V e d a d \n
+	// V e d a d \n -> null terminator
 	int vel = strlen(tekst) + 1;
 
 	// alociramo (daj mi memoriju) da imamo onokilko karakteraa koliko smo izracunali da nam treba
