@@ -38,7 +38,7 @@ T pronadjiNajmanji(T a, T b, T c) {
 
 
 class Proizvod {
-private: // ne mora se pisati jer je po defaultu ako nema nista private
+private: // ne mora se pisati jer je po defaultu ako nema nista privatno
 	char* _naziv;
 	float _cijena;
 	int* _kolicina;
