@@ -14,7 +14,7 @@ public:
 };
 class Vozac
 {
-	char ime[20];
+	char ime[20]; // statički niz karaktera
 	char* prezime;
 	Vozilo* NjegovoVozilo;
 	int BrVozacke;
