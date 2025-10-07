@@ -53,10 +53,12 @@ public:
 
 void main() {
 
+// Testni podaci
+
 	Osoba* osoba1 = new Student("Vedad","IB180079");
 
 	osoba1->Info();
 	
 
-	system("PAUSE>0");
+	system("pause>0");
 }
