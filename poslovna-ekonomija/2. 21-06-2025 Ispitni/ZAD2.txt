@@ -3,6 +3,11 @@ using namespace std;
 
 char* GetNizKaraktera(const char* tekst) {
 
+if(tekst == nullptr)
+{
+   return nullptr;
+}
+
 	int vel = strlen(tekst) + 1; // 16   
 
 	char* temp = new char[vel];
