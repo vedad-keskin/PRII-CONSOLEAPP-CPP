@@ -69,7 +69,7 @@ public:
 			for (int i = 0; i < _trenutno; i++)
 			{
 				if (el1 == _elementi1[i] || el2 == _elementi2[i]) {
-					throw exception("Dupliranje nije dozvoljeno");
+					throw exception("Dupliranje nije dozvoljeno!");
 				}
 			}
 
