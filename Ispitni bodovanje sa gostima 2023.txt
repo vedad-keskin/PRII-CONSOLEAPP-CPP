@@ -25,7 +25,5 @@ KOLEKCIJA -> 7  --> 3
 KUPOVINA -> 12  --> 10
 THREADING -> 4  --> 1
 FAJL -> 4       --> 0
-DESTR -> 7      --> 7
-
-38 --> 21 PROLAZ
+DESTR -> 7      --> 
 
