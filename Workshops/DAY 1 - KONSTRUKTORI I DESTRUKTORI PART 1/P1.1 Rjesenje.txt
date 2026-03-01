@@ -22,6 +22,15 @@ using namespace std;
 // ako je vise vrijednosti --> [ ] -->  delete[] _naziv;
 
 
+// razlika struct i class
+
+// struct (sve po defaultu public)
+// class (sve po default private)
+// mogucnosti iste
+// class-e se koriste za kompleksnije stvari dok struct za jednostavnije
+// C already had struct before C++ existed.
+// When Bjarne Stroustrup created C++, he kept struct for compatibility with C programs.
+
 
 class Predmet {
 public:             //      dft      //     user def.    //
