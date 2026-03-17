@@ -78,6 +78,10 @@ public:
 	//6. Operator ispisa 
 	//7. Potrebne funkcije
 
+    bool DodajPredmet(Predmet predmet){
+
+    }
+
 
 };
 
