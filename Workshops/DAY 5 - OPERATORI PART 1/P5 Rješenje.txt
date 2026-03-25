@@ -2,13 +2,15 @@
 using namespace std;
 
 
+// Funkcija za DEEP COPY stringa (jer radimo sa char*)
 char* GetNizKaraktera(const char* tekst) {
 	if (tekst == nullptr)
 		return nullptr;
-	int vel = strlen(tekst) + 1;
-	char* novi = new char[vel];
-	strcpy_s(novi, vel, tekst);
-	return novi;
+
+	int vel = strlen(tekst) + 1; // +1 zbog '\0'
+	char* novi = new char[vel];  // alokacija nove memorije
+	strcpy_s(novi, vel, tekst);  // kopiranje sadržaja
+	return novi; // vraća NOVI string → mora se delete[] kasnije
 }
 
 
@@ -19,34 +21,34 @@ class Artikal {
 	int _kolicinaNaSkladistu;
 public:
 
-	Artikal(const char* sifra = "SIF000", const char* naziv = "---", double cijena = 0.0 , int kolicina = 0 ) {
+	Artikal(const char* sifra = "SIF000", const char* naziv = "---", double cijena = 0.0, int kolicina = 0) {
 
-
+		// svaki string se kopira → nema dijeljenja memorije
 		_sifra = GetNizKaraktera(sifra);
 		_naziv = GetNizKaraktera(naziv);
 
 		_cijena = cijena;
 		_kolicinaNaSkladistu = kolicina;
-
 	}
 
 	Artikal(const Artikal& obj) {
 
+		// COPY KONSTRUKTOR → deep copy
 		_sifra = GetNizKaraktera(obj._sifra);
 		_naziv = GetNizKaraktera(obj._naziv);
 
 		_cijena = obj._cijena;
 		_kolicinaNaSkladistu = obj._kolicinaNaSkladistu;
-
-
 	}
 
 	Artikal& operator = (const Artikal& obj) {
 		if (this != &obj) {
 
+			// brišemo staru memoriju
 			delete[] _sifra;
 			delete[] _naziv;
 
+			// pravimo novu kopiju
 			_sifra = GetNizKaraktera(obj._sifra);
 			_naziv = GetNizKaraktera(obj._naziv);
 
@@ -58,16 +60,16 @@ public:
 
 	~Artikal() {
 
+		// oslobađanje memorije → OBAVEZNO kod char*
 		delete[] _sifra;
 		_sifra = nullptr;
 		delete[] _naziv;
 		_naziv = nullptr;
-
 	}
 
 	friend ostream& operator << (ostream& COUT, const Artikal& obj) {
 
-		COUT << obj._naziv << " ["<<obj._sifra<<"] - "<< obj._cijena << " KM" << endl;
+		COUT << obj._naziv << " [" << obj._sifra << "] - " << obj._cijena << " KM" << endl;
 		COUT << "Kolicina na skladistu: " << obj._kolicinaNaSkladistu << " kom" << endl;
 
 		return COUT;
@@ -76,57 +78,61 @@ public:
 
 	// Operator -= na način da se stanje na skladištu artikla promijeni za proslijeđenu vrijednost
 
-
 	//artikal1 -= 10; // op -= 
 
+	// ↑ OVA LINIJA:
+	// koristi operator -= kao skraćeni zapis za smanjenje količine
 
 	Artikal& operator -= (int kolicina) {
 
 		if (kolicina > _kolicinaNaSkladistu) {
-
+			// zaštita → ne može ispod 0
 			return *this;
-
 		}
 
 		//_kolicinaNaSkladistu -= kolicina;
-		_kolicinaNaSkladistu = _kolicinaNaSkladistu - kolicina;
+		// ↑ kraći zapis
 
+		_kolicinaNaSkladistu = _kolicinaNaSkladistu - kolicina;
+		// ↑ duži zapis (isti rezultat)
 
 		return *this;
-
 	}
 
 
 	// Operator += na način da se stanje na skladištu artikla promijeni za proslijeđenu vrijednost
 
-	Artikal& operator += (int kolicina){
-
+	Artikal& operator += (int kolicina) {
 
 		_kolicinaNaSkladistu += kolicina;
-		//_kolicinaNaSkladistu = _kolicinaNaSkladistu + kolicina;
+		// ↑ skraćeni zapis
 
+		//_kolicinaNaSkladistu = _kolicinaNaSkladistu + kolicina;
+		// ↑ isti rezultat, samo duže napisano
 
 		return *this;
-
 	}
 
 	// Operator ++ na način da se cijena artikla uveća za 1
 
-
 	//artikal1++; // op ++
+
+	// ↑ koristi postfix operator (ali ti si implementirao prefiksni!)
 
 	// ++ i -- su operatori -> prefiksni op 
 
 	Artikal& operator ++ () {
 
 		_cijena++;
+		// ↑ najkraći zapis
+
 		//_cijena += 1;
+		// ↑ isto
+
 		//_cijena = _cijena + 1;
-
-
+		// ↑ isto, ali najduže
 
 		return *this;
-
 	}
 
 
@@ -135,20 +141,12 @@ public:
 	Artikal& operator -- () {
 
 		if (_cijena < 1) {
-
+			// zaštita → ne ide u minus
 			return *this;
-
 		}
 
-
 		_cijena--;
-		//_cijena += 1;
-		//_cijena = _cijena + 1;
-
-
-
 		return *this;
-
 	}
 
 
@@ -158,27 +156,24 @@ public:
 
 	//if (artikal1 == artikal2) {
 
+	// ↑ koristi operator ==
+
 	bool operator == (const Artikal& obj) {
 
 		//if (strcmp(_sifra , obj._sifra) == 0) {
-
 		//	return true;
-
 		//}
 		//else {
-
 		//	return false;
-
 		//}
+		// ↑ klasični if-else način
 
 		return strcmp(_sifra, obj._sifra) == 0;
+		// ↑ skraćeni način
 
 		// ? : 
-
-
-		//            PROVJERA                   ? sta ako je ta provjera true : sta ako je ta provjera false
 		//return strcmp(_sifra, obj._sifra) == 0 ? true : false;
-
+		// ↑ ternarni operator (nije potreban jer već vraća bool)
 	}
 
 	// READ-ONLY NACIN PRISTUPA GLAVNIM PAR.
@@ -187,43 +182,33 @@ public:
 	double GetCijena() { return _cijena; }
 	char* GetSifra() { return _sifra; }
 	char* GetNaziv() { return _naziv; }
-
-
-
 };
 
+
 class StavkaRacuna {
-	Artikal* _artikal; // ( ) 
-	int* _kolicina;    // ( ) 
+	Artikal* _artikal; // ( ) → pointer, mora se new/delete
+	int* _kolicina;    // ( ) → pointer na int
 public:
 
 	StavkaRacuna(Artikal artikal = Artikal(), int kolicina = 0) {
 
-		_artikal = new Artikal(artikal);
-
-		_kolicina = new int(kolicina);
-
-
+		_artikal = new Artikal(artikal); // kopija objekta
+		_kolicina = new int(kolicina);   // alokacija int-a
 	}
 
 	StavkaRacuna(const StavkaRacuna& obj) {
 
-
 		_artikal = new Artikal(*obj._artikal);
-
 		_kolicina = new int(*obj._kolicina);
-
 	}
 
 	StavkaRacuna& operator = (const StavkaRacuna& obj) {
 		if (this != &obj) {
 
-
 			delete _artikal;
 			delete _kolicina;
 
 			_artikal = new Artikal(*obj._artikal);
-
 			_kolicina = new int(*obj._kolicina);
 		}
 		return *this;
@@ -235,7 +220,6 @@ public:
 		_artikal = nullptr;
 		delete _kolicina;
 		_kolicina = nullptr;
-
 	}
 
 	friend ostream& operator << (ostream& COUT, const StavkaRacuna& obj) {
@@ -251,70 +235,67 @@ public:
 	StavkaRacuna& operator += (int kolicina) {
 
 		//_artikal->GetKolicinaNaSkladistu() += kolicina;
+		// ❌ NE RADI → getter vraća vrijednost, ne referencu
 
 		//_artikal._kolicinaNaSkladistu += kolicina;
+		// ❌ NE RADI → StavkaRacuna nema pristup privatnom parametru _kolicinaNaSkladistu
 
 		_artikal->operator+=(kolicina);
+		// ✅ ISPRAVNO → poziva operator iz Artikal klase
 
 		return *this;
-
 	}
 
 
 	// Operator -= koji umanjuje stanje na skladištu artikla
 
-
 	StavkaRacuna& operator -= (int kolicina) {
 
-		//_artikal->GetKolicinaNaSkladistu() += kolicina;
-
-		//_artikal._kolicinaNaSkladistu += kolicina;
+		// isti problem kao gore → mora preko pointera
 
 		_artikal->operator-=(kolicina);
 
 		return *this;
-
 	}
 
 	// Operator == koji poredi stavke na osnovu sifre
 
-	//if (stavka1 == stavka2) {
-
 	bool operator == (const StavkaRacuna& obj) {
 
 		//if (strcmp(_artikal->GetSifra(), obj._artikal->GetSifra()) == 0)
-		//{
+		// ↑ direktno poređenje stringova (C-style)
 
 		//	return true;
-
-		//}
-		//else {
-
+		//else
 		//	return false;
 
-		//}
+		// ↑ klasični if-else način (najduži, ali najjasniji)
 
 		//return strcmp(_artikal->GetSifra(), obj._artikal->GetSifra()) == 0;
+		// ↑ kraći zapis → jer izraz već vraća bool (true/false)
 
 		//return strcmp(_artikal->GetSifra(), obj._artikal->GetSifra()) == 0 ? true : false;
+		// ↑ TERNARNI OPERATOR:
+		// PROVJERA ? ako je true : ako je false
+		// ovdje je zapravo BESKORISTAN jer strcmp(...) == 0 već daje bool
+		// ali profesori često traže da znaš sintaksu
 
+		//if (_artikal == obj._artikal)
+		// ❌ poredi pointere (memorijske adrese)
+		// znači: da li su ISTI objekat u memoriji → nije isto što i isti sadržaj
 
-		// adrese artikla == adresa 
-		//if (_artikal == obj._artikal) {
-		//if (*_artikal == *obj._artikal) {
-
-		//	return true;
-
-		//}
-		//else {
-
-		//	return false;
-		//}
+		//if (*_artikal == *obj._artikal)
+		// ↑ dereferenciranje → pretvara pointer u objekat
+		// sad se poredi sadržaj (poziva se operator== iz Artikal)
 
 		return *_artikal == *obj._artikal;
+		// ↑ kraći zapis (direktno vraća bool)
 
 		//return *_artikal == *obj._artikal ? true : false;
-
+		// ↑ TERNARNI OPERATOR verzija:
+		// ako su artikli isti → vrati true
+		// inače → false
+		// opet: suvišno, ali pokazuje razumijevanje ternarnog operatora
 	}
 
 
@@ -322,41 +303,57 @@ public:
 
 	StavkaRacuna& operator ++ () {
 
-
 		// NE RADI
 		//_kolicina++;
+		// ❌ OVO:
+		// _kolicina je pointer (int*)
+		// _kolicina++ NE povećava vrijednost, nego pomjera pointer na sljedeću memorijsku lokaciju
+		// znači: ne mijenja broj, nego "gubiš" originalnu adresu → BUG
+
 		//*_kolicina++;
+		// ❌ OVO JE JAKO BITNO:
+		// zbog prioriteta operatora, ovo se čita kao:
+		// *( _kolicina++ )
+		// prvo se pointer pomjeri, pa se dereferencira → opet pogrešno
+		// znači: NIJE isto što i (*_kolicina)++
 
 		// RADI
 		(*_kolicina)++;
+		// ✅ OVO JE ISPRAVNO:
+		// prvo dereferencira pointer → dobije int vrijednost
+		// onda povećava tu vrijednost za 1
+
 		//*_kolicina += 1;
+		// ✅ ISTO KAO IZNAD:
+		// dereferencira pa poveća vrijednost
+
 		//*_kolicina = *_kolicina + 1;
+		// ✅ NAJDUŽI ZAPIS:
+		// potpuno isti rezultat, samo ručno napisano
+
 		//_kolicina = new int(*_kolicina + 1);
+		// ⚠️ OVO BI RADILO, ALI JE LOŠE:
+		// pravi NOVU memoriju svaki put
+		// stari int se ne briše → MEMORY LEAK
+		// nepotrebno komplikovano
 
 		return *this;
 	}
 
 
-
-	double GetCijena() { // vraća cijenu stavke racuna (kolicina * cijena artikla) 
-
-
-		//             1.20          *   3 = 3.60
+	double GetCijena() {
+		// 1.20 * 3 = 3.60
 		return _artikal->GetCijena() * *_kolicina;
-
 	}
 
-	double GetKolicina() { // vraća količinu stavke računa 
-
+	double GetKolicina() {
 		return *_kolicina;
-
 	}
-
 };
 
 
 class Racun {
-	static int _id; // unikatni identifikator, koristi se za povećanje broja računa uz osiguravanje unikatnosti 
+	static int _id; // globalni brojač računa
 	int _brojRacuna;
 
 	StavkaRacuna* _stavke;
@@ -374,18 +371,19 @@ public:
 		// AKO JE 0 NA POCETKU
 
 		_id++;
-
 		_brojRacuna = _id;
 
 		//_brojRacuna = ++_id; 
+		// ↑ isti rezultat (pre-increment)
 
 		// AKO JE 1 NA POCETKU
 
 		//_brojRacuna = _id;
-
 		//_id++;
+		// ↑ druga logika (razlika u startu)
 
 		//_brojRacuna = _id++;
+		// ↑ post-increment (uzima staru vrijednost pa povećava)
 
 		_trenutno = 0;
 		_max = max;
@@ -396,13 +394,11 @@ public:
 		_iznosSaPDV = 0;
 
 		_naplaceno = false;
-
 	}
 
 	Racun(const Racun& obj) {
 
 		//_id = obj._id; STATIC se NIKAD NE KOPIRA
-
 
 		_brojRacuna = obj._brojRacuna;
 
@@ -412,35 +408,27 @@ public:
 		_stavke = new StavkaRacuna[_max];
 
 		for (int i = 0; i < _trenutno; i++)
-		{
 			_stavke[i] = obj._stavke[i];
-		}
 
 		_iznosBezPDV = obj._iznosBezPDV;
 		_iznosSaPDV = obj._iznosSaPDV;
 
 		_naplaceno = obj._naplaceno;
-
-
 	}
 
 	Racun& operator = (const Racun& obj) {
 		if (this != &obj) {
 
-
 			delete[] _stavke;
 
 			_brojRacuna = obj._brojRacuna;
-
 			_trenutno = obj._trenutno;
 			_max = obj._max;
 
 			_stavke = new StavkaRacuna[_max];
 
 			for (int i = 0; i < _trenutno; i++)
-			{
 				_stavke[i] = obj._stavke[i];
-			}
 
 			_iznosBezPDV = obj._iznosBezPDV;
 			_iznosSaPDV = obj._iznosSaPDV;
@@ -452,98 +440,72 @@ public:
 
 
 	~Racun() {
-
 		delete[] _stavke;
 		_stavke = nullptr;
-
 	}
 
 
-	// Operator () - Dodaje nove artikle u _stavke (ulazni parametri su Artikal i kolicina)
-	// Voditi računa da nema duplikata
-	// Voditi računa da nema prekoračenja niza
-	// Prilikom svakog dodavanja artikla, ažurirati vrijednosti iznosBezPDV i iznosSaPDV
-	// Ažurirati količinu na skladištu artikla nakon svake kupovine
-
-	//racun1(stavka1);
-
+	// Operator () → ponaša se kao funkcija
 	Racun& operator () (Artikal artikal, int kolicina) {
 
-		if (_max == _trenutno) {
-
+		if (_max == _trenutno)
 			return *this;
-
-		}
 
 		StavkaRacuna stavka(artikal, kolicina);
 
 		stavka.operator-=(kolicina);
+		// ↓ znači: kupovina → smanjuje stanje artikla
 
 		for (int i = 0; i < _trenutno; i++)
 		{
-
-			if (_stavke[i] == stavka) {
-
-				return *this;
-
-			}
-
+			if (_stavke[i] == stavka)
+				return *this; // duplikat → ignoriše
 		}
-
 
 		// iznos BEZ +=   1.20 * 3 .. 
 		_iznosBezPDV += stavka.GetCijena();
 
-
 		// iznos SA                 3.60 + 18% od 3.60
 		//_iznosSaPDV += stavka.GetCijena() + stavka.GetCijena() * 0.18;
+		// ↑ klasični zapis
 
 		_iznosSaPDV += stavka.GetCijena() * 1.18;
+		// ↑ kraći zapis
 
 		_stavke[_trenutno] = stavka;
 		_trenutno++;
 
 		return *this;
-
 	}
 
 
 	void PrintRacun() {
-		// Ispisuje sve stavke računa zajedno sa iznosom za plaćanje sa i bez PDV-a i brojem računa
-		// Voditi računa da se jedan račun ne može dva puta isprintati (paziti na bool _naplaceno)
 
-		//if (_naplaceno == true) {
+		//if (_naplaceno == true)
+		// ↑ isto kao dolje
+
 		if (_naplaceno) {
-
 			cout << "Racun je vec naplacen" << endl;
 			return;
-
 		}
-
-
 
 		cout << "======= Br. racuna " << _brojRacuna << " =========" << endl << endl;
 
-
 		for (int i = 0; i < _trenutno; i++)
 		{
-
-			cout << _stavke[i] ;
+			cout << _stavke[i];
 			cout << "===================" << endl << endl;
-
 		}
 
 		cout << "Iznos bez PDV: " << _iznosBezPDV << " KM" << endl;
 		cout << "Iznos sa PDV: " << _iznosSaPDV << " KM" << endl;
 
-
-
 		_naplaceno = true;
-
 	}
-
 };
+
 int Racun::_id = 0;
+
 
 void main() {
 
@@ -551,6 +513,7 @@ void main() {
 	Artikal artikal2("SIF002", "Sok", 2.30, 20);
 	Artikal artikal3("SIF003", "Cips", 3.20, 10);
 	Artikal artikal4("SIF001", "Hljeb Integralni", 2.20, 10);
+	// ↑ isti SIFRA → smatraju se ISTIM artiklom (operator ==)
 
 	StavkaRacuna stavka1(artikal1, 3);
 	StavkaRacuna stavka2(artikal2, 2);
@@ -558,86 +521,20 @@ void main() {
 	StavkaRacuna stavka4(artikal4, 2);
 
 	//++stavka1;
+	// ↑ povećava količinu stavke (prefix operator)
 
 	Racun racun1;
 
+	racun1(artikal1, 3);
+	racun1(artikal2, 2);
+	racun1(artikal2, 2);
+	// ↑ IGNORIŠE jer je duplikat
 
-	racun1(artikal1 , 3);
-	racun1(artikal2 , 2);
-	racun1(artikal2 , 2);
-	racun1(artikal3 , 1);
+	racun1(artikal3, 1);
 
 	racun1.PrintRacun();
 	racun1.PrintRacun();
-
-
-
-
-	//if (stavka1 == stavka4) {
-
-	//cout << "Isti su" << endl;
-
-	//}
-	//else {
-	//
-	//	cout << "Nisu isti" << endl;
-	//
-	//}
-
-	//stavka1 += 10;
-	//stavka1 -= 10;
-
-	//cout << stavka1.GetCijena()<<endl;
-	//cout << stavka1.GetKolicina();
-	//cout << stavka2;
-	//cout << stavka3;
-
-
-	//artikal1 -= 10; // op -= 
-	//artikal1 += 30; // op += 
-
-	//++artikal1; // op ++
-	//--artikal1; // op --
-
-	//cout << "Sifra hljeba je " << artikal1.GetSifra();
-
-	//artikal1.GetCijena() = 0.50;
-
-	//artikal1._cijena = 0.50;
-
-	//cout << artikal1;
-
-
-	//int broj1 = 1;
-	//int broj2 = 2;
-
-
-	//if (broj1 == broj2) {
-
-	//	cout << "Isti su" << endl;
-
-	//}
-	//else {
-
-	//	cout << "Nisu isti" << endl;
-
-	//}
-
-	//if (artikal1 == artikal1) {
-
-	//	cout << "Isti su" << endl;
-
-	//}
-	//else {
-
-	//	cout << "Nisu isti" << endl;
-
-	//}
-
-
-	//cout << artikal1;
-	//cout << artikal2;
-	//cout << artikal3;
+	// ↑ drugi put → blokirano (_naplaceno)
 
 
 
