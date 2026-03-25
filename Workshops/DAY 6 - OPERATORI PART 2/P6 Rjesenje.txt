@@ -4,10 +4,11 @@ using namespace std;
 char* GetNizKaraktera(const char* tekst) {
 	if (tekst == nullptr)
 		return nullptr;
-	int vel = strlen(tekst) + 1;
-	char* novi = new char[vel];
-	strcpy_s(novi, vel, tekst);
-	return novi;
+
+	int vel = strlen(tekst) + 1; // +1 zbog '\0'
+	char* novi = new char[vel];  // nova memorija
+	strcpy_s(novi, vel, tekst);  // kopiranje sadržaja
+	return novi; // DEEP COPY → mora delete[]
 }
 
 class Datum
@@ -15,26 +16,25 @@ class Datum
 	int* _dan, * _mjesec, * _godina;
 public:
 	Datum(int dan = 1, int mjesec = 1, int godina = 2000) {
+		// svaki atribut je pointer → mora new
 		_dan = new int(dan);
 		_mjesec = new int(mjesec);
 		_godina = new int(godina);
 	}
 
-
 	Datum(const Datum& obj) {
+		// DEEP COPY → kopira vrijednosti, ne adrese
 		_dan = new int(*obj._dan);
 		_mjesec = new int(*obj._mjesec);
 		_godina = new int(*obj._godina);
 	}
 
 	// operator =
-
 	Datum& operator = (const Datum& obj) {
 		if (this != &obj) {
 			delete _dan;
 			delete _mjesec;
 			delete _godina;
-
 
 			_dan = new int(*obj._dan);
 			_mjesec = new int(*obj._mjesec);
@@ -43,14 +43,11 @@ public:
 		return *this;
 	}
 
-
-
 	// operator ==
-
 	bool operator == (const Datum& obj) {
+		// dereferenciranje pointera → poredi vrijednosti
 		return *_dan == *obj._dan && *_mjesec == *obj._mjesec && *_godina == *obj._godina;
 	}
-
 
 	~Datum() {
 		delete _dan; _dan = nullptr;
@@ -59,7 +56,6 @@ public:
 	}
 
 	// operator <<
-
 	friend ostream& operator<< (ostream& COUT, const Datum& obj) {
 		COUT << *obj._dan << "." << *obj._mjesec << "." << *obj._godina;
 		return COUT;
@@ -69,21 +65,23 @@ public:
 
 class Fudbaler
 {
-	char* _imePrezime; 
+	char* _imePrezime;
 	char* _pozicija;
 	int _brojDresa;
-	Datum *_datumRodjenja;
+	Datum* _datumRodjenja;
 public:
-	//Potrebne konstruktor i destruktor funkcije
 
-	// operator =
-	
+	// Konstruktor → deep copy stringova + Datum
 	Fudbaler(const char* imeprezime = "--- ---", const char* pozicija = "---",
 		int dres = 0, Datum datum = Datum()) {
+
 		_imePrezime = GetNizKaraktera(imeprezime);
 		_pozicija = GetNizKaraktera(pozicija);
 		_brojDresa = dres;
+
 		_datumRodjenja = new Datum(datum);
+		// ↑ POZOR:
+		// koristi copy konstruktor Datum klase
 	}
 
 	Fudbaler(const Fudbaler& obj) {
@@ -91,69 +89,64 @@ public:
 		_pozicija = GetNizKaraktera(obj._pozicija);
 		_brojDresa = obj._brojDresa;
 		_datumRodjenja = new Datum(*obj._datumRodjenja);
-
 	}
 
 	// operator =
-
 	Fudbaler& operator = (const Fudbaler& obj) {
 		if (this != &obj) {
-			delete _imePrezime;
-			delete _pozicija;
+ 
+
+			delete[] _imePrezime;
+			delete[] _pozicija;
 			delete _datumRodjenja;
 
 			_imePrezime = GetNizKaraktera(obj._imePrezime);
 			_pozicija = GetNizKaraktera(obj._pozicija);
 			_brojDresa = obj._brojDresa;
 			_datumRodjenja = new Datum(*obj._datumRodjenja);
-
 		}
 		return *this;
 	}
 
 	~Fudbaler() {
-		delete _imePrezime;
+		delete[] _imePrezime; // mora delete[]
 		_imePrezime = nullptr;
-		delete _pozicija;
+		delete[] _pozicija;
 		_pozicija = nullptr;
 		delete _datumRodjenja;
 		_datumRodjenja = nullptr;
 	}
 
 	//operator ==
-
 	bool operator == (const Fudbaler& obj) {
-		return strcmp(_imePrezime,obj._imePrezime) == 0;
+		// poredi IDENTITET → ime
+		return strcmp(_imePrezime, obj._imePrezime) == 0;
 	}
 
 	// operator += mijenja broj dresa
-
 	Fudbaler& operator += (int brojdresa) {
+		// nije klasičan += (sabiranje), nego SET
 		_brojDresa = brojdresa;
 		return *this;
 	}
 
-	
 	// operator <<
-
 	friend ostream& operator << (ostream& COUT, const Fudbaler& obj) {
-		COUT << "[" << obj._pozicija <<"] - " <<obj._imePrezime <<" ["<<obj._brojDresa<<"] - rodjen "<<*obj._datumRodjenja << endl;
+		COUT << "[" << obj._pozicija << "] - " << obj._imePrezime
+			<< " [" << obj._brojDresa << "] - rodjen " << *obj._datumRodjenja << endl;
 		return COUT;
 	}
-
 };
+
+
 class Tim {
-	//Oznaka prostorije
 	char* _naziv;
-	Fudbaler *_momcad;
-	int *_trenutno;
+	Fudbaler* _momcad;
+	int* _trenutno;
 	int _max;
 
 public:
-	
-	//Potrebne konstruktor i destruktor funkcije
-
-	Tim(const char * naziv = "---", int max = 11) {
+	Tim(const char* naziv = "---", int max = 11) {
 		_naziv = GetNizKaraktera(naziv);
 		_trenutno = new int(0);
 		_max = max;
@@ -167,15 +160,14 @@ public:
 		_momcad = new Fudbaler[_max];
 
 		for (int i = 0; i < *_trenutno; i++)
-		{
 			_momcad[i] = obj._momcad[i];
-		}
 	}
 
 	// operator =
-
 	Tim& operator = (const Tim& obj) {
 		if (this != &obj) {
+
+			delete[] _naziv;
 			delete[] _momcad;
 			delete _trenutno;
 
@@ -186,65 +178,58 @@ public:
 			_momcad = new Fudbaler[_max];
 
 			for (int i = 0; i < *_trenutno; i++)
-			{
 				_momcad[i] = obj._momcad[i];
-			}
 		}
 		return *this;
 	}
 
 	~Tim() {
+
+		delete[] _naziv;
+		_naziv = nullptr;
 		delete[] _momcad;
 		_momcad = nullptr;
 		delete _trenutno;
 		_trenutno = nullptr;
+
 	}
 
 	// operator ==
-
 	bool operator == (const Tim& obj) {
-		return strcmp(_naziv,obj._naziv) == 0;
+		return strcmp(_naziv, obj._naziv) == 0;
 	}
 
-
-	// operator ( )  za dodavanje igraca u tim
-
+	// operator ( )  → dodavanje igrača
 	Tim& operator() (Fudbaler fudbaler) {
 
-		if (*_trenutno == _max) {
+		if (*_trenutno == _max)
 			return *this;
-		}
 
 		for (int i = 0; i < *_trenutno; i++)
 		{
-			if (fudbaler == _momcad[i]) {
-				return *this;
-			}
+			if (fudbaler == _momcad[i])
+				return *this; // duplikat
 		}
-
 
 		_momcad[*_trenutno] = fudbaler;
 		(*_trenutno)++;
 
-	}
 
+		return *this;
+	}
 
 	const char* GetNazivTima() {
 		return _naziv;
 	}
-	
-	// operator <<
 
+	// operator <<
 	friend ostream& operator << (ostream& COUT, const Tim& obj) {
-		COUT << "====== " << obj._naziv <<" ======" << endl;
+		COUT << "====== " << obj._naziv << " ======" << endl;
 		COUT << "====== MOMCAD =======" << endl;
 		for (int i = 0; i < *obj._trenutno; i++)
-		{
 			COUT << obj._momcad[i];
-		}
 		return COUT;
 	}
-
 };
 
 
@@ -256,14 +241,11 @@ public:
 	int* _trenutno;
 	int _max;
 
-
 	Liga(const char* naziv = "---", int max = 11) {
 		_naziv = GetNizKaraktera(naziv);
 		_trenutno = new int(0);
 		_max = max;
 		_timovi = new Tim[_max];
-
-		
 	}
 
 	Liga(const Liga& obj) {
@@ -273,15 +255,14 @@ public:
 		_timovi = new Tim[_max];
 
 		for (int i = 0; i < *_trenutno; i++)
-		{
 			_timovi[i] = obj._timovi[i];
-		}
 	}
 
 	// operator =
-
 	Liga& operator = (const Liga& obj) {
 		if (this != &obj) {
+
+			delete[] _naziv;
 			delete[] _timovi;
 			delete _trenutno;
 
@@ -292,56 +273,54 @@ public:
 			_timovi = new Tim[_max];
 
 			for (int i = 0; i < *_trenutno; i++)
-			{
 				_timovi[i] = obj._timovi[i];
-			}
 		}
 		return *this;
 	}
 
 	~Liga() {
+
+		delete[] _naziv;
+		_naziv = nullptr;
 		delete[] _timovi;
 		_timovi = nullptr;
 		delete _trenutno;
 		_trenutno = nullptr;
+
 	}
 
 	// operator ==
-
 	bool operator == (const Liga& obj) {
 		return strcmp(_naziv, obj._naziv) == 0;
 	}
 
-	// operator ( ) za dodavanje timova u ligu
-
+	// operator () → dodavanje timova
 	Liga& operator() (Tim tim) {
 
-		if (*_trenutno == _max) {
+		if (*_trenutno == _max)
 			return *this;
-		}
 
 		for (int i = 0; i < *_trenutno; i++)
 		{
-			if (tim == _timovi[i]) {
+			if (tim == _timovi[i])
 				return *this;
-			}
 		}
-
 
 		_timovi[*_trenutno] = tim;
 		(*_trenutno)++;
 
+
+		return *this;
 	}
 
-	// operator [ ] koji prolanazi tim koji proslijedimo kao naziv tima ili kao Tim
+	// operator [ ] → pretraga
 
 	bool operator [](const char* nazivTima) {
 
 		for (int i = 0; i < *_trenutno; i++)
 		{
-			if (strcmp(nazivTima,_timovi[i].GetNazivTima()) == 0) {
+			if (strcmp(nazivTima, _timovi[i].GetNazivTima()) == 0)
 				return true;
-			}
 		}
 		return false;
 	}
@@ -350,26 +329,20 @@ public:
 
 		for (int i = 0; i < *_trenutno; i++)
 		{
-			if (tim == _timovi[i]) {
+			if (tim == _timovi[i])
 				return true;
-			}
 		}
 		return false;
 	}
 
-
 	friend ostream& operator << (ostream& COUT, const Liga& obj) {
-		COUT << "====== " << obj._naziv<<" ======" << endl;
-		COUT << "===== TIMOVI ======" << endl<<endl;
+		COUT << "====== " << obj._naziv << " ======" << endl;
+		COUT << "===== TIMOVI ======" << endl << endl;
 		for (int i = 0; i < *obj._trenutno; i++)
-		{
-			COUT << obj._timovi[i]<<endl;
-		}
+			COUT << obj._timovi[i] << endl;
 		return COUT;
 	}
-
 };
-
 
 
 void main()
@@ -409,7 +382,7 @@ void main()
 	tim2(fudbaler9);
 	tim2(fudbaler10);
 
-	
+
 	Liga liga("Liga Sampiona", 11);
 
 	liga(tim1);
@@ -434,7 +407,7 @@ void main()
 		cout << "Tim se ne nalazi u ligi" << endl;
 
 	}
-	
+
 
 
 	system("pause>0");
