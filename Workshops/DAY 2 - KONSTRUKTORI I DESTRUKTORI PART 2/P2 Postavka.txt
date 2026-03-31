@@ -4,13 +4,13 @@ using namespace std;
 class Datum {
 public:
 	int* _dan, * _mjesec, * _godina;
-	//Kreirati i implementirati
-	//1. Defaultni konstruktor
-	//2. Konstruktor koji prima parametre
-	//3. Konstruktor kopije
-	//4. Operator dodjele
-	//5. Destruktor
-	//6. Operator ispisa 
+	// Kreirati i implementirati
+	// 1. Defaultni konstruktor (default constructor)
+	// 2. Konstruktor koji prima parametre (user-defined constructor)
+	// 3. Konstruktor kopije (copy constructor)
+	// 4. Operator dodjele (operator =)
+	// 5. Dealokacija (destructor)
+	// 6. Ispis ili operator ispisa (operator <<) 
 
 
 
@@ -21,13 +21,13 @@ class Kandidat {
 public:
 	char* _imePrezime;
 	char* _JMBG;
-	//Kreirati i implementirati
-	//1. Defaultni konstruktor
-	//2. Konstruktor koji prima parametre
-	//3. Konstruktor kopije
-	//4. Operator dodjele
-	//5. Destruktor
-	//6. Operator ispisa 
+	// Kreirati i implementirati
+	// 1. Defaultni konstruktor (default constructor)
+	// 2. Konstruktor koji prima parametre (user-defined constructor)
+	// 3. Konstruktor kopije (copy constructor)
+	// 4. Operator dodjele (operator =)
+	// 5. Dealokacija (destructor)
+	// 6. Ispis ili operator ispisa (operator <<) 
 
 
 };
@@ -38,13 +38,13 @@ public:
 	char* _imePrezime;
 	char* _JMBG;
 	char* _prebivaliste;
-	//Kreirati i implementirati
-	//1. Defaultni konstruktor
-	//2. Konstruktor koji prima parametre
-	//3. Konstruktor kopije
-	//4. Operator dodjele
-	//5. Destruktor
-	//6. Operator ispisa 
+	// Kreirati i implementirati
+	// 1. Defaultni konstruktor (default constructor)
+	// 2. Konstruktor koji prima parametre (user-defined constructor)
+	// 3. Konstruktor kopije (copy constructor)
+	// 4. Operator dodjele (operator =)
+	// 5. Dealokacija (destructor)
+	// 6. Ispis ili operator ispisa (operator <<) 
 
 
 };
@@ -53,13 +53,13 @@ class GlasackiListic {
 public:
 	Glasac* _glasac;
 	Kandidat* _kandidat;
-	//Kreirati i implementirati
-	//1. Defaultni konstruktor
-	//2. Konstruktor koji prima parametre
-	//3. Konstruktor kopije
-	//4. Operator dodjele
-	//5. Destruktor
-	//6. Operator ispisa 
+	// Kreirati i implementirati
+	// 1. Defaultni konstruktor (default constructor)
+	// 2. Konstruktor koji prima parametre (user-defined constructor)
+	// 3. Konstruktor kopije (copy constructor)
+	// 4. Operator dodjele (operator =)
+	// 5. Dealokacija (destructor)
+	// 6. Ispis ili operator ispisa (operator <<) 
 
 
 };
@@ -71,14 +71,14 @@ public:
 	GlasackiListic* _glasovi;
 	int _trenutnoGlasova;
 	int _maxBrojGlasova;
-	//Kreirati i implementirati
-	//1. Defaultni konstruktor
-	//2. Konstruktor koji prima parametre
-	//3. Konstruktor kopije
-	//4. Operator dodjele
-	//5. Destruktor
-	//6. Operator ispisa 
-	//7. Potrebne funkcije
+	// Kreirati i implementirati
+	// 1. Defaultni konstruktor (default constructor)
+	// 2. Konstruktor koji prima parametre (user-defined constructor)
+	// 3. Konstruktor kopije (copy constructor)
+	// 4. Operator dodjele (operator =)
+	// 5. Dealokacija (destructor)
+	// 6. Ispis ili operator ispisa (operator <<) 
+	// 7. Dodatne funkcije
 
 
 	bool AddGlasackiListic(GlasackiListic listic)
@@ -99,6 +99,52 @@ public:
 
 void main() {
 
+	/* -- DATUM TESTIRANJE -- */
+
+	//Datum datumPunoljetni(12, 12, 1998); // user-def constr. (dan, mjesec, godina)
+	//Datum datumMaloljetni(1, 3, 2012); // user-def constr. (dan, mjesec, godina)
+
+	/* -- KANDIDAT TESTIRANJE -- */
+
+	//Kandidat kandidat1("Denis Music", "0407003154765"); // user-def constr. (imeprezime, jmbg)
+	//Kandidat kandidat2("Elmir Babovic", "1354365135322"); // user-def constr. (imeprezime, jmbg)
+
+	/* -- OSOBA TESTIRANJE -- */
+
+
+	/* user-def constr. (datum, imeprezime, jmbg, prebivaliste) */
+	//Osoba osoba1(datumPunoljetni, "Sara Delic", "0407003154578", "Gorazde"); // nece moci glasati jer nije iz Jablanice
+	//Osoba osoba2(datumPunoljetni, "Kerim Dziho", "1501003124589", "Mostar"); // nece moci glasati jer nije iz Jablanice
+	//Osoba osoba3(datumPunoljetni, "Tarik Dzino", "1208003235689", "Jablanica");
+	//Osoba osoba4(datumPunoljetni, "Vedad Keskin", "1212998150001", "Jablanica");
+	//Osoba osoba5(datumMaloljetni, "Iman Bejana Keskin", "1208003235689", "Jablanica"); // nece moci glasati jer nije punoljetna
+
+	/* -- GLASACKI LISTICI TESTIRANJE -- */
+
+	/* user - def constr. (osoba, kandidat) */
+	//GlasackiListic listic1(osoba1, kandidat1); // nece moci glasati jer nije iz Jablanice
+	//GlasackiListic listic2(osoba2, kandidat2); // nece moci glasati jer nije iz Jablanice
+	//GlasackiListic listic3(osoba3, kandidat1);
+	//GlasackiListic listic4(osoba4, kandidat2);
+	//GlasackiListic listic5(osoba5, kandidat1); // nece moci glasati jer nije punoljetna
+
+	/* -- IZBORI TESTIRANJE -- */
+
+	//Izbori izbori("Jablanica", 3); // user-def constr. (glasackomjesto, max)
+
+	//izbori.AddGlasackiListic(listic1); // nece moci glasati jer nije iz Jablanice
+	//izbori.AddGlasackiListic(listic2); // nece moci glasati jer nije iz Jablanice
+	//izbori.AddGlasackiListic(listic2); // nece moci glasati jer nije iz Jablanice
+	//izbori.AddGlasackiListic(listic3);
+	//izbori.AddGlasackiListic(listic4);
+	//izbori.AddGlasackiListic(listic5); // nece moci glasati jer nije punoljetna
+
+
+	//Izbori izboriKopija = izbori; // copy constr.
+	//Izbori izboriOperatorDodjele;
+	//izboriOperatorDodjele = izbori; // operator =
+
+	//cout << izboriOperatorDodjele;
 
 
 	system("pause>0");

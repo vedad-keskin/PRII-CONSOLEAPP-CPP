@@ -146,15 +146,15 @@ public:
 	Datum _datumRodjenja; // maloljetna osoba ne smije glasati
 	char* _imePrezime;
 	char* _JMBG;
-	char* _Prebivaliste; // ne moze glasati osoba koja nije iz prebivalista gdje se glasanje nalazi
+	char* _prebivaliste; // ne moze glasati osoba koja nije iz prebivalista gdje se glasanje nalazi
 
 
-	Osoba(Datum datumRodjenja = Datum() , const char* imePrezime = "Nema imena", const char* JMBG = "Nema JMBG", const char* Prebivaliste = "Nema prebivalista")
+	Osoba(Datum datumRodjenja = Datum(), const char* imePrezime = "Nema imena", const char* JMBG = "Nema JMBG", const char* prebivaliste = "Nema prebivalista")
 	{
 
 		_imePrezime = GetNizKaraktera(imePrezime);
 		_JMBG = GetNizKaraktera(JMBG);
-		_Prebivaliste = GetNizKaraktera(Prebivaliste);
+		_prebivaliste = GetNizKaraktera(prebivaliste);
 
 		_datumRodjenja = datumRodjenja;
 
@@ -164,7 +164,7 @@ public:
 
 		_imePrezime = GetNizKaraktera(obj._imePrezime);
 		_JMBG = GetNizKaraktera(obj._JMBG);
-		_Prebivaliste = GetNizKaraktera(obj._Prebivaliste);
+		_prebivaliste = GetNizKaraktera(obj._prebivaliste);
 
 		_datumRodjenja = obj._datumRodjenja;
 
@@ -173,13 +173,13 @@ public:
 	Osoba& operator =(const Osoba& obj) {
 
 		if (this != &obj) {
-			delete[]_imePrezime; 
-			delete[]_JMBG; 
-			delete[]_Prebivaliste;
+			delete[]_imePrezime;
+			delete[]_JMBG;
+			delete[]_prebivaliste;
 
 			_imePrezime = GetNizKaraktera(obj._imePrezime);
 			_JMBG = GetNizKaraktera(obj._JMBG);
-			_Prebivaliste = GetNizKaraktera(obj._Prebivaliste);
+			_prebivaliste = GetNizKaraktera(obj._prebivaliste);
 
 			_datumRodjenja = obj._datumRodjenja;
 
@@ -191,7 +191,7 @@ public:
 
 		delete[]_imePrezime; _imePrezime = nullptr;
 		delete[]_JMBG; _JMBG = nullptr;
-		delete[]_Prebivaliste; _Prebivaliste = nullptr;
+		delete[]_prebivaliste; _prebivaliste = nullptr;
 
 	}
 
@@ -199,7 +199,7 @@ public:
 
 		cout << "Ime: " << _imePrezime << endl;
 		cout << "JMBG: " << _JMBG << endl;
-		cout << "Prebivaliste: " << _Prebivaliste << endl << endl;
+		cout << "Prebivaliste: " << _prebivaliste << endl << endl;
 		cout << "Datum: " << _datumRodjenja << endl;
 		cout << "======================================" << endl << endl;
 
@@ -207,7 +207,7 @@ public:
 
 	friend ostream& operator << (ostream& COUT, const Osoba& obj) {
 
-		COUT << obj._imePrezime << " [" << obj._JMBG << "] rodjen u " << obj._Prebivaliste << ", datuma " << obj._datumRodjenja << endl;
+		COUT << obj._imePrezime << " [" << obj._JMBG << "] rodjen u " << obj._prebivaliste << ", datuma " << obj._datumRodjenja << endl;
 
 		return COUT;
 
@@ -340,7 +340,7 @@ public:
 		_glasackoMjesto = nullptr;
 		delete[] _glasovi;
 		_glasovi = nullptr;
-		
+
 
 	}
 
@@ -384,7 +384,7 @@ public:
 		{
 
 			// strcmp( naziv1 , naziv2 ) == 0
-			if (strcmp( _glasovi[i]._glasac->_imePrezime , listic._glasac->_imePrezime) == 0) {
+			if (strcmp(_glasovi[i]._glasac->_imePrezime, listic._glasac->_imePrezime) == 0) {
 				cout << "Osoba je vec glasala" << endl;
 				return false;
 			}
@@ -404,7 +404,7 @@ public:
 		}
 
 		//                               Mostar != Jabalnica
-		if (strcmp(listic._glasac->_Prebivaliste , _glasackoMjesto) != 0) {
+		if (strcmp(listic._glasac->_prebivaliste, _glasackoMjesto) != 0) {
 
 			cout << "Osoba nije iz grada prebivalista" << endl;
 			return false;
@@ -414,7 +414,7 @@ public:
 
 		_glasovi[_trenutnoGlasova] = listic;
 
-		_trenutnoGlasova++; 
+		_trenutnoGlasova++;
 
 		return true;
 
@@ -438,17 +438,17 @@ void main() {
 
 	Osoba osoba1(datumPunoljetni, "Sara Delic", "0407003154578", "Gorazde"); // nece moci glasati jer nije iz Jablanice
 	Osoba osoba2(datumPunoljetni, "Kerim Dziho", "1501003124589", "Mostar"); // nece moci glasati jer nije iz Jablanice
-	Osoba osoba3(datumPunoljetni, "Tarik Dzino", "1208003235689", "Jablanica"); 
-	Osoba osoba4(datumPunoljetni, "Vedad Keskin", "1208003235689", "Jablanica"); 
+	Osoba osoba3(datumPunoljetni, "Tarik Dzino", "1208003235689", "Jablanica");
+	Osoba osoba4(datumPunoljetni, "Vedad Keskin", "1208003235689", "Jablanica");
 	Osoba osoba5(datumMaloljetni, "Iman Bejana Keskin", "1208003235689", "Jablanica"); // nece moci glasati jer nije punoljetna
 
 
 	// ctrl + d
-	GlasackiListic listic1(osoba1, kandidat1 ); // nece moci glasati jer nije iz Jablanice
-	GlasackiListic listic2(osoba2, kandidat2 ); // nece moci glasati jer nije iz Jablanice
-	GlasackiListic listic3(osoba3, kandidat1 );
-	GlasackiListic listic4(osoba4, kandidat2 );
-	GlasackiListic listic5(osoba5, kandidat1 ); // nece moci glasati jer nije punoljetna
+	GlasackiListic listic1(osoba1, kandidat1); // nece moci glasati jer nije iz Jablanice
+	GlasackiListic listic2(osoba2, kandidat2); // nece moci glasati jer nije iz Jablanice
+	GlasackiListic listic3(osoba3, kandidat1);
+	GlasackiListic listic4(osoba4, kandidat2);
+	GlasackiListic listic5(osoba5, kandidat1); // nece moci glasati jer nije punoljetna
 
 
 	Izbori izbori("Jablanica", 3);
@@ -456,8 +456,8 @@ void main() {
 	izbori.AddGlasackiListic(listic1); // nece moci glasati jer nije iz Jablanice
 	izbori.AddGlasackiListic(listic2); // nece moci glasati jer nije iz Jablanice
 	izbori.AddGlasackiListic(listic2); // nece moci glasati jer nije iz Jablanice
-	izbori.AddGlasackiListic(listic3); 
-	izbori.AddGlasackiListic(listic4); 
+	izbori.AddGlasackiListic(listic3);
+	izbori.AddGlasackiListic(listic4);
 	izbori.AddGlasackiListic(listic5); // nece moci glasati jer nije punoljetna
 
 
