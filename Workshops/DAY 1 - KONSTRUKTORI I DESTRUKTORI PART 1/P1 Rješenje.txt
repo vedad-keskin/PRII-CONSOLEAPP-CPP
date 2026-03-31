@@ -1,45 +1,81 @@
 #include <iostream>
 using namespace std;
 
-// POKAZIVACI : 
+// POKAZIVACI :  
 
-// 1. ALOKACIJA ( new ) 
-
-// ako je jedna vrijednost --> ( ) 
-
-// ako je vise vrijednosti --> [ ] 
+// 1. ALOKACIJA ( new )  
+// ako je jedna vrijednost --> ( )  
+//    npr: int* x = new int(5);  --> alocira 1 int i postavlja ga na 5
+// ako je vise vrijednosti --> [ ]  
+//    npr: char* niz = new char[10]; --> alocira niz od 10 char-ova (NEINICIJALIZOVAN)
 
 // 2. DEREFERENCIRANJE ( ispis , kopiranje )
+// ako je jedna vrijednost --> ( ) 
+//    _ECTS -> adresa (npr 0x1234)
+//    *_ECTS -> stvarna vrijednost na toj adresi (npr 7)
 
-// ako je jedna vrijednost --> ( ) -->  _ECTS -> 000002205A2481E0 , *_ECTS -> 0 
+// ako je vise vrijednosti --> [ ] 
+//    _naziv -> ispisuje vrijednosti
+//    *_naziv -> prvi karakter (npr 'N')
 
-// ako je vise vrijednosti --> [ ] -->  _naziv --> Nema predmeta , *_naziv --> N
+// VAŽNO: niz (char*) se ponaša kao pointer na prvi element!
 
-// 3. DEALOCIRANJE / DESKTRUKTOR  --> ( delete , nullptr )
+// 3. DEALOCIRANJE / DESTRUKTOR  --> ( delete , nullptr )
+// ako je jedna vrijednost --> ( )
+//    delete _ECTS;  --> briše JEDAN int
 
-// ako je jedna vrijednost --> ( ) -->	delete _ECTS;
+// ako je vise vrijednosti --> [ ]
+//    delete[] _naziv;  --> briše CIJELI niz
 
-// ako je vise vrijednosti --> [ ] -->  delete[] _naziv;
+//delete:
+//
+//oslobađa(briše) memoriju koju si ranije zauzeo sa new
+//vraća tu memoriju sistemu(heap - u)
+//NE briše pointer varijablu, nego ono na šta pokazuje
+
+// OBAVEZNO: koristiti isti oblik kao kod new!
+// new -> delete
+// new[] -> delete[]
+
+// nullptr:
+// nakon brisanja pointer treba postaviti na nullptr
+// da izbjegnemo "dangling pointer" (pokazivač koji pokazuje na obrisanu memoriju)
+
+//pointer i dalje postoji
+//ali memorija na koju pokazuje više nije validna
+//
+//➡️ Ovo se zove dangling pointer
+
+// nullptr
+//znači "ne pokazujem ni na šta"
+//to je specijalna vrijednost za pointere
+
+//new → zauzima memoriju
+//delete → briše memoriju
+//nullptr → resetuje pointer
 
 
-// razlika struct i class
 
-struct Struktura{
-   int broj;
-
-};
-
-class Klasa{
-   int broj;
-
-};
+// RAZLIKE struct i class
 
 // struct (sve po defaultu public)
 // class (sve po default private)
-// mogucnosti iste
+
+// mogucnosti iste (100% iste u C++)
+
+// razlika je SAMO u default pristupu:
+// struct Struktura { int broj; }; --> public
+// class Klasa { int broj; };      --> private
+
 // class-e se koriste za kompleksnije stvari dok struct za jednostavnije
+
+// HISTORIJA:
 // C already had struct before C++ existed.
 // When Bjarne Stroustrup created C++, he kept struct for compatibility with C programs.
+
+// PRAKSA:
+// struct → POD (plain data), bez puno logike
+// class  → objekti sa funkcijama, enkapsulacija, logika
 
 
 class Predmet {
@@ -61,9 +97,15 @@ public:             //      dft      //     user def.    //
 		//string tekst2 = "Nema predmeta";
 		const char* dftNaziv = "Nema predmeta"; // string literal --> read only tekst
 
+		// strlen + 1:
+		// +1 je zbog '\0' (null terminator) koji označava kraj stringa
+
 		int vel = strlen(dftNaziv) + 1; // 14 
 
 		_naziv = new char[vel]; // na pocetku je taj niz prazan 
+
+		// strcpy_s:
+		// sigurnija verzija strcpy (provjerava veličinu)
 
 		// 1. gdje hocete da pohranite nesto 
 		// 2. koliko ce karaktera biti prekopirano 
@@ -93,6 +135,15 @@ public:             //      dft      //     user def.    //
 
 	}
 
+	// BEZ ovoga bi se desio SHALLOW COPY:
+	// kopirale bi se samo adrese → oba objekta bi koristila ISTU memoriju
+	
+	// problem:
+	// kada jedan objekat se uništi → drugi ostaje sa "pokvarenim" pointerom
+	
+	// ZATO radimo DEEP COPY:
+	// alociramo novu memoriju i kopiramo vrijednosti
+
 	// copy constr. 
 
 	// 	Predmet predmetKopija(predmet1);
@@ -114,6 +165,21 @@ public:             //      dft      //     user def.    //
 		strcpy_s(_naziv, vel, predmet._naziv);
 
 	}
+
+	// if (this != &predmet)
+	// provjera da li objekat dodjeljuje sam sebi
+	
+	// bez ovoga:
+	// predmet1 = predmet1;
+	// prvo bi obrisao svoju memoriju → pa pokušao kopirati iz OBRISANE memorije
+	
+	// delete prije new:
+	// sprječava memory leak (curenje memorije)
+	
+	// na kraju:
+	// return *this;
+	// omogućava lančano dodjeljivanje:
+	// a = b = c;
 
 	//	predmet5 = predmet1; // <-- operator dodjele
 
@@ -146,7 +212,18 @@ public:             //      dft      //     user def.    //
 		return *this;
 	}
 
+	// automatski se poziva kada objekat izlazi iz scope-a
 
+	// npr:
+	// {
+	//    Predmet p;
+	// } --> ovdje se poziva ~Predmet()
+	
+	// VAŽNO:
+	// ako koristiš new → MORAŠ imati destruktor!
+	
+	// nullptr nakon delete:
+	// sigurnosna mjera (nije obavezno ali dobra praksa)
 
 	// destructor ili dealokacija
 	// 
@@ -238,10 +315,17 @@ public:
 
 		_polozeni = new Predmet[_max];
 
-		for (int i = 0; i < _trenutno; i++) // 0 1 
+		// ZAŠTO petlja?
+
+		for (int i = 0; i < _trenutno; i++)
 		{
 			_polozeni[i] = student._polozeni[i];
 		}
+
+		// jer kopiramo svaki objekat pojedinačno
+
+		// koristi se operator= iz klase Predmet
+
 
 
 	}
@@ -308,8 +392,6 @@ public:
 
 	// 	student.AddPolozeniPredmet(predmet1); -> MATII
 	void AddPolozeniPredmet(Predmet predmet) {
-		// Dodaje novi polozeni predmet u niz
-		// Voditi računa da se ne može dodavati isti predmet (istog naziva)
 		// Voditi računa da se ne može prekoračiti kapacitet niza
 
 		if (_trenutno == _max) {
@@ -317,12 +399,25 @@ public:
 			return;
 		}
 
+
+		// Voditi računa da se ne može dodavati isti predmet (istog naziva)
+
 		for (int i = 0; i < _trenutno; i++) // 0 1 
 		{
 			// Poređenje dva niza karaktera - char*
+			// Nije moguće sa char* == char*
+			// Mora
 			// strcmp( naziv1 , naziv2 ) == 0 
 
+			// ZAŠTO ne možemo koristiti == ?
+			// jer char* poredi ADRESE, ne sadržaj!
+
+			//_polozeni[1]._naziv ───► "Matematika II" (adresa 0x100)
+			//predmet._naziv ────────► "Matematika II" (adresa 0x200)
+
+			//if (_polozeni[i]._naziv == predmet._naziv) {
 			if (strcmp(_polozeni[i]._naziv, predmet._naziv) == 0) {
+
 
 				cout << "Student vec ima odabrani polozeni predmet" << endl;
 				return;
@@ -332,6 +427,9 @@ public:
 
 		}
 
+		// Dodaje novi polozeni predmet u niz
+
+		// OVDJE SE POZIVA operator= iz klase Predmet!
 
 		_polozeni[_trenutno] = predmet; // pol[0] = PRII , pol[1] = MATII , pol[2] = WRD
 
@@ -345,51 +443,49 @@ public:
 
 void main() {
 
-	//Predmet predmet0;  // <--- dft constr.
-	//predmet0.Ispis();  // <--- poziv ispisa
+	 /* -- PREDMET TESTIRANJE -- */
 
+	Predmet predmet0; // dft constr.
 
-	//predmet2.Ispis();
-	//predmet3.Ispis();
+	Predmet predmet1("Programiranje II", 9, 7); // user-def constr. (naziv, ocjena, ects)
+	Predmet predmet2("Matematika II", 6, 4); // user-def constr. (naziv, ocjena, ects)
+	Predmet predmet3("Operativni sistemi", 7, 4); // user-def constr. (naziv, ocjena, ects)
+	Predmet predmet4("Web razvoj i dizajn", 7, 5); // user-def constr. (naziv, ocjena, ects)
+
+	Predmet predmetKopija = predmet1; // copy constr.
+
+	Predmet predmetOperatorDodjele;
+	predmetOperatorDodjele = predmet1; // operator = 
+
+	/* Metoda Ispisa ili operator ispisa (operator <<) - Dovoljno implementirati jedno */
 
 	//predmet1.Ispis();
+	//cout << predmet1;
 
-	//Predmet predmetKopija = predmet1;  // <-- copy constr. 
-	//Predmet predmetKopija(predmet1); // <-- copy constr. 
-
-	//predmetKopija.Ispis();
-
-	//Predmet predmetOperatorDodjele;
-
-	//predmetOperatorDodjele = predmetOperatorDodjele; // <-- operator dodjele
-
-	//predmetOperatorDodjele.Ispis();
-
-	Predmet predmet1("Programiranje II", 9, 7); // <--- usr. def constr.
-	Predmet predmet2("Matematika II", 6, 5); // <--- usr. def constr.
-	Predmet predmet3("Web razvoj i dizajn", 7, 5); // <--- usr. def constr.
-	Predmet predmet4("Operativni sistemi", 7, 5); // <--- usr. def constr.
-
-	//Student student0;
-	//student0.Ispis();
-
-	Student student("Vedad Keskin", 3);
-
-	student.AddPolozeniPredmet(predmet1);
-	student.AddPolozeniPredmet(predmet2);
-	student.AddPolozeniPredmet(predmet2); // dupliranje
-	student.AddPolozeniPredmet(predmet3);
-	student.AddPolozeniPredmet(predmet4); // prekoracenje niza
+	/* -- STUDENT TESTIRANJE -- */
 
 
-	//Student studentKopija = student; // <-- copy constr.
-	//studentKopija.Ispis();
+	Student student0; // dft constr.
+
+	Student student1("Vedad Keskin", 3); // user-def constr. (imeprezime, max)
+
+	student1.AddPolozeniPredmet(predmet1); // Dodavanje predmeta PRII
+	student1.AddPolozeniPredmet(predmet2); // Dodavanje predmeta MATII
+	student1.AddPolozeniPredmet(predmet2); // Dodavanje predmeta MATII - Duplikat (potrebno zabraniti)
+	student1.AddPolozeniPredmet(predmet3); // Dodavanje predmeta OS
+	student1.AddPolozeniPredmet(predmet4); // Dodavanje predmeta WRD - Prekoračenje niza (potrebno zabraniti)
+
+
+	Student studentKopija = student1; // copy constr.
 
 	Student studentOperatorDodjele;
+	studentOperatorDodjele = student1; // operator = 
 
-	studentOperatorDodjele = student;
+	/* Metoda Ispisa ili operator ispisa (operator <<) - Dovoljno implementirati jedno */
 
-	studentOperatorDodjele.Ispis();
+	student1.Ispis();
+	//cout << student1;
+
 
 
 	system("pause>0");
