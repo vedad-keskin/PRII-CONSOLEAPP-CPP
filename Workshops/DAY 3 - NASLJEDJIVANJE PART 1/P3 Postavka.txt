@@ -12,34 +12,34 @@ char* GetNizKaraktera(const char* sadrzaj) {
 }
 
 
-class Osoba {
+class Osoba { // BAZNA KLASA
 protected:
 	char* _imePrezime;
 	char* _JMBG;
 public:
-	//Kreirati i implementirati
-	//1. Defaultni konstruktor
-	//2. Konstruktor koji prima parametre
-	//3. Konstruktor kopije
-	//4. Operator dodjele
-	//5. Destruktor
-	//6. Operator ispisa 
+	// Kreirati i implementirati
+	// 1. Defaultni konstruktor (default constructor)
+	// 2. Konstruktor koji prima parametre (user-defined constructor)
+	// 3. Konstruktor kopije (copy constructor)
+	// 4. Operator dodjele (operator =)
+	// 5. Dealokacija (destructor)
+	// 6. Operator ispisa (operator <<) 
 
 
 };
 
 
 
-class Profesor {
+class Profesor { // IZVEDENA KLASA
 public:
 	char* _titula;
-	//Kreirati i implementirati
-	//1. Defaultni konstruktor
-	//2. Konstruktor koji prima parametre
-	//3. Konstruktor kopije
-	//4. Operator dodjele
-	//5. Destruktor
-	//6. Operator ispisa 
+	// Kreirati i implementirati
+	// 1. Defaultni konstruktor (default constructor)
+	// 2. Konstruktor koji prima parametre (user-defined constructor)
+	// 3. Konstruktor kopije (copy constructor)
+	// 4. Operator dodjele (operator =)
+	// 5. Dealokacija (destructor)
+	// 6. Operator ispisa (operator <<) 
 
 
 };
@@ -50,37 +50,37 @@ public:
 	char* _naziv;
 	int* _ECTS;
 	Profesor* _predmetniProfesor;
-	//Kreirati i implementirati
-	//1. Defaultni konstruktor
-	//2. Konstruktor koji prima parametre
-	//3. Konstruktor kopije
-	//4. Operator dodjele
-	//5. Destruktor
-	//6. Operator ispisa 
+	// Kreirati i implementirati
+	// 1. Defaultni konstruktor (default constructor)
+	// 2. Konstruktor koji prima parametre (user-defined constructor)
+	// 3. Konstruktor kopije (copy constructor)
+	// 4. Operator dodjele (operator =)
+	// 5. Dealokacija (destructor)
+	// 6. Operator ispisa (operator <<) 
 
 
 };
 
 
 
-class Student {
+class Student { // IZVEDENA KLASA
 public:
 	char* _brojIndeksa;
 	Predmet* _polozeniPredmeti;
 	int* _trenutno;
 	int _max;
-	//Kreirati i implementirati
-	//1. Defaultni konstruktor
-	//2. Konstruktor koji prima parametre
-	//3. Konstruktor kopije
-	//4. Operator dodjele
-	//5. Destruktor
-	//6. Operator ispisa 
-	//7. Potrebne funkcije
+	// Kreirati i implementirati
+	// 1. Defaultni konstruktor (default constructor)
+	// 2. Konstruktor koji prima parametre (user-defined constructor)
+	// 3. Konstruktor kopije (copy constructor)
+	// 4. Operator dodjele (operator =)
+	// 5. Dealokacija (destructor)
+	// 6. Operator ispisa (operator <<) 
+	// 7. Potrebne funkcije
 
-    bool DodajPredmet(Predmet predmet){
+	bool DodajPredmet(Predmet predmet) {
 
-    }
+	}
 
 
 };
@@ -92,6 +92,36 @@ public:
 
 void main() {
 
+	/* -- PROFESOR TESTIRANJE -- */
+
+	//Profesor profesor1("dr. sc.", "Denis Music", "13123123"); // user-def constr. (titula, imeprezime, jmbg)
+	//Profesor profesor2("dr. sc.", "Elmir Babovic", "13123123"); // user-def constr. (titula, imeprezime, jmbg)
+	//Profesor profesor3("dr. sc.", "Nina Bijedic", "13123123"); // user-def constr. (titula, imeprezime, jmbg)
+
+	/* -- PREDMET TESTIRANJE -- */
+
+	//Predmet predmet1("Programiranje II", 7, profesor1);
+	//Predmet predmet2("Web razvoj i dizajn", 5, profesor2);
+	//Predmet predmet3("Matematika II ", 4, profesor3);
+	//Predmet predmet4("Operativni sistemi", 5, profesor2);
+
+	/* -- STUDENT TESTIRANJE -- */
+
+	//Student student("IB180079", "Vedad Keskin", "12129981500001", 3);
+
+	//student.DodajPredmet(predmet1);
+	//student.DodajPredmet(predmet2);
+	//student.DodajPredmet(predmet2);
+	//student.DodajPredmet(predmet3);
+	//student.DodajPredmet(predmet4);
+
+	//Student studentKopija = student; // copy constr.
+
+	//cout << studentKopija;
+
+	/* -- SPECIJALNI SLUCAJ (EDGE CASE) -- */
+	//Osoba* profesor2 = new Profesor("dr. sc.", "Elmir Babovic", "1316565123");
+	//delete profesor2;
 
 
 	system("PAUSE>0");
