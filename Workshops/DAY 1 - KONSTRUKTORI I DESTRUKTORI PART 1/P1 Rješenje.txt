@@ -24,6 +24,16 @@ using namespace std;
 
 // razlika struct i class
 
+struct Struktura{
+   int broj;
+
+};
+
+class Klasa{
+   int broj;
+
+};
+
 // struct (sve po defaultu public)
 // class (sve po default private)
 // mogucnosti iste
