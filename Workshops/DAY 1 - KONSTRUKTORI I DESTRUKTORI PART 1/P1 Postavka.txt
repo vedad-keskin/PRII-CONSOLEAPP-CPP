@@ -1,0 +1,107 @@
+#include <iostream>
+using namespace std;
+
+
+
+class Predmet {
+public:
+	char* _naziv;
+	int _ocjena;
+	int* _ECTS;
+	// Kreirati i implementirati
+	// 1. Defaultni konstruktor (default constructor)
+	// 2. Konstruktor koji prima parametre (user-defined constructor)
+	// 3. Konstruktor kopije (copy constructor)
+	// 4. Operator dodjele (operator =)
+	// 5. Dealokacija (destructor)
+	// 6. Ispis ili operator ispisa (operator <<) 
+
+
+
+
+
+
+};
+
+
+
+
+
+class Student {
+	char* _imePrezime;
+	Predmet* _polozeni;
+	int _trenutno;
+	int _max;
+public:
+	// Kreirati i implementirati
+	// 1. Defaultni konstruktor (default constructor)
+	// 2. Konstruktor koji prima parametre (user-defined constructor)
+	// 3. Konstruktor kopije (copy constructor)
+	// 4. Operator dodjele (operator =)
+	// 5. Dealokacija (destructor)
+	// 6. Ispis ili operator ispisa (operator <<) 
+	// 7. Dodatne funkcije
+
+
+
+	void AddPolozeniPredmet(Predmet predmet) {
+		// Dodaje novi polozeni predmet u niz
+		// Voditi računa da se ne može prekoračiti kapacitet niza
+		// Voditi računa da se ne moze dodavati isti predmet (istog naziva)		        
+
+
+	}
+
+};
+
+
+
+void main() {
+	 
+	// -- PREDMET TESTIRANJE -- //
+
+	//Predmet predmet0; // dft constr.
+
+	//Predmet predmet1("Programiranje II", 9, 7); // user-def constr. (naziv, ocjena, ects)
+	//Predmet predmet2("Matematika II", 6, 4); // user-def constr. (naziv, ocjena, ects)
+	//Predmet predmet3("Operativni sistemi", 7, 4); // user-def constr. (naziv, ocjena, ects)
+	//Predmet predmet4("Web razvoj i dizajn", 7, 5); // user-def constr. (naziv, ocjena, ects)
+
+	//Predmet predmetKopija = predmet1; // copy constr.
+
+	//Predmet predmetOperatorDodjele;
+	//predmetOperatorDodjele = predmet1; // operator = 
+
+	// Metoda Ispisa ili operator ispisa (operator <<) - Dovoljno implementirati jedno
+
+	//predmet1.Ispis();
+	//cout << predmet1;
+
+	// -- STUDENT TESTIRANJE -- //
+
+
+	//Student student0; // dft constr.
+
+	//Student student1("Vedad Keskin", 3); // user-def constr. (imeprezime, max)
+
+	//student1.AddPolozeniPredmet(predmet1); // Dodavanje predmeta PRII
+	//student1.AddPolozeniPredmet(predmet2); // Dodavanje predmeta MATII
+	//student1.AddPolozeniPredmet(predmet2); // Dodavanje predmeta MATII - Duplikat (potrebno zabraniti)
+	//student1.AddPolozeniPredmet(predmet3); // Dodavanje predmeta OS
+	//student1.AddPolozeniPredmet(predmet4); // Dodavanje predmeta WRD - Prekoračenje niza (potrebno zabraniti)
+
+
+	//Student studentKopija = student1; // copy constr.
+
+	//Student studentOperatorDodjele;
+	//studentOperatorDodjele = student1; // operator = 
+
+	// Metoda Ispisa ili operator ispisa (operator <<) - Dovoljno implementirati jedno
+
+	//student1.Ispis();
+	//cout << student1;
+
+
+	system("pause>0");
+}
+
