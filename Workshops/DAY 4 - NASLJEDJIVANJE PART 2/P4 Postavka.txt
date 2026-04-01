@@ -1,49 +1,48 @@
 #include <iostream>
 using namespace std;
 
-class Media {
+class Media { // BAZNA KLASA
 public:
     char* _naslov;
     char* _zanr;
     int _godinaObjavljivanja;
     float _ocjena;
-
     // Kreirati i implementirati
-    // 1. Defaultni konstruktor
-    // 2. Konstruktor koji prima parametre
-    // 3. Konstruktor kopije
-    // 4. Operator dodjele
-    // 5. Destruktor
-    // 6. Operator ispisa 
+    // 1. Defaultni konstruktor (default constructor)
+    // 2. Konstruktor koji prima parametre (user-defined constructor)
+    // 3. Konstruktor kopije (copy constructor)
+    // 4. Operator dodjele (operator =)
+    // 5. Dealokacija (destructor)
+    // 6. Operator ispisa (operator <<) 
 
 
 };
 
-class Serija : public Media {
+class Serija : public Media { // IZVEDENA KLASA
 public:
     int _brojEpizoda;
     int* _brojSezona;
     // Kreirati i implementirati
-    // 1. Defaultni konstruktor
-    // 2. Konstruktor koji prima parametre
-    // 3. Konstruktor kopije
-    // 4. Operator dodjele
-    // 5. Destruktor
-    // 6. Operator ispisa
+    // 1. Defaultni konstruktor (default constructor)
+    // 2. Konstruktor koji prima parametre (user-defined constructor)
+    // 3. Konstruktor kopije (copy constructor)
+    // 4. Operator dodjele (operator =)
+    // 5. Dealokacija (destructor)
+    // 6. Operator ispisa (operator <<) 
 
 
 };
 
-class Film : public Media {
+class Film : public Media { // IZVEDENA KLASA
 public:
     int _trajanje; // misli se na trajanje u minutama
     // Kreirati i implementirati
-    // 1. Defaultni konstruktor
-    // 2. Konstruktor koji prima parametre
-    // 3. Konstruktor kopije
-    // 4. Operator dodjele
-    // 5. Destruktor
-    // 6. Operator ispisa 
+    // 1. Defaultni konstruktor (default constructor)
+    // 2. Konstruktor koji prima parametre (user-defined constructor)
+    // 3. Konstruktor kopije (copy constructor)
+    // 4. Operator dodjele (operator =)
+    // 5. Dealokacija (destructor)
+    // 6. Operator ispisa (operator <<) 
 
 
 
@@ -62,12 +61,12 @@ public:
     int _maxPregledanihSerija;
     int* _trenutnoPregledanihSerija;
     // Kreirati i implementirati
-    // 1. Defaultni konstruktor
-    // 2. Konstruktor koji prima parametre
-    // 3. Konstruktor kopije
-    // 4. Operator dodjele
-    // 5. Destruktor
-    // 6. Operator ispisa 
+    // 1. Defaultni konstruktor (default constructor)
+    // 2. Konstruktor koji prima parametre (user-defined constructor)
+    // 3. Konstruktor kopije (copy constructor)
+    // 4. Operator dodjele (operator =)
+    // 5. Dealokacija (destructor)
+    // 6. Operator ispisa (operator <<) 
     // 7. Potrebne funkcije
 
 
