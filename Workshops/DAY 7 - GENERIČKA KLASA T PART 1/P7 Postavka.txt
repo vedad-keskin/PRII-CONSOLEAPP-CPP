@@ -1,0 +1,192 @@
+#include <iostream>
+using namespace std;
+
+char* GetNizKaraktera(const char* tekst) {
+	if (tekst == nullptr)
+		return nullptr;
+	int vel = strlen(tekst) + 1;
+	char* novi = new char[vel];
+	strcpy_s(novi, vel, tekst);
+	return novi;
+}
+
+
+template<class T>
+class Kolekcija {
+public:
+	T* _niz;
+	int _max;
+	int _trenutno;
+	// Kreirati i implementirati
+	// 1. Defaultni konstruktor (default constructor)
+	// 2. Konstruktor koji prima parametre (user-defined constructor)
+	// 3. Konstruktor kopije (copy constructor)
+	// 4. Operator dodjele (operator =)
+	// 5. Dealokacija (destructor)
+	// 6. Operator ispisa (operator <<) 
+	// 7. Dodatne funkcije
+
+
+	void AddElement(T el) {
+		// Dodaje element tipa T u niz
+		// Onemogućiti izlazak niza izvan opsega bacajem izuzetka tipa Exception
+		// Onemogućiti dupliranje elemenata bacajem izuzetka tipa Exception
+
+	}
+
+
+	bool IsEmpty() {
+		// Vršiti provjeru da li je niz prazan
+
+	}
+
+
+	bool RemoveLast() {
+		// Uklanja zadnji element iz niza
+
+	}
+
+
+	bool RemoveAt(int lokacija) {
+		// Uklanja element na određenoj poziciji
+
+	}
+
+
+	bool RemoveAt(T el) {
+		// Uklanja element koji je jednak proslijeđenom
+
+	}
+
+
+	void InsertAt(T el, int lokacija) {
+		// Dodaje element na određenu lokaciju
+
+	}
+
+
+	T* GetNajmanjiElement() {
+		// Vraća najmanji element iz niza i to kao pokazivač
+
+	}
+
+
+};
+
+class Zivotinja {
+private:
+	char* _naziv;
+	int _tezina;
+public:
+	// Kreirati i implementirati
+	// 1. Defaultni konstruktor (default constructor)
+	// 2. Konstruktor koji prima parametre (user-defined constructor)
+	// 3. Konstruktor kopije (copy constructor)
+	// 4. Operator dodjele (operator =)
+	// 5. Dealokacija (destructor)
+	// 6. Operator ispisa (operator <<) 
+	// 7. Dodatne operatore poređenja
+
+
+
+
+	// Operator == na način da poredi po vrsti životinje da li su dvije životinje iste
+
+
+	// Operator > na način da poredi da li je težina prve životinje veća od težine druge
+
+
+};
+
+void main() {
+
+	/* -- KOLEKCIJA BROJEVA TESTIRANJE -- */
+
+
+	//Kolekcija<int> kolekcijaBrojeva(10);
+
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	kolekcijaBrojeva.AddElement(i);
+	//}
+	//
+	//cout << kolekcijaBrojeva;
+
+	/* -- KOLEKCIJA SLOVA TESTIRANJE -- */
+
+	
+	//Kolekcija<char> kolekcijaSlova(10);
+	//
+	//int ascii = 65; // A
+	//
+	//for (int i = 0; i < 9; i++)
+	//{
+	//	kolekcijaSlova.AddElement(ascii + i );
+	//}
+
+	//try {
+
+
+	//	kolekcijaSlova.AddElement('D'); // Testiranje duplikata
+
+	//}
+	//catch (exception& err) {
+
+
+	//	cout << err.what() << endl;
+
+	//}
+	//
+	//kolekcijaSlova.RemoveLast(); 
+	//
+	//kolekcijaSlova.RemoveAt(-3);
+	//
+	//kolekcijaSlova.RemoveAt(7);
+	//kolekcijaSlova.RemoveAt('C');
+	//
+	//kolekcijaSlova.InsertAt('Z', 2);
+	//
+	//cout << "Najmanji element u nizu je " << *kolekcijaSlova.GetNajmanjiElement(); 
+	//
+	//	
+	//cout << kolekcijaSlova;
+	
+
+
+	/* -- KOLEKCIJA ZIVOTINJA TESTIRANJE -- */
+
+
+
+	//Zivotinja zivotinja1("Maca", 3);
+	//Zivotinja zivotinja2("Cuko", 15);
+	//Zivotinja zivotinja3("Slon", 3000);
+	//Zivotinja zivotinja4("Ptica", 1);
+	//Zivotinja zivotinja5("Konj", 300);
+
+
+	//Kolekcija<Zivotinja> zooloski;
+
+	//zooloski.AddElement(zivotinja1);
+	//zooloski.AddElement(zivotinja2);
+	//zooloski.AddElement(zivotinja3);
+	//zooloski.AddElement(zivotinja4);
+	//zooloski.AddElement(zivotinja5);
+
+	//zooloski.RemoveLast();
+
+	//zooloski.RemoveAt(2);
+
+	//zooloski.RemoveAt(zivotinja1);
+
+	//Zivotinja zivotinja6("Zmaj", 10000);
+
+	//zooloski.InsertAt(zivotinja6, 0);
+
+	//cout << "Najmanja zivotinja u zooloskom je: " << *zooloski.GetNajmanjiElement() << endl;
+
+	//cout << zooloski;
+
+
+
+	system("pause>0");
+}
