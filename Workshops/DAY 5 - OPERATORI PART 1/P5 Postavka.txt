@@ -8,12 +8,12 @@ class Artikal {
 	int _kolicinaNaSkladistu;
 public:
 	// Kreirati i implementirati
-	// 1. Defaultni konstruktor
-	// 2. Konstruktor koji prima parametre
-	// 3. Konstruktor kopije
-	// 4. Operator dodjele
-	// 5. Destruktor
-	// 6. Operator ispisa 
+	// 1. Defaultni konstruktor (default constructor)
+	// 2. Konstruktor koji prima parametre (user-defined constructor)
+	// 3. Konstruktor kopije (copy constructor)
+	// 4. Operator dodjele (operator =)
+	// 5. Dealokacija (destructor)
+	// 6. Operator ispisa (operator <<) 
 	// 7. Dodatne operatore
 
 
@@ -38,12 +38,12 @@ class StavkaRacuna {
 	int* _kolicina;
 public:
 	// Kreirati i implementirati
-	// 1. Defaultni konstruktor
-	// 2. Konstruktor koji prima parametre
-	// 3. Konstruktor kopije
-	// 4. Operator dodjele
-	// 5. Destruktor
-	// 6. Operator ispisa 
+	// 1. Defaultni konstruktor (default constructor)
+	// 2. Konstruktor koji prima parametre (user-defined constructor)
+	// 3. Konstruktor kopije (copy constructor)
+	// 4. Operator dodjele (operator =)
+	// 5. Dealokacija (destructor)
+	// 6. Operator ispisa (operator <<) 
 	// 7. Dodatne operatore
 
 	// Operator += koji uvećava stanje na skladištu artikla
@@ -76,12 +76,12 @@ class Racun {
 	bool _naplaceno;
 public:
 	// Kreirati i implementirati
-	// 1. Defaultni konstruktor
-	// 2. Konstruktor koji prima parametre
-	// 3. Konstruktor kopije
-	// 4. Operator dodjele
-	// 5. Destruktor
-	// 6. Printanje racuna
+	// 1. Defaultni konstruktor (default constructor)
+	// 2. Konstruktor koji prima parametre (user-defined constructor)
+	// 3. Konstruktor kopije (copy constructor)
+	// 4. Operator dodjele (operator =)
+	// 5. Dealokacija (destructor)
+	// 6. Operator ispisa (operator <<) 
 	// 7. Dodatne operatore
 
 	// Operator () - Dodaje nove artikle u _stavke (ulazni parametri su Artikal i kolicina)
@@ -102,6 +102,74 @@ public:
 
 void main() {
 
+	/* -- ARTIKAL TESTIRANJE -- */
+
+
+	//Artikal artikal1("SIF001", "Hljeb", 1.2, 30);
+	//Artikal artikal2("SIF002", "Sok", 2.3, 20);
+	//Artikal artikal3("SIF003", "Cips", 3.5, 10);
+
+	//cout << "Cijena artikla1 je " << artikal1.GetCijena();
+	//
+	//artikal1 -= 3;
+	//artikal1 -= (3); // op -=
+	//
+	//artikal1 += 10; // op +=
+	//
+	//++artikal1; // op ++
+	//--artikal1; // op --
+	//
+	//++artikal3;
+	//
+	//
+	//cout << artikal1;
+	//cout << artikal2;
+	//cout << artikal3;
+	//
+	//
+	//if (artikal1 == artikal2) {
+	//	cout << "Artikli su isti" << endl;
+	//}
+	//else {
+	//	cout << "Artikli nisu isti" << endl;
+	//
+	//}
+
+	/* -- STAVKA RACUNA TESTIRANJE -- */
+
+
+	//StavkaRacuna stavka1(artikal1, 3);
+	//StavkaRacuna stavka2(artikal2, 3);
+
+	//cout << "Ukupna cijena stavke je " << stavka1.GetCijena() << endl;
+
+	//if (stavka1 == stavka2) {
+	//	cout << "Stavke su iste" << endl;
+	//}
+	//else {
+	//	cout << "Stavke nisu iste" << endl;
+	//
+	//}
+
+	/* -- RACUN TESTIRANJE -- */
+
+
+	//Racun racun1(3);
+	//Racun racun2;
+	//Racun racun3;
+
+
+	//racun1(stavka1);
+	//racun1(artikal1, 5);
+	//racun1(artikal2, 2);
+	//racun1(artikal2, 2);
+	//racun1(artikal3, 1);
+
+
+
+	//racun1.PrintRacun();
+	//racun1.PrintRacun();
+	//racun2.PrintRacun();
 
 
 	system("pause>0");
