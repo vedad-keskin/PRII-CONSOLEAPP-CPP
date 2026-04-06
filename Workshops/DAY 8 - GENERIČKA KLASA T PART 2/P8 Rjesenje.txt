@@ -66,7 +66,7 @@ public:
     }
 
     friend ostream& operator << (ostream& COUT, const Kolekcija& obj) {
-        
+
         for (int i = 0; i < *obj._trenutno; i++)
         {
             COUT << obj._elementi[i] << endl;
@@ -91,8 +91,7 @@ public:
         {
             // Odjeca == odjeca
             if (el == _elementi[i]) {
-                cout << "Element vec postoji" << endl;
-                return *this;
+                throw exception("Duplikati nisu dozvoljeni");
             }
         }
 
@@ -119,6 +118,10 @@ public:
 
         (*_trenutno)++;
 
+        // 5. ocistiti temp
+
+        delete[] temp;
+
 
         return *this;
 
@@ -141,7 +144,7 @@ public:
         {
             if (el == _elementi[i]) { // i = 3
 
-                for (int j = i; j < *_trenutno-1; j++)
+                for (int j = i; j < *_trenutno - 1; j++)
                 {
                     _elementi[j] = _elementi[j + 1];
                 }
@@ -175,14 +178,14 @@ public:
 
     T& operator [] (int pozicija) {
 
-        if (pozicija < 0 || pozicija > *_trenutno) {
+        if (pozicija < 0 || pozicija >= *_trenutno) {
             throw exception("Pozicija ne postoji");
         }
 
 
         return _elementi[pozicija];
 
-       
+
     }
 
 
@@ -216,7 +219,7 @@ public:
         if (this != &obj) {
             delete[] _kod;
             delete[] _naziv;
-             
+
 
             _kod = GetNizKaraktera(obj._kod);
             _naziv = GetNizKaraktera(obj._naziv);
@@ -258,7 +261,7 @@ public:
 
     bool operator == (const Artikal& obj) {
 
-        return strcmp(_kod,obj._kod) == 0;
+        return strcmp(_kod, obj._kod) == 0;
 
     }
 
@@ -266,7 +269,7 @@ public:
 
 
     friend ostream& operator << (ostream& COUT, const Artikal& obj) {
-        COUT << obj._naziv <<" ["<<obj._kod<<"] - "<<obj._cijena<<" KM" << endl;
+        COUT << obj._naziv << " [" << obj._kod << "] - " << obj._cijena << " KM" << endl;
         COUT << "Kolicina na skladistu : " << obj._kolicinaNaSkladistu << " kom" << endl;
         return COUT;
     }
@@ -279,13 +282,13 @@ class PrehrambeniArtikal : public Artikal { // 1. korak
 public:
     float _gramaza;
 
-    PrehrambeniArtikal(const char* kod = "SIF000", const char* naziv = "---", float cijena = 0, int kolicina = 0, float gramaza = 0) : Artikal(kod,naziv,cijena,kolicina) { // 2. korak
+    PrehrambeniArtikal(const char* kod = "SIF000", const char* naziv = "---", float cijena = 0, int kolicina = 0, float gramaza = 0) : Artikal(kod, naziv, cijena, kolicina) { // 2. korak
 
         _gramaza = gramaza;
 
     }
 
-    PrehrambeniArtikal(const PrehrambeniArtikal& obj):Artikal(obj) { // 3. korak
+    PrehrambeniArtikal(const PrehrambeniArtikal& obj) :Artikal(obj) { // 3. korak
 
         _gramaza = obj._gramaza;
 
@@ -311,14 +314,14 @@ public:
 
 
     friend ostream& operator << (ostream& COUT, const PrehrambeniArtikal& obj) {
-        COUT << obj._naziv << " [" << obj._kod << "] - " << obj._cijena << " KM, gramaze "<<obj._gramaza<<"g" << endl;
+        COUT << obj._naziv << " [" << obj._kod << "] - " << obj._cijena << " KM, gramaze " << obj._gramaza << "g" << endl;
         COUT << "Kolicina na skladistu : " << obj._kolicinaNaSkladistu << " kom" << endl;
         return COUT;
     }
 
 
 };
- 
+
 class Odjeca : public Artikal {
 public:
     char* _velicina; // XS, S, M, L ..
@@ -367,7 +370,7 @@ public:
 
 
     friend ostream& operator << (ostream& COUT, const Odjeca& obj) {
-        COUT << obj._naziv << " [" << obj._kod << "] - " << obj._cijena << " KM, velicine " << obj._velicina << " i materijala "<<obj._materijal << endl;
+        COUT << obj._naziv << " [" << obj._kod << "] - " << obj._cijena << " KM, velicine " << obj._velicina << " i materijala " << obj._materijal << endl;
         COUT << "Kolicina na skladistu : " << obj._kolicinaNaSkladistu << " kom" << endl;
         return COUT;
     }
@@ -384,7 +387,7 @@ public:
     Kolekcija<PrehrambeniArtikal> _prehrana;
 
 
-    Prodavnica(const char* naziv = "Bingo",const char* adresa = "Marsala Tita bb") {
+    Prodavnica(const char* naziv = "Bingo", const char* adresa = "Marsala Tita bb") {
 
         _naziv = GetNizKaraktera(naziv);
         _adresa = GetNizKaraktera(adresa);
@@ -431,7 +434,7 @@ public:
 
 
     friend ostream& operator << (ostream& COUT, const Prodavnica& obj) {
-        COUT << obj._naziv<<" na adresi "<<obj._adresa << endl<<endl;
+        COUT << obj._naziv << " na adresi " << obj._adresa << endl << endl;
 
         COUT << "ODJECA :" << endl;
         COUT << obj._odjeca << endl;
@@ -574,7 +577,7 @@ void main()
     Odjeca odjeca2("SIF005", "Sorc", 20, 15, "M", "Farmer");
     Odjeca odjeca3("SIF006", "Carape", 3, 50, "M", "Pamuk");
 
-  
+
     Prodavnica prodavnica("Bingo", "Vrapcici bb");
 
     prodavnica.DodajOdjecu(odjeca1);
@@ -585,8 +588,8 @@ void main()
     prodavnica.DodajPrehrambeniArtikal(prehrana2);
     prodavnica.DodajPrehrambeniArtikal(prehrana3);
 
-    prodavnica.UvecajStanjeNaSkladistu(prehrana1,10);
-    prodavnica.UvecajStanjeNaSkladistu(odjeca1,5);
+    prodavnica.UvecajStanjeNaSkladistu(prehrana1, 10);
+    prodavnica.UvecajStanjeNaSkladistu(odjeca1, 5);
 
     prodavnica.UmanjiStanjeNaSkladistu(prehrana1, 3);
     prodavnica.UmanjiStanjeNaSkladistu(odjeca2, 2);

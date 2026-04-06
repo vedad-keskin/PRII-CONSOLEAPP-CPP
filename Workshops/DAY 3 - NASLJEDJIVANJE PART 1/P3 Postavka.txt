@@ -120,8 +120,8 @@ void main() {
 	//cout << studentKopija;
 
 	/* -- SPECIJALNI SLUCAJ (EDGE CASE) -- */
-	//Osoba* profesor2 = new Profesor("dr. sc.", "Elmir Babovic", "1316565123");
-	//delete profesor2;
+	//Osoba* profesorEdgeCase = new Profesor("dr. sc.", "Elmir Babovic", "1316565123");
+	//delete profesorEdgeCase;
 
 
 	system("PAUSE>0");
