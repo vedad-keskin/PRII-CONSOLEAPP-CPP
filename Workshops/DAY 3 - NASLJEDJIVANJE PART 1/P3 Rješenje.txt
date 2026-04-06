@@ -126,7 +126,7 @@ public:
 
 	}
 
-	void Test() {
+	void Test() override {
 
 		cout << "NAPREDNA IMPLEMENTACIJA NEKE FUNCKIJE " << endl;
 
