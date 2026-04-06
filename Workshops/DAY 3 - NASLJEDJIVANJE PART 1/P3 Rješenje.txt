@@ -132,7 +132,7 @@ public:
 
 	}
 
-	void Info() { // 5. korak
+	void Info() override { // 5. korak
 
 		cout << *this;
 
@@ -294,7 +294,7 @@ public:
 
 	}
 
-	void Info() {
+	void Info() override {
 		cout << *this;
 	}
 

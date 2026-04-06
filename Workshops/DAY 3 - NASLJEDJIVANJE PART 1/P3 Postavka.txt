@@ -24,6 +24,8 @@ public:
 	// 4. Operator dodjele (operator =)
 	// 5. Dealokacija (destructor)
 	// 6. Operator ispisa (operator <<) 
+	// 7. Cista virtuelna funkcija (apstrakcija) npr. void Info()
+
 
 
 };
@@ -40,6 +42,7 @@ public:
 	// 4. Operator dodjele (operator =)
 	// 5. Dealokacija (destructor)
 	// 6. Operator ispisa (operator <<) 
+	// 7. Override ciste virtuelne funkcije npr. void Info()
 
 
 };
@@ -77,6 +80,7 @@ public:
 	// 5. Dealokacija (destructor)
 	// 6. Operator ispisa (operator <<) 
 	// 7. Potrebne funkcije
+	// 8. Override ciste virtuelne funkcije npr. void Info()
 
 	bool DodajPredmet(Predmet predmet) {
 
