@@ -13,16 +13,15 @@ public:
     // 4. Operator dodjele (operator =)
     // 5. Dealokacija (destructor)
     // 6. Operator ispisa (operator <<) 
-    // 7. Dodatne operatore
+    // 7. Dodatne operatore i funckije
 
 
-    // Operator + koji ima za cilj dodati novi element u kolekciju (često se naziva AddElement).
+    // Operator += koji ima za cilj dodati novi element u kolekciju (često se naziva AddElement).
     // Onemoguciti dodavanje istih elemenata. Baciti izuzetak tipa exception, ukoliko element vec postoji
 
     // Operator -= koji ima za cilj ukloniti odredjeni element iz kolekcije (često se naziva RemoveAt).
-    // Ako element nije pronadjen, baciti izuzetak tipa exception.
 
-    // Operator += koji ima za cilj dodati novi element u kolekciju na određenu lokaciju (često se naziva InsertAt).
+    // Metodu InsertAt koji ima za cilj dodati novi element u kolekciju na određenu lokaciju 
 
     // Operator [] dvije verzije
     // Treba da pronadje i vrati trazeni element. Ako element ne postoji, baciti izuzetak tipa exception
