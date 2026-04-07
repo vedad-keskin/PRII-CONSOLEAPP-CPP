@@ -1,11 +1,14 @@
 #include <iostream>
 #include <vector>
-#include <string>
+#include <string> // string, stoi
 #include <regex>
 #include <mutex>
 #include <thread>
-#include <fstream>
-#include <memory>
+#include <fstream> // ifstream, ofstream
+#include <memory> // pametni pokazivaci
+#include <ctime>
+#include <sstream>
+
 using namespace std;
 
 const char* PORUKA = "\n-------------------------------------------------------------------------------\n"
@@ -450,11 +453,11 @@ public:
 
 			   // tacnije ali kompleksnije rješenje , kada se pauzira t1 thread umjesto main threada
 
-			   thread t1([this, bod]() {
-			   	this_thread::sleep_for(chrono::seconds(3));
-			   	PosaljiMail(bod);
-			   	});
-			   t1.join();
+				thread t1([this, bod]() {
+					this_thread::sleep_for(chrono::seconds(3));
+					PosaljiMail(bod);
+					});
+				t1.join();
 
 			}
 
