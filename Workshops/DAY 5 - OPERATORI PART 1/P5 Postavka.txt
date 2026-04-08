@@ -20,10 +20,13 @@ public:
 	// Operator -= na način da se stanje na skladištu artikla promijeni za proslijeđenu vrijednost
 
 	// Operator += na način da se stanje na skladištu artikla promijeni za proslijeđenu vrijednost
+	// Voditi računa da se ne može ići u negativnu vrijednost
 
 	// Operator ++ na način da se cijena artikla uveća za 1
 
 	// Operator -- na način da se cijena artikla umanji za 1
+	// Voditi računa da se ne može ići u negativnu vrijednost
+
 
 	// Operator == koji poredi artikle na osnovu sifre
 
@@ -49,6 +52,7 @@ public:
 	// Operator += koji uvećava stanje kupljene količine
 
 	// Operator -= koji umanjuje stanje kupljene količine
+	// Voditi računa da se ne može ići u negativnu vrijednost
 
 	// Operator == koji poredi stavke na osnovu sifre
 
