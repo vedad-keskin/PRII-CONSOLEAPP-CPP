@@ -35,7 +35,7 @@ public:
 
 class StavkaRacuna {
 	Artikal* _artikal;
-	int* _kolicina;
+	int* _kupljenaKolicina;
 public:
 	// Kreirati i implementirati
 	// 1. Defaultni konstruktor (default constructor)
@@ -46,20 +46,24 @@ public:
 	// 6. Operator ispisa (operator <<) 
 	// 7. Dodatne operatore
 
-	// Operator += koji uvećava stanje na skladištu artikla
+	// Operator += koji uvećava stanje kupljene količine
 
-	// Operator -= koji umanjuje stanje na skladištu artikla
+	// Operator -= koji umanjuje stanje kupljene količine
 
 	// Operator == koji poredi stavke na osnovu sifre
 
-	// Operator ++ koji uvećava količinu stavke racuna
 
 
 	double GetCijena() { // vraća cijenu stavke racuna (kolicina * cijena artikla) 
+
 	}
 
 	double GetKolicina() { // vraća količinu stavke računa 
 
+	}
+
+	Artikal& GetArtikal() { // vraća originalni artikal
+		return *_artikal;
 	}
 
 };
@@ -81,14 +85,15 @@ public:
 	// 3. Konstruktor kopije (copy constructor)
 	// 4. Operator dodjele (operator =)
 	// 5. Dealokacija (destructor)
-	// 6. Operator ispisa (operator <<) 
+	// 6. PrintRacun() za ispis
 	// 7. Dodatne operatore
 
+
 	// Operator () - Dodaje nove artikle u _stavke (ulazni parametri su Artikal i kolicina)
-	// Voditi računa da nema duplikata
 	// Voditi računa da nema prekoračenja niza
 	// Prilikom svakog dodavanja artikla, ažurirati vrijednosti iznosBezPDV i iznosSaPDV
 	// Ažurirati količinu na skladištu artikla nakon svake kupovine
+	// Voditi računa da prilikom dodavanja duplikata ažuriramo kupljenu količinu, količinu na skladištu i iznose bez i sa PDV ili samo zabraniti unos duplikata
 
 
 	void PrintRacun() {
