@@ -187,29 +187,29 @@ public:
 
 class StavkaRacuna {
 	Artikal* _artikal; // ( ) → pointer, mora se new/delete
-	int* _kolicina;    // ( ) → pointer na int
+	int* _kupljenaKolicina;    // ( ) → pointer na int
 public:
 
 	StavkaRacuna(Artikal artikal = Artikal(), int kolicina = 0) {
 
 		_artikal = new Artikal(artikal); // kopija objekta
-		_kolicina = new int(kolicina);   // alokacija int-a
+		_kupljenaKolicina = new int(kolicina);   // alokacija int-a
 	}
 
 	StavkaRacuna(const StavkaRacuna& obj) {
 
 		_artikal = new Artikal(*obj._artikal);
-		_kolicina = new int(*obj._kolicina);
+		_kupljenaKolicina = new int(*obj._kupljenaKolicina);
 	}
 
 	StavkaRacuna& operator = (const StavkaRacuna& obj) {
 		if (this != &obj) {
 
 			delete _artikal;
-			delete _kolicina;
+			delete _kupljenaKolicina;
 
 			_artikal = new Artikal(*obj._artikal);
-			_kolicina = new int(*obj._kolicina);
+			_kupljenaKolicina = new int(*obj._kupljenaKolicina);
 		}
 		return *this;
 	}
@@ -218,42 +218,37 @@ public:
 
 		delete _artikal;
 		_artikal = nullptr;
-		delete _kolicina;
-		_kolicina = nullptr;
+		delete _kupljenaKolicina;
+		_kupljenaKolicina = nullptr;
 	}
 
 	friend ostream& operator << (ostream& COUT, const StavkaRacuna& obj) {
 		COUT << *obj._artikal;
-		COUT << "Kupljena kolicina: " << *obj._kolicina << " kom" << endl << endl;
+		COUT << "Kupljena kolicina: " << *obj._kupljenaKolicina << " kom" << endl << endl;
 		return COUT;
 	}
 
-	// Operator += koji uvećava stanje na skladištu artikla
+	// Operator += koji uvećava stanje kupljene količine
 
 	//stavka1 += 10;
 
 	StavkaRacuna& operator += (int kolicina) {
 
-		//_artikal->GetKolicinaNaSkladistu() += kolicina;
-		// ❌ NE RADI → getter vraća vrijednost, ne referencu
-
-		//_artikal._kolicinaNaSkladistu += kolicina;
-		// ❌ NE RADI → StavkaRacuna nema pristup privatnom parametru _kolicinaNaSkladistu
-
-		_artikal->operator+=(kolicina);
-		// ✅ ISPRAVNO → poziva operator iz Artikal klase
+		*_kupljenaKolicina += kolicina;
 
 		return *this;
 	}
 
 
-	// Operator -= koji umanjuje stanje na skladištu artikla
+	// Operator -= koji umanjuje stanje kupljene količine
 
 	StavkaRacuna& operator -= (int kolicina) {
 
-		// isti problem kao gore → mora preko pointera
+		if (*_kupljenaKolicina < kolicina) {
+			return *this;
+		}
 
-		_artikal->operator-=(kolicina);
+		*_kupljenaKolicina -= kolicina;
 
 		return *this;
 	}
@@ -299,56 +294,22 @@ public:
 	}
 
 
-	// Operator ++ koji uvećava količinu stavke racuna
 
-	StavkaRacuna& operator ++ () {
-
-		// NE RADI
-		//_kolicina++;
-		// ❌ OVO:
-		// _kolicina je pointer (int*)
-		// _kolicina++ NE povećava vrijednost, nego pomjera pointer na sljedeću memorijsku lokaciju
-		// znači: ne mijenja broj, nego "gubiš" originalnu adresu → BUG
-
-		//*_kolicina++;
-		// ❌ OVO JE JAKO BITNO:
-		// zbog prioriteta operatora, ovo se čita kao:
-		// *( _kolicina++ )
-		// prvo se pointer pomjeri, pa se dereferencira → opet pogrešno
-		// znači: NIJE isto što i (*_kolicina)++
-
-		// RADI
-		(*_kolicina)++;
-		// ✅ OVO JE ISPRAVNO:
-		// prvo dereferencira pointer → dobije int vrijednost
-		// onda povećava tu vrijednost za 1
-
-		//*_kolicina += 1;
-		// ✅ ISTO KAO IZNAD:
-		// dereferencira pa poveća vrijednost
-
-		//*_kolicina = *_kolicina + 1;
-		// ✅ NAJDUŽI ZAPIS:
-		// potpuno isti rezultat, samo ručno napisano
-
-		//_kolicina = new int(*_kolicina + 1);
-		// ⚠️ OVO BI RADILO, ALI JE LOŠE:
-		// pravi NOVU memoriju svaki put
-		// stari int se ne briše → MEMORY LEAK
-		// nepotrebno komplikovano
-
-		return *this;
-	}
 
 
 	double GetCijena() {
 		// 1.20 * 3 = 3.60
-		return _artikal->GetCijena() * *_kolicina;
+		return _artikal->GetCijena() * *_kupljenaKolicina;
 	}
 
 	double GetKolicina() {
-		return *_kolicina;
+		return *_kupljenaKolicina;
 	}
+
+	Artikal& GetArtikal() { // vraća originalni artikal
+		return *_artikal;
+	}
+
 };
 
 
@@ -448,31 +409,57 @@ public:
 	// Operator () → ponaša se kao funkcija
 	Racun& operator () (Artikal artikal, int kolicina) {
 
-		if (_max == _trenutno)
-			return *this;
 
 		StavkaRacuna stavka(artikal, kolicina);
 
-		stavka.operator-=(kolicina);
-		// ↓ znači: kupovina → smanjuje stanje artikla
 
-		for (int i = 0; i < _trenutno; i++)
+		// AKO HOCEMO DA NE DOZVOLIMO DUPLIKATE
+		//for (int i = 0; i < _trenutno; i++)
+		//{
+		//	if (_stavke[i] == stavka)
+		//		return *this; // duplikat → ignoriše
+		//}
+
+
+		// AKO HOCEMO DA DOZVOLIMO DUPLIKATE
+	    for (int i = 0; i < _trenutno; i++)
 		{
-			if (_stavke[i] == stavka)
-				return *this; // duplikat → ignoriše
+			if (_stavke[i] == stavka) {
+
+				_stavke[i].GetArtikal() -= kolicina; // smanjimo kolicinu na skladistu
+
+				_stavke[i] += kolicina; // povecamo kupljenu kolicinu
+
+				// update cijena 
+
+				_iznosBezPDV += stavka.GetCijena();
+				_iznosSaPDV += stavka.GetCijena() * 1.17;
+
+				return *this;
+
+			}
+
 		}
+
+
+		if (_max == _trenutno)
+			return *this;
+
 
 		// iznos BEZ +=   1.20 * 3 .. 
 		_iznosBezPDV += stavka.GetCijena();
 
-		// iznos SA                 3.60 + 18% od 3.60
-		//_iznosSaPDV += stavka.GetCijena() + stavka.GetCijena() * 0.18;
+		// iznos SA                 3.60 + 17% od 3.60
+		//_iznosSaPDV += stavka.GetCijena() + stavka.GetCijena() * 0.17;
 		// ↑ klasični zapis
 
-		_iznosSaPDV += stavka.GetCijena() * 1.18;
+		_iznosSaPDV += stavka.GetCijena() * 1.7;
 		// ↑ kraći zapis
 
 		_stavke[_trenutno] = stavka;
+
+		_stavke[_trenutno].GetArtikal() -= kolicina;
+
 		_trenutno++;
 
 		return *this;
@@ -528,7 +515,7 @@ void main() {
 	racun1(artikal1, 3);
 	racun1(artikal2, 2);
 	racun1(artikal2, 2);
-	// ↑ IGNORIŠE jer je duplikat
+	// ↑ IGNORIŠE jer je duplikat ili da nadoda ako je urađena logika za to
 
 	racun1(artikal3, 1);
 
