@@ -500,23 +500,14 @@ public:
 
 	void SacuvajBodove() {
 
-		string naziv = _emailAdresa; // denis@fit.ba
-		naziv += ".txt";  // denis@fit.ba.txt
+		string naziv = string(_emailAdresa) + ".txt";  // denis@fit.ba.txt
 
-		ofstream fajl(naziv);
-
+		ofstream fajl(naziv);             
 
 		for (int i = 0; i < _bodovi.size(); i++)
 		{
-			fajl << _bodovi[i];
-
-			if (i != _bodovi.size() - 1) {
-				fajl << endl;
-			}
-
+			fajl << _bodovi[i] << endl;
 		}
-
-		fajl.close();
 
 	}
 
@@ -525,33 +516,33 @@ public:
 
 	void UcitajBodove() {
 
-		string naziv = _emailAdresa; // denis@fit.ba
-		naziv += ".txt";  // denis@fit.ba.txt
-
+		string naziv = string(_emailAdresa) + ".txt"; // denis@fit.ba.txt
 		ifstream fajl(naziv);
 
-		// Red ---> string ----> int
+		// fajl >> broj: tries to read the next integer from the file stream fajl into broj.
+		// If reading succeeds, the expression is “true”.
+		// If it fails (end of file, file error, or next text isn’t a valid integer), it becomes “false”.
+		// while (fajl >> broj): repeats the loop only while we keep successfully reading integers.
+		// _bodovi.push_back(broj);: appends each successfully-read integer to the vector _bodovi.
 
-		char Red[20];          // Red
-		string PomocniTekst;    // string
-		int broj;              // int
+		int broj;
 
-
-		while (!fajl.eof()) {
-
-			fajl.getline(Red, 20); // 12 
-			PomocniTekst = Red;     // "12"
-
-			//     string to integer
-			broj = stoi(PomocniTekst); // 12 
-
+		while (fajl >> broj)
 			_bodovi.push_back(broj);
 
-		}
-
-		fajl.close();
-
 	}
+
+
+	//metoda GetKupovineByKomentar treba da pronadje i vrati sve karakteristike proizvoda i komentare kupaca koji sadrze vrijednost proslijedjenog parametra
+
+	///*Ocekivani ispis:
+	//	-------------------------------------------
+	//	Rezultat pretrage ->
+	//	-------------------------------------------
+	//	PAKOVANJE Pakovanje je bio osteceno
+	//	KVALITET Jako lose, proizvod ostecen
+	//	-------------------------------------------
+	//*/
 
 	//                                                                 ostecen
 	Rjecnik<Karakteristike, const char*> GetKupovineByKomentar(string trazenaRijec) {
@@ -573,7 +564,7 @@ public:
 				// Nismo mogli odabrati sve potrebne opcije
 				string komentar = _kupovine->getElement2(i).GetKomentareKarakteristika().getElement2(j);
 
-				if (komentar.find(trazenaRijec) != -1) {
+				if (komentar.find(trazenaRijec) != string::npos) { // ako postoji riječ vraća njenu poziciju, ako ne postoji riječ vratit će string::npos što znači da ne postoji riječ ( string - no position )
 
 
 					osteceniProizvodi.AddElement(
@@ -585,7 +576,6 @@ public:
 
 
 			}
-
 
 
 		}
