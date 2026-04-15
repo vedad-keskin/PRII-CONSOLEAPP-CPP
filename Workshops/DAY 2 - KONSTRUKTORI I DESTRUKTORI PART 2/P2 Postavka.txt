@@ -109,24 +109,23 @@ void main() {
 	//Kandidat kandidat1("Denis Music", "0407003154765"); // user-def constr. (imeprezime, jmbg)
 	//Kandidat kandidat2("Elmir Babovic", "1354365135322"); // user-def constr. (imeprezime, jmbg)
 
-	/* -- OSOBA TESTIRANJE -- */
-
+	/* -- GLASAC TESTIRANJE -- */
 
 	/* user-def constr. (datum, imeprezime, jmbg, prebivaliste) */
-	//Osoba osoba1(datumPunoljetni, "Sara Delic", "0407003154578", "Gorazde"); // nece moci glasati jer nije iz Jablanice
-	//Osoba osoba2(datumPunoljetni, "Kerim Dziho", "1501003124589", "Mostar"); // nece moci glasati jer nije iz Jablanice
-	//Osoba osoba3(datumPunoljetni, "Tarik Dzino", "1208003235689", "Jablanica");
-	//Osoba osoba4(datumPunoljetni, "Vedad Keskin", "1212998150001", "Jablanica");
-	//Osoba osoba5(datumMaloljetni, "Iman Bejana Keskin", "1208003235689", "Jablanica"); // nece moci glasati jer nije punoljetna
+	//Glasac glasac1(datumPunoljetni, "Sara Delic", "0407003154578", "Gorazde"); // nece moci glasati jer nije iz Jablanice
+	//Glasac glasac2(datumPunoljetni, "Kerim Dziho", "1501003124589", "Mostar"); // nece moci glasati jer nije iz Jablanice
+	//Glasac glasac3(datumPunoljetni, "Tarik Dzino", "1208003235689", "Jablanica");
+	//Glasac glasac4(datumPunoljetni, "Vedad Keskin", "1212998150001", "Jablanica");
+	//Glasac glasac5(datumMaloljetni, "Iman Bejana Keskin", "1208003235689", "Jablanica"); // nece moci glasati jer nije punoljetna
 
 	/* -- GLASACKI LISTICI TESTIRANJE -- */
 
 	/* user - def constr. (osoba, kandidat) */
-	//GlasackiListic listic1(osoba1, kandidat1); // nece moci glasati jer nije iz Jablanice
-	//GlasackiListic listic2(osoba2, kandidat2); // nece moci glasati jer nije iz Jablanice
-	//GlasackiListic listic3(osoba3, kandidat1);
-	//GlasackiListic listic4(osoba4, kandidat2);
-	//GlasackiListic listic5(osoba5, kandidat1); // nece moci glasati jer nije punoljetna
+	//GlasackiListic listic1(glasac1, kandidat1); // nece moci glasati jer nije iz Jablanice
+	//GlasackiListic listic2(glasac2, kandidat2); // nece moci glasati jer nije iz Jablanice
+	//GlasackiListic listic3(glasac3, kandidat1);
+	//GlasackiListic listic4(glasac4, kandidat2);
+	//GlasackiListic listic5(glasac5, kandidat1); // nece moci glasati jer nije punoljetna
 
 	/* -- IZBORI TESTIRANJE -- */
 
