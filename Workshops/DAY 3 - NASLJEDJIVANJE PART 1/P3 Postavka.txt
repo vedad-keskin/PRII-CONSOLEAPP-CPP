@@ -24,7 +24,7 @@ public:
 	// 4. Operator dodjele (operator =)
 	// 5. Dealokacija (destructor)
 	// 6. Operator ispisa (operator <<) 
-	// 7. Cista virtuelna funkcija (apstrakcija) npr. void Info()
+	// 7. Čista virtuelna funkcija (apstrakcija) npr. void Info()
 
 
 
@@ -42,7 +42,7 @@ public:
 	// 4. Operator dodjele (operator =)
 	// 5. Dealokacija (destructor)
 	// 6. Operator ispisa (operator <<) 
-	// 7. Override ciste virtuelne funkcije npr. void Info()
+	// 7. Override čiste virtuelne funkcije npr. void Info()
 
 
 };
