@@ -2,7 +2,7 @@
 using namespace std;
 
 class Media { // BAZNA KLASA
-public:
+public: // Nije obavezno da bazna klasa koristi protected način pristupa iako je preporučeno, na ispitu i na vježbama način pristupa nikad ne mijenjanti
     char* _naslov;
     char* _zanr;
     int _godinaObjavljivanja;
@@ -14,6 +14,7 @@ public:
     // 4. Operator dodjele (operator =)
     // 5. Dealokacija (destructor)
     // 6. Operator ispisa (operator <<) 
+    // 7. Čista virtuelna funkcija (apstrakcija) npr. void Info()
 
 
 };
@@ -29,13 +30,14 @@ public:
     // 4. Operator dodjele (operator =)
     // 5. Dealokacija (destructor)
     // 6. Operator ispisa (operator <<) 
+    // 7. Override čiste virtuelne funkcije npr. void Info()
 
 
 };
 
 class Film : public Media { // IZVEDENA KLASA
 public:
-    int _trajanje; // misli se na trajanje u minutama
+    int _trajanje; // Trajanje u minutama
     // Kreirati i implementirati
     // 1. Defaultni konstruktor (default constructor)
     // 2. Konstruktor koji prima parametre (user-defined constructor)
@@ -43,6 +45,7 @@ public:
     // 4. Operator dodjele (operator =)
     // 5. Dealokacija (destructor)
     // 6. Operator ispisa (operator <<) 
+    // 7. Override čiste virtuelne funkcije npr. void Info()
 
 
 
