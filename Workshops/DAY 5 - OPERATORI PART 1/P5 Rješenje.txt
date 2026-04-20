@@ -297,7 +297,7 @@ public:
 
 
 
-	double GetCijena() {
+	double GetUkupnaCijena() {
 		// 1.20 * 3 = 3.60
 		return _artikal->GetCijena() * *_kupljenaKolicina;
 	}
@@ -410,19 +410,27 @@ public:
 	Racun& operator () (Artikal artikal, int kolicina) {
 
 
+		if (_max == _trenutno)
+			return *this;
+
 		StavkaRacuna stavka(artikal, kolicina);
 
-
-		// AKO HOCEMO DA NE DOZVOLIMO DUPLIKATE
+		// AKO HOCEMO DA NE DOZVOLIMO DUPLIKATE PREKO STAVKE
 		//for (int i = 0; i < _trenutno; i++)
 		//{
 		//	if (_stavke[i] == stavka)
 		//		return *this; // duplikat → ignoriše
 		//}
 
+		// AKO HOCEMO DA NE DOZVOLIMO DUPLIKATE PREKO ARTIKLA
+		//for (int i = 0; i < _trenutno; i++)
+		//{
+		//	if (_stavke[i].GetArtikal() == artikal)
+		//		return *this; // duplikat → ignoriše
+		//}
 
 		// AKO HOCEMO DA DOZVOLIMO DUPLIKATE
-	    for (int i = 0; i < _trenutno; i++)
+		for (int i = 0; i < _trenutno; i++)
 		{
 			if (_stavke[i] == stavka) {
 
@@ -432,8 +440,8 @@ public:
 
 				// update cijena 
 
-				_iznosBezPDV += stavka.GetCijena();
-				_iznosSaPDV += stavka.GetCijena() * 1.17;
+				_iznosBezPDV += stavka.GetUkupnaCijena();
+				_iznosSaPDV += stavka.GetUkupnaCijena() * 1.17;
 
 				return *this;
 
@@ -442,18 +450,14 @@ public:
 		}
 
 
-		if (_max == _trenutno)
-			return *this;
-
-
 		// iznos BEZ +=   1.20 * 3 .. 
-		_iznosBezPDV += stavka.GetCijena();
+		_iznosBezPDV += stavka.GetUkupnaCijena();
 
 		// iznos SA                 3.60 + 17% od 3.60
 		//_iznosSaPDV += stavka.GetCijena() + stavka.GetCijena() * 0.17;
 		// ↑ klasični zapis
 
-		_iznosSaPDV += stavka.GetCijena() * 1.7;
+		_iznosSaPDV += stavka.GetUkupnaCijena() * 1.7;
 		// ↑ kraći zapis
 
 		_stavke[_trenutno] = stavka;
@@ -481,7 +485,7 @@ public:
 		for (int i = 0; i < _trenutno; i++)
 		{
 			cout << _stavke[i];
-			cout << "===================" << endl << endl;
+			cout << "==============================" << endl << endl;
 		}
 
 		cout << "Iznos bez PDV: " << _iznosBezPDV << " KM" << endl;
