@@ -147,14 +147,14 @@ void main() {
 	//StavkaRacuna stavka1(artikal1, 3);
 	//StavkaRacuna stavka2(artikal2, 3);
 
-	//cout << "Ukupna cijena stavke je " << stavka1.GetCijena() << endl;
+	//cout << "Ukupna cijena stavke je " << stavka1.GetUkupnaCijena() << endl;
 
 	//if (stavka1 == stavka2) {
 	//	cout << "Stavke su iste" << endl;
 	//}
 	//else {
 	//	cout << "Stavke nisu iste" << endl;
-	
+
 	//}
 
 	/* -- RACUN TESTIRANJE -- */
