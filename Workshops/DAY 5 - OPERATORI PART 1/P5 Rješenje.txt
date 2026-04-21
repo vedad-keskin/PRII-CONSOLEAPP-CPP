@@ -462,6 +462,8 @@ public:
 
 		_stavke[_trenutno] = stavka;
 
+		//_stavke[_trenutno].GetArtikal().operator-=(kolicina);
+		//_stavke[_trenutno].GetArtikal() -= (kolicina);
 		_stavke[_trenutno].GetArtikal() -= kolicina;
 
 		_trenutno++;
