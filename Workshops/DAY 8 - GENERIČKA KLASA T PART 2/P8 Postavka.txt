@@ -21,7 +21,7 @@ public:
 
     // Operator -= koji ima za cilj ukloniti odredjeni element iz kolekcije (često se naziva RemoveAt).
 
-    // Metodu InsertAt koji ima za cilj dodati novi element u kolekciju na određenu lokaciju 
+    // Operator () koji ima za cilj dodati novi element u kolekciju na određenu lokaciju (često se naziva InsertAt)
 
     // Operator [] dvije verzije
     // Treba da pronadje i vrati trazeni element. Ako element ne postoji, baciti izuzetak tipa exception
