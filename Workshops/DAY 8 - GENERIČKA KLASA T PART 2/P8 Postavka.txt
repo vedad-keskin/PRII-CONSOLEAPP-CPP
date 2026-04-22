@@ -13,7 +13,6 @@ public:
     // 4. Operator dodjele (operator =)
     // 5. Dealokacija (destructor)
     // 6. Operator ispisa (operator <<) 
-    // 7. Dodatne operatore i funckije
 
 
     // Operator += koji ima za cilj dodati novi element u kolekciju (često se naziva AddElement).
