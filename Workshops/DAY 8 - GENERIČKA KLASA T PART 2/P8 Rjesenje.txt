@@ -169,7 +169,28 @@ public:
 
      // Funkciju Insert At čija je svrha ubaciti element na određenu poziciju
 
-    void InsertAt(T el, int lokacija) {
+    //void InsertAt(T el, int lokacija) {
+
+    //    Kolekcija<T> novaKolekcija;
+
+    //    for (int i = 0; i < *_trenutno; i++)
+    //    {
+
+    //        if (i == lokacija) {
+
+    //            novaKolekcija += el;
+
+    //        }
+
+    //        novaKolekcija += _elementi[i];
+
+    //    }
+
+    //    *this = novaKolekcija;
+
+    //}
+
+    Kolekcija& operator () (T el, int lokacija) {
 
         Kolekcija<T> novaKolekcija;
 
@@ -187,6 +208,8 @@ public:
         }
 
         *this = novaKolekcija;
+
+        return *this;
 
     }
 
@@ -557,7 +580,7 @@ public:
 void main()
 {
 
- 
+
 
 
 
