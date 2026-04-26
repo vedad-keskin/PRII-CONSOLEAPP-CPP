@@ -349,7 +349,7 @@ void main()
 {
 
 	Datum datum1(12, 12, 1998);
-	Datum datum2(1, 15, 1995);
+	Datum datum2(1, 10, 1995);
 
 
 	Fudbaler fudbaler1("Oliver Kahn", "GK", 1, datum2);
