@@ -79,11 +79,14 @@ validnom sifrom treba smatrati i onu koja umjesto znaka crtica '-' ima znak razm
 //cout << GenerisiSifru("emina junuz", 798) << endl;//treba vratiti 25-EJ-798
 int GetCurrentYearLast2Digits() {
 
-	time_t currentTime = time(nullptr); // ili 0
+	time_t currentTime = time(nullptr); // ili 0 - returns current time in seconds since Jan 1, 1970 (Unix epoch).
 	tm localTime;
 	localtime_s(&localTime, &currentTime);
 
-	int fullYear = 1900 + localTime.tm_year;
+	//tm_year = number of years since 1900
+	//→ e.g. for 2026 → tm_year = 126
+
+	int fullYear = 1900 + localTime.tm_year; 
 	return fullYear % 100;
 
 }
@@ -472,7 +475,7 @@ public:
 		_tema = nullptr;
 	}
 
-	string Info() const {
+	string Info() const override {
 
 		stringstream stringStream;
 		stringStream << *this;
@@ -603,10 +606,18 @@ public:
 		_imePrezime = nullptr;
 		delete[] _sifra;
 		_sifra = nullptr;
+
+		//Ovo briše objekte iz heap - a
+
 		for (auto prijava : _prijavljeni) {
 			delete prijava;
 			prijava = nullptr;
 		}
+
+		// clear() 
+		// clear() samo uklanja pokazivače iz vektora
+		// postavlja veličinu na 0
+
 		_prijavljeni.clear();
 	}
 
