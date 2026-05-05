@@ -567,11 +567,13 @@ class Ucesnik {
 	vector<Dogadjaj*> _prijavljeni;
 public:
 
-	// 1. PRISTUP --> ( *BAZNA -> *IZVEDENOJ) -> dynamic_cast doci do parametra ,, Info za ispis
+	// 1. PRISTUP --> ( *BAZNA -> *IZVEDENOJ ) -> dynamic_cast doci do parametra 
 
 	// 2. KOPIRANJE --> ( BAZNA KOJA POKAZUJE NA IZVEDENA -> BAZNA KOJA POKAZUJE NA IZVEDENA ) -> KLONIRANJE
 
 	// 3. POHRANA --> KLASICNO DODAVANJE 
+
+	// 4. ISPIS ---> INFO
 
 
 	Ucesnik(const char* imePrezime) {
@@ -589,7 +591,7 @@ public:
 		_imePrezime = AlocirajNiz(obj._imePrezime);
 		_sifra = AlocirajNiz(obj._sifra);
 
-		//trenutno = obj.ttrenutno;
+		//trenutno = obj.trenutno;
 		//_prijavljeni.size() = obj._prijavljeni.size();
 
 		for (int i = 0; i < obj._prijavljeni.size(); i++)
