@@ -642,12 +642,23 @@ public:
 		for (int i = 0; i < _prijavljeni.size(); i++)
 		{
 
-			Predavanje* castedPredavanje = dynamic_cast<Predavanje*>(_prijavljeni[i]); // *DOGADJAJ -> *PREDAVANJE
+			// 1. LAKSI ALI NEPOTPUN NACIN
 
-			// PREDAVANJE == *DOGADJAJ -> *PREDAVANJE
+			// DOGADJAJ == DOGADJAJ , ako ovo koristili moramo zakomentarisati op == u izvedenoj klasi ili ga ne raditi
+			//if (predavanje == *_prijavljeni[i]) { 
 
-			//  PREDAVANJE == PREDAVANJE
-			if (predavanje == *castedPredavanje) { // IZVEDENA == IZVEDENA 
+			//	return false;
+
+			//}
+
+
+			// 2. KOMPLEKSNIJI ALI BOLJI NACIN
+
+			// *DOGADAJ --> *PREDAVANJE .. dynamic_cast 
+
+			Predavanje* castedPredavanje = dynamic_cast<Predavanje*>(_prijavljeni[i]);
+
+			if (predavanje == *castedPredavanje) { // PREDAVANJE == PREDAVANJE  
 
 				return false;
 
@@ -812,6 +823,12 @@ public:
 
 	Konferencija& operator = (const Konferencija& obj) {
 		if (this != &obj) {
+
+			for (int i = 0; i < _timovi.getTrenutno(); i++) {
+				delete _timovi.getElement1(i);
+				delete _timovi.getElement2(i);
+			}
+
 			delete[] _naziv;
 
 			_naziv = AlocirajNiz(obj._naziv);
@@ -821,6 +838,8 @@ public:
 		}
 		return *this;
 	}
+
+
 
 	void DodajTimove(Tim tim1, Tim tim2) {
 
@@ -963,11 +982,18 @@ public:
 	}
 
 
-
-
 	~Konferencija() {
-		delete[] _naziv; _naziv = nullptr;
+		for (int i = 0; i < _timovi.getTrenutno(); i++) {
+			delete _timovi.getElement1(i);
+			_timovi.getElement1(i) = nullptr;
+			delete _timovi.getElement2(i);
+			_timovi.getElement2(i) = nullptr;
+		}
+		delete[] _naziv;
+		_naziv = nullptr;
 	}
+
+
 
 	char* getNaziv() const { return _naziv; }
 	KolekcijaG1<Tim*, Tim*, 20>& getTimovi() { return _timovi; }
