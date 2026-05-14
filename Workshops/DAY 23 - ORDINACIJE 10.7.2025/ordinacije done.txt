@@ -1,21 +1,19 @@
 #include <iostream>
 #include <vector>
+#include <string>
 #include <regex>
 #include <mutex>
 #include <thread>
-
-#include <string>
-#include <memory>
 #include <fstream>
+#include <memory>
 
 #include <ctime>
 #include <sstream>
 
 
+
+
 using namespace std;
-
-
-
 const char* PORUKA = "\n------------------------------------------------------------------------------ - \n"
 "0. PROVJERITE DA LI PREUZETI ZADACI PRIPADAJU VASOJ GRUPI (G1/G2)\n"
 "1. SVE KLASE TREBAJU POSJEDOVATI ADEKVATAN DESTRUKTOR\n"
@@ -41,21 +39,23 @@ enum Specializacija {
 	KARDIOLOGIJA, ORTOPEDIJA, DERMATOLOGIJA,
 	PEDIJATRIJA, OPSTA_MEDICINA
 };
+
 const char* SpecializacijaNazivi[] = {
  "KARDIOLOGIJA", "ORTOPEDIJA", "DERMATOLOGIJA", "PEDIJATRIJA",
 "OPSTA MEDICINA"
 };
 
+
 ostream& operator << (ostream& COUT, const Specializacija& obj) {
 
-	COUT << SpecializacijaNazivi[obj];
+	COUT << SpecializacijaNazivi[obj] << endl;
 
 	return COUT;
 }
 
-
 const char* crt = "\n-------------------------------------------\n";
 
+//    GetNizKaraktera()
 char* AlocirajNiz(const char* sadrzaj, bool dealociraj = false) {
 	if (sadrzaj == nullptr)return nullptr;
 	int vel = strlen(sadrzaj) + 1;
@@ -67,9 +67,11 @@ char* AlocirajNiz(const char* sadrzaj, bool dealociraj = false) {
 }
 
 /* sifra korisnika treba biti u formatu GG-IN-BBB pri cemu su:
+
 GG - posljednje dvije cifre trenutne godine (npr.za 2025 -> 25), preuzeti vrijednost iz sistema
 IN - inicijali ucesnika, velika slova(prvo slovo imena i prezimena)
 BBB → trocifreni redni broj ucesnika kreiran na osnovu _id-a (npr. 001, 023, 105)
+
 */
 
 //cout << GenerisiSifru("Denis Music", 3) << endl;//treba vratiti 25-DM-003
@@ -79,70 +81,68 @@ BBB → trocifreni redni broj ucesnika kreiran na osnovu _id-a (npr. 001, 023, 1
 
 int GetTrenutnaGodinaZadnjeDvijeCifre() {
 
-	time_t trenutnoVrijeme = time(nullptr); // nullptr ili 0 .. 
+	time_t utcVrijeme = time(nullptr); // nullptr ili 0 --> utc -> lokalno vrijeme
 
 	tm lokalnoVrijeme;
 
-	localtime_s(&lokalnoVrijeme, &trenutnoVrijeme);
+	localtime_s(&lokalnoVrijeme, &utcVrijeme);
 
-	int godina = 1900 + lokalnoVrijeme.tm_year; // 1900 + 126 = 2026
+	int godina = 1900 + lokalnoVrijeme.tm_year; // 126 + 1900 = 2026
 
-	return godina % 100; // shift + 5 
+	return godina % 100;
 
 }
 
-char* GenerisiSifru(string imeprezime, int id) {
+char* GenerisiSifru(string imePrezime, int id) {
 
-	//string godina = to_string(GetTrenutnaGodinaZadnjeDvijeCifre());
+	char prvoSlovoImena = toupper(imePrezime[0]);
+	char prvoSlovoPrezimena = toupper(imePrezime[imePrezime.find(' ') + 1]);
 
-	char prvoSlovoImena = toupper(imeprezime[0]);
-	char prvoSlovoPrezimena = toupper(imeprezime[imeprezime.find(' ') + 1]);
+	int godina = GetTrenutnaGodinaZadnjeDvijeCifre();
+
 
 	string sifra;
 
-	//sifra += godina;
-	sifra += to_string(GetTrenutnaGodinaZadnjeDvijeCifre());
-	sifra += '-';
-	sifra += prvoSlovoImena;
-	sifra += prvoSlovoPrezimena;
-	sifra += '-';
+
+	//      INT -> STRING  --> to_string
+	sifra += to_string(godina); // 26
+	sifra += '-'; // 26-
+	sifra += prvoSlovoImena; // 26-D
+	sifra += prvoSlovoPrezimena; // 26-DM
+	sifra += '-'; // 26-DM-
 
 
 	if (id < 10) {
 
-		sifra += "00";
+		sifra += "00"; // 26-DM-00
 
 	}
 	else if (id < 100) {
 
-		sifra += '0';
+
+		sifra += '0';// 26-DM-0
+
 
 	}
 	else {
 
-		sifra += "";
+		sifra += ""; // 26-DM-
+
 
 	}
 
-	sifra += to_string(id);
+	sifra += to_string(id); // // 26-DM-001
 
 
-	// KONVERZIJE SA STRINGOVIMA
-	// 1. STRING -> CONST CHAR * ---> .c_str()
-	// 2. INT -> STRING to_string(25);
-
-	return AlocirajNiz(sifra.c_str());
+	return AlocirajNiz(sifra.c_str()); // STRING -> CHAR*
 
 }
 
-//cout << GenerisiSifru("Denis Music", 3) << endl;//treba vratiti 25-DM-003
-//cout << GenerisiSifru("Jasmin Azemovic", 14) << endl;//treba vratiti 25-JA-014
-//cout << GenerisiSifru("Goran skondric", 156) << endl;//treba vratiti 25-GS-156
-//cout << GenerisiSifru("emina junuz", 798) << endl;//treba vratiti 25-EJ-798
-//validnom sifrom treba smatrati i onu koja umjesto znaka crtica '-' ima znak razmak npr : 25 DM 003 ili 25 DM-003
+
 ////Za validaciju sifre koristiti funkciju ValidirajSifru koja treba, koristeci regex, osigurati postivanje osnovnih pravila
 ////vezanih za format koja su definisana u prethodnom dijelu zadatka.Pored navedenih,
-//
+//validnom sifrom treba smatrati i onu koja umjesto znaka crtica '-' ima znak razmak npr : 25 DM 003 ili 25 DM-003
+
 //if (ValidirajSifru("25-DM-003"))
 //cout << "SIFRA VALIDNA" << endl;
 //if (ValidirajSifru("25-JA-014") && ValidirajSifru("25-JA 014"))
@@ -150,21 +150,37 @@ char* GenerisiSifru(string imeprezime, int id) {
 //if (!ValidirajSifru("25-GS-15") || !ValidirajSifru("25-Gs-135") || !ValidirajSifru("25-GS-153G"))
 //cout << "SIFRA NIJE VALIDNA" << endl;
 
-// regex_match i regex_search
+// regex_match (95%) ili regex_search (5%) -> redosljed nije bitan
 
-// 1. RANGE [ ] --> [A-Z] daj mi jedno veliko slovo , [a-z] , [0-9] , [A-Za-z0-9]
+// 1. RANGE [ ] --> daj mi nesto iz range-a , daj mi jedno koje se nalazi u [ ] --> 
+// -- jedno malo slovo --> [a-z]
+// -- jedno veliko slovo --> [A-Z]
+// -- jedan broj --> [0-9]
+// -- broj ili veliko ili malo slovo --> [a-zA-Z0-9]
+// -- crtica ili razmak --> [- ]
 
-// 2. VELICINA { } --> mora se vezivati na nesto ispred .{3} --> . bilo koji karakter , {3,} {,3} {3} , {3,6} 
+// 2. VELICINA { } --> koliko nam necega treba
+// -- {2} --> daj mi dvoje
+// -- {2,} --> daj mi dvoje ili vise
+// -- {,2} --> daj mi dvoje ili manje
+// -- {2,5} --> daj mi izmedju 2 ili 5
 
-// 3. TACAN TEKST ( ) --> (gmail) , (gmail|yahoo) 
+// 3. TACAN TEKST ( ) --> ako vam tacno nesto treba
+// -- (gmail|yahoo)  yahoo ili gmail , | znaci ili dok u c++ || znace ili 
+// -- (edu) 
 
-// vedad.keskin@edu.fit.ba --> [a-z]+[.][a-z]+@(edu)[.](fit)[.](com|ba)
+// vedad.keskin@edu.fit.ba --> [a-z]+[.][a-z]+@(edu)[.](fit)[.](ba|com) --> https://regex101.com/
+
+//cout << GenerisiSifru("Denis Music", 3) << endl;//treba vratiti 25-DM-003
+//cout << GenerisiSifru("Jasmin Azemovic", 14) << endl;//treba vratiti 25-JA-014
+//cout << GenerisiSifru("Goran skondric", 156) << endl;//treba vratiti 25-GS-156
+//cout << GenerisiSifru("emina junuz", 798) << endl;//treba vratiti 25-EJ-798
 
 bool ValidirajSifru(const char* sifra) {
 
-	regex pattern("[0-9]{2}[- ][A-Z]{2}[- ][0-9]{3}");
+	regex reg("[0-9]{2}[- ][A-Z]{2}[- ][0-9]{3}");
 
-	return regex_match(sifra, pattern);
+	return regex_match(sifra, reg);
 
 }
 
@@ -181,7 +197,11 @@ public:
 
 		_trenutno = 0;
 
-		// niz pok ovdje ne moramo raditi nista
+		// sta raditi kada imamo niz pok. 
+		// ovdje ne moramo raditi nista
+
+		//_elementi1 = nullptr;
+		//_elementi2 = nullptr;
 
 	}
 
@@ -217,6 +237,7 @@ public:
 		return *this;
 	}
 
+
 	void AddElement(T1 el1, T2 el2) {
 
 		//if (max == _trenutno) {
@@ -239,41 +260,38 @@ public:
 
 	}
 
-	/*metoda InsertAt treba da doda vrijednosti drugog i treceg parametra na lokaciju koja je definisana	prvim parametrom.Povratna vrijednost metode je objekat(pozivaoc metode, ukonkretnom slucaju	  objekat kolekcija1) u okviru koga su, na definisanu lokaciju, dodati proslijedjeni parametri.Nakon	 izvrsenja metode InsertAt, oba objekta, kolekcija2 i kolekcija1, bi trebali posjedovati sljedeci sadrzaj :
-   0 Vrijednost -> 0
-   10 Vrijednost -> 10
-   1 Vrijednost -> 1
-   2 Vrijednost -> 2
-   * ....
-   */
 
-   //KolekcijaG1<int, string, 10> kolekcija2 = kolekcija1.InsertAt(1, 10, "Vrijednost -> 10");
-   //cout << kolekcija2 << crt;
+	///* metoda InsertAt treba da doda vrijednosti drugog i treceg parametra na lokaciju koja je definisana prvim parametrom. Povratna vrijednost metode je objekat (pozivaoc metode, u konkretnom slucaju objekat kolekcija1) u okviru koga su, na definisanu lokaciju, dodati proslijedjeni parametri. Nakon izvrsenja metode InsertAt, oba objekta, kolekcija1 i kolekcija2, bi trebali posjedovati sljedeci sadrzaj:
+	//0 Vrijednost -> 0
+	//10 Vrijednost -> 10
+	//1 Vrijednost -> 1
+	//2 Vrijednost -> 2
+	//* ....
+	//*/
 
+	//KolekcijaG1<int, string, 10> kolekcija2 = kolekcija1.InsertAt(1, 10, "Vrijednost -> 10");
+	//cout << kolekcija2 << crt;
 
 	KolekcijaG1 InsertAt(int lokacija, T1 el1, T2 el2) {
 
-		KolekcijaG1 kolekcija2; // prazna kolekcija
+		KolekcijaG1 kolekcija2;
 
-		for (int i = 0; i < _trenutno; i++) // 0 1 2 3 4 ... 
+		for (int i = 0; i < _trenutno; i++)
 		{
-
-			if (i == lokacija) { // 0 == 1
+			if (lokacija == i) {
 
 				kolekcija2.AddElement(el1, el2);
 
 			}
-
 			kolekcija2.AddElement(*_elementi1[i], *_elementi2[i]);
 
 		}
 
-		*this = kolekcija2;
+		*this = kolekcija2; // op = iz Kolekcije
 
 		return kolekcija2;
 
 	}
-
 
 	///*Metoda RemoveRange kao prvi parametar prihvata pocetnu lokaciju a kao drugi parametar broj elemenata koje, od pocetne lokacije uklanja iz kolekcije koja je pozvala tu metodu. U slucaju da zahtijevani broj elemenata ne postoji u kolekciji metoda treba baciti izuzetak. Na kraju, metoda treba da vrati pokazivac na novi objekat tipa Kolekcija koji sadrzi samo uklonjene elemente*/
 
@@ -285,39 +303,39 @@ public:
 	KolekcijaG1* RemoveRange(int lokacijaOd, int brojElemenata) {
 
 		if (lokacijaOd < 0 || lokacijaOd + brojElemenata > _trenutno) {
-
-			throw exception("Opseg ne postoji");
-
+			throw exception("Opseg je prekoracen");
 		}
-
-
 
 		KolekcijaG1* kolekcija3 = new KolekcijaG1();
 
 		KolekcijaG1 kolekcija1;
 
+		//for (int i = lokacijaOd; i < lokacijaOd + brojElemenata; i++) // 1  --   2 3 
+		//{
+		//	kolekcija3->AddElement(*_elementi1[i], *_elementi2[i]);
+		//}
 
-		for (int i = 0; i < _trenutno; i++) // 0 4 5 ... 
+
+		for (int i = 0; i < _trenutno; i++)
 		{
+
 
 			if (i >= lokacijaOd && i < lokacijaOd + brojElemenata) { // 1 2 3 
 
 				kolekcija3->AddElement(*_elementi1[i], *_elementi2[i]);
 
 			}
-			else {
+			else { // 0 4 5 6 7 8 9 
 
 				kolekcija1.AddElement(*_elementi1[i], *_elementi2[i]);
 
 			}
-
 
 		}
 
 		*this = kolekcija1;
 
 		return kolekcija3;
-
 	}
 
 
@@ -326,9 +344,8 @@ public:
 		for (int i = 0; i < _trenutno; i++)
 		{
 			delete _elementi1[i];
-			delete _elementi2[i];
-
 			_elementi1[i] = nullptr;
+			delete _elementi2[i];
 			_elementi2[i] = nullptr;
 		}
 
@@ -338,14 +355,15 @@ public:
 	T2& getElement2(int lokacija)const { return *_elementi2[lokacija]; }
 	int getTrenutno() const { return _trenutno; }
 
-	friend ostream& operator<< (ostream& COUT, const KolekcijaG1& obj) {
+
+	friend ostream& operator << (ostream& COUT,const KolekcijaG1& obj) {
 		for (size_t i = 0; i < obj._trenutno; i++)
 			COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
 		return COUT;
 	}
 };
 
-class Termin { // Datum , Vrijeme, DatumVrijeme , Termin
+class Termin { // Datum , Vrijeme/Termin , DatumVrijeme
 	int* _sati; int* _minute; int* _sekunde;
 public:
 	Termin(int s = 0, int m = 0, int k = 0) {
@@ -364,13 +382,11 @@ public:
 
 	Termin& operator = (const Termin& obj) {
 		if (this != &obj) {
-
 			delete _sati; delete _minute; delete _sekunde;
 
 			_sati = new int(*obj._sati);
 			_minute = new int(*obj._minute);
 			_sekunde = new int(*obj._sekunde);
-
 		}
 		return *this;
 	}
@@ -381,12 +397,12 @@ public:
 
 	}
 
+	// SumaSekundi()
 	int toSeconds() {
 
 		return *_sekunde + *_minute * 60 + *_sati * 3600;
 
 	}
-
 
 	~Termin() {
 		delete _sati; delete _minute; delete _sekunde;
@@ -404,10 +420,12 @@ public:
 };
 
 class Dogadjaj {
-protected:
+protected: // 1. RAZLIKA
 	Termin _termin;
 public:
 	Dogadjaj(Termin termin) : _termin(termin) {
+	
+		//_termin = termin;
 
 	}
 
@@ -420,6 +438,8 @@ public:
 	Dogadjaj& operator = (const Dogadjaj& obj) {
 		if (this != &obj) {
 
+
+
 			_termin = obj._termin;
 
 		}
@@ -427,25 +447,18 @@ public:
 	}
 
 	bool operator == (const Dogadjaj& obj) {
-
 		return _termin == obj._termin;
-
 	}
 
-	virtual ~Dogadjaj() {
 
-	}
+	virtual ~Dogadjaj() {} // 2. RAZLIKA
 
 	virtual string Info() const = 0;
 
-
-	virtual Dogadjaj* Kloniraj() const = 0;
-
-
-
 	const Termin& getTermin() const { return _termin; }
 
-	friend ostream& operator << (ostream& COUT, const Dogadjaj& obj) {
+
+	friend ostream& operator<<(ostream& COUT, const Dogadjaj& obj) {
 
 		COUT << obj._termin << endl;
 
@@ -453,7 +466,6 @@ public:
 	}
 
 };
-
 class Predavanje : public Dogadjaj { // 1. KORAK
 	char* _tema;
 	Specializacija _specijalizacija;
@@ -461,7 +473,7 @@ public:
 
 	//Predavanje oboljenja_srca(termin1, "Oboljenja srca", KARDIOLOGIJA);
 
-	Predavanje(Termin termin, const char* tema, Specializacija spec) : Dogadjaj(termin) { // 2. KORAK
+	Predavanje(Termin termin, const char* tema, Specializacija spec ) : Dogadjaj(termin) { // 2. KORAK
 
 		_tema = AlocirajNiz(tema);
 		_specijalizacija = spec;
@@ -470,10 +482,8 @@ public:
 
 	Predavanje(const Predavanje& obj) : Dogadjaj(obj) { // 3. KORAK
 
-
 		_tema = AlocirajNiz(obj._tema);
 		_specijalizacija = obj._specijalizacija;
-
 
 	}
 
@@ -491,7 +501,7 @@ public:
 
 	bool operator == (const Predavanje& obj) {
 
-		return strcmp(_tema, obj._tema) == 0 && _specijalizacija == obj._specijalizacija && _termin == obj._termin;
+		return _termin == obj._termin && strcmp(_tema, obj._tema) == 0 && _specijalizacija == obj._specijalizacija;
 
 	}
 
@@ -501,16 +511,10 @@ public:
 
 		ss << *this;
 
-		return ss.str(); // STRINGSTREAM -> STRING
-	}
-
-
-	Dogadjaj* Kloniraj() const override {
-
-		return new Predavanje(*this);
+		// STRINGSTREAM -> STRING -> str()
+		return ss.str();
 
 	}
-
 
 	~Predavanje() {
 		delete[] _tema;
@@ -523,55 +527,55 @@ public:
 		return _specijalizacija;
 	}
 
-
 	// 19:02:30 Oboljenja srca KARDIOLOGIJA
 
-	friend ostream& operator << (ostream& COUT, const Predavanje& obj) {
-		COUT << obj._termin << " " << obj._tema << " " << obj._specijalizacija;
+	friend ostream& operator<<(ostream& COUT, const Predavanje& obj) {
+
+		COUT << obj._termin << " " << obj._tema << " " << obj._specijalizacija ;
+
 		return COUT;
 	}
 
 };
-
 class Ucesnik {
 	static int _id; //iskoristiti za praćenje rednog broja ucesnika i generisanje jedinstvene sifre
 	char* _sifra; //sifra u formatu GG-IN-BBB, pojasnjena u main funkciji, generisati prilikom kreiranja objekta
 	char* _imePrezime;
-	vector<Dogadjaj*> _prijavljeni; // POK BAZNE KLASE KOJI POKAZUJE NA IZVEDENU KLASU 
+	vector<Dogadjaj*> _prijavljeni; // POK BAZNE KLASE -> POK NA IZVEDENU KLASU 
 public:
 
-	// 1. PRISTUP --> ( POK BAZNE KLASE --> POK IZVEDENE KLASE ) --> CASTANJE (dynamic_cast)
+	// 1. PRISTUP -> dynamic_cast (Dogadjaj* -> Predavanje*) 
 
-	// 2. POLIMORFNO KOPIRANJE --> KLONIRANJE  ( POK BAZNE KLASE KOJI POKAZUJE NA IZVEDENU KLASU  -> POK BAZNE KLASE KOJI POKAZUJE NA IZVEDENU KLASU )
+	// 2. KOPIRANJE -> dynamic_cast (Dogadjaj* -> Predavanje*) 
 
-	// 3. POHRANA --> KLASICNA POHRANA
+	// 3. POHRANITI -> new 
 
-	// 4. ISPIS --> POZIVATI INFO()
+	// 4. ISPIS -> Info()
 
 
 	Ucesnik(const char* imePrezime) {
 
-		//_id++;
+		_imePrezime = AlocirajNiz(imePrezime);
 
 		_sifra = GenerisiSifru(imePrezime, _id++);
 
-		_imePrezime = AlocirajNiz(imePrezime);
+		// pok unutar vectora -> mi ne radimo nista
 
 	}
 
 	Ucesnik(const Ucesnik& obj) {
 
-		_imePrezime = AlocirajNiz(obj._imePrezime);
 		_sifra = AlocirajNiz(obj._sifra);
+		_imePrezime = AlocirajNiz(obj._imePrezime);
 
-		// trenutno = obj.trenutno;
-		//_prijavljeni.size() = obj._prijavljeni.size();
+		//_prijavljeni = obj._prijavljeni;
 
 		for (int i = 0; i < obj._prijavljeni.size(); i++)
 		{
 
-			_prijavljeni.push_back(obj._prijavljeni[i]->Kloniraj());
+			Predavanje* castedPredavanje = dynamic_cast<Predavanje*>(obj._prijavljeni[i]);
 
+			_prijavljeni.push_back(new Predavanje(*castedPredavanje));
 
 		}
 
@@ -583,73 +587,73 @@ public:
 			delete[] _imePrezime;
 			delete[] _sifra;
 
-			for (auto prijava : _prijavljeni) // foreach 
+			for (auto prijava : _prijavljeni) // foreach ---> prijava == _prijavljeni[i]
 			{
 				delete prijava;
 			}
 			_prijavljeni.clear();
 
 
-			_imePrezime = AlocirajNiz(obj._imePrezime);
 			_sifra = AlocirajNiz(obj._sifra);
+			_imePrezime = AlocirajNiz(obj._imePrezime);
 
-			// trenutno = obj.trenutno;
-			//_prijavljeni.size() = obj._prijavljeni.size();
+			//_prijavljeni = obj._prijavljeni;
 
 			for (int i = 0; i < obj._prijavljeni.size(); i++)
 			{
 
-				_prijavljeni.push_back(obj._prijavljeni[i]->Kloniraj());
+				Predavanje* castedPredavanje = dynamic_cast<Predavanje*>(obj._prijavljeni[i]);
 
+				_prijavljeni.push_back(new Predavanje(*castedPredavanje));
 
 			}
 		}
 		return *this;
 	}
+	
+
+	bool operator == (const Ucesnik& obj) {
+		return strcmp(_sifra, obj._sifra) == 0;
+	}
+
 
 	bool PrijaviSe(Predavanje predavanje) {
-
 
 		for (int i = 0; i < _prijavljeni.size(); i++)
 		{
 
-			// 1. LAKSI ALI GORI NACIN
+			// 1. NACIN -> laksi ali nije potpun -> radi samo ako nemamo op == u klasi Predavanje
 
-			// DOGADJAJ == DOGADJAJ , ako ovo koristili moramo zakomentarisati op == u izvedneoj klasu
-			//if (predavanje == *_prijavljeni[i]) { 
+			// Dogadjaj    == Dogadjaj
+			//if (predavanje == *_prijavljeni[i]) {
 
 			//	return false;
 
 			//}
 
 
-			// 2. TEZI ALI BOLJI NACIN
+			// 2. NACIN
 
-			// *DOGADAJ --> *PREDAVANJE .. dynamic_cast 
+			// 1. PRISTUP -> DOGADJAJ* -> PREDAVANJE* ( DYNAMIC_CAST )
 
 			Predavanje* castedPredavanje = dynamic_cast<Predavanje*>(_prijavljeni[i]);
 
-			if (predavanje == *castedPredavanje) { // PREDAVANJE == PREDAVANJE  
-
+			//  Predavanje == Predavanje
+			if (predavanje == *castedPredavanje)
+			{
 				return false;
 
 			}
-
 		}
 
+		// 3. POHRANITI
 
-		_prijavljeni.push_back(new Predavanje(predavanje)); // 3. POHRANA --> KLASICNA POHRANA
-
+		_prijavljeni.push_back(new Predavanje(predavanje));
+		
 		return true;
 
 	}
 
-
-	bool operator == (const Ucesnik& obj) {
-
-		return strcmp(_sifra, obj._sifra) == 0;
-
-	}
 
 	~Ucesnik() {
 		delete[] _imePrezime;
@@ -657,20 +661,19 @@ public:
 		delete[] _sifra;
 		_sifra = nullptr;
 
-		for (auto prijava : _prijavljeni) // foreach 
+		for (auto prijava : _prijavljeni) // foreach ---> prijava == _prijavljeni[i]
 		{
 			delete prijava;
 			prijava = nullptr;
 		}
 
-
 		//for (int i = 0; i < _prijavljeni.size(); i++)
 		//{
 		//	delete _prijavljeni[i];
+		//	_prijavljeni[i] = nullptr;
 		//}
 
 		_prijavljeni.clear();
-
 	}
 
 
@@ -680,13 +683,20 @@ public:
 
 	friend ostream& operator << (ostream& COUT, const Ucesnik& obj) {
 
-		COUT <<"Ucesnik: "<< obj._imePrezime << " [" << obj._sifra << "]" << endl;
+		COUT << "Ucesnik: "<< obj._imePrezime << " [" << obj._sifra << "]" << endl;
 
-		for (int i = 0; i < obj._prijavljeni.size(); i++)
+		// 4. ISPIS --> preko Info()
+
+
+		//for (int i = 0; i < obj._prijavljeni.size(); i++)
+		//{
+		//	COUT << *obj._prijavljeni[i] << endl;
+		//}
+
+
+	    for (int i = 0; i < obj._prijavljeni.size(); i++)
 		{
-
-			COUT << "\t\t\t" << obj._prijavljeni[i]->Info() << endl;
-
+			COUT <<"\t\t\t"<< obj._prijavljeni[i]->Info();
 		}
 
 		return COUT;
@@ -695,6 +705,7 @@ public:
 
 };
 int Ucesnik::_id = 1;
+
 
 class Tim {
 	char* _naziv;
@@ -819,7 +830,7 @@ public:
 	}
 
 	bool operator == (const Konferencija& obj) {
-		return strcmp(_naziv , obj._naziv) == 0;
+		return strcmp(_naziv, obj._naziv) == 0;
 	}
 
 	// TIM  <---   UCENSIK   <---- dodamo mu predavanje
@@ -833,7 +844,7 @@ public:
 
 			// pronaci tim po nazivu ali tim1
 
-			if (strcmp(nazivTima , _timovi.getElement1(i)->getNaziv()  ) == 0) {
+			if (strcmp(nazivTima, _timovi.getElement1(i)->getNaziv()) == 0) {
 
 
 				// proci kroz ucesnike tima1
@@ -843,7 +854,7 @@ public:
 
 					// pronaci ucesnika po sifri tima1
 
-					if (strcmp(sifraUcesnika , _timovi.getElement1(i)->getUcesnici()[j].getSifra()  ) == 0) {
+					if (strcmp(sifraUcesnika, _timovi.getElement1(i)->getUcesnici()[j].getSifra()) == 0) {
 
 						//for (int k = 0; k < _timovi.getElement1(i)->getUcesnici()[j].getDogadjaji().size(); k++)
 						//{
@@ -874,7 +885,7 @@ public:
 
 			// pronaci tim po nazivu ali tim2
 
-		
+
 
 			if (strcmp(nazivTima, _timovi.getElement2(i)->getNaziv()) == 0) {
 
@@ -954,7 +965,7 @@ public:
 
 			for (int j = 0; j < _timovi.getElement2(i)->getUcesnici().size(); j++)
 			{
-				
+
 
 				if (_timovi.getElement2(i)->getUcesnici()[j].getDogadjaji().size() >= brojPredavanja) {
 
@@ -997,19 +1008,19 @@ public:
 
 	friend ostream& operator << (ostream& COUT, const Konferencija& obj) {
 
-		COUT << endl <<  "Naziv konferencije: " << obj._naziv << endl;
+		COUT << endl << "Naziv konferencije: " << obj._naziv << endl;
 
 
 		//COUT << obj._timovi << endl;
 
-	    for (int i = 0; i < obj._timovi.getTrenutno(); i++)
+		for (int i = 0; i < obj._timovi.getTrenutno(); i++)
 		{
 
-			COUT <<"\t"<< *obj._timovi.getElement1(i) ; // 3. RAZLIKA
+			COUT << "\t" << *obj._timovi.getElement1(i); // 3. RAZLIKA
 
 			COUT << crt << endl << endl;
 
-			COUT <<"\t"<< *obj._timovi.getElement2(i) << endl;
+			COUT << "\t" << *obj._timovi.getElement2(i) << endl;
 
 		}
 
@@ -1148,6 +1159,9 @@ int main() {
 	validnom sifrom treba smatrati i onu koja umjesto znaka crtica '-' ima znak razmak npr: 25 DM 003 ili 25 DM-003
 	*/
 
+
+	//cout << GetTrenutnaGodinaZadnjeDvijeCifre() << endl;
+
 	cout << GenerisiSifru("Denis Music", 3) << endl;//treba vratiti 25-DM-003
 	cout << GenerisiSifru("Jasmin Azemovic", 14) << endl;//treba vratiti 25-JA-014
 	cout << GenerisiSifru("Goran skondric", 156) << endl;//treba vratiti 25-GS-156
@@ -1165,17 +1179,19 @@ int main() {
 
 	int kolekcijaTestSize = 9;
 	KolekcijaG1<int, string, 10> kolekcija1;
+
 	for (int i = 0; i < kolekcijaTestSize; i++)
 		kolekcija1.AddElement(i, "Vrijednost -> " + to_string(i));
+
 	cout << kolekcija1 << crt;
 
-	/* metoda InsertAt treba da doda vrijednosti drugog i treceg parametra na lokaciju koja je definisana prvim parametrom. Povratna vrijednost metode je objekat (pozivaoc metode, u konkretnom slucaju objekat kolekcija1) u okviru koga su, na definisanu lokaciju, dodati proslijedjeni parametri. Nakon izvrsenja metode InsertAt, oba objekta, parovi1 i parovi2, bi trebali posjedovati sljedeci sadrzaj:
-	0 Vrijednost -> 0
-	10 Vrijednost -> 10
-	1 Vrijednost -> 1
-	2 Vrijednost -> 2
-	* ....
-	*/
+	///* metoda InsertAt treba da doda vrijednosti drugog i treceg parametra na lokaciju koja je definisana prvim parametrom. Povratna vrijednost metode je objekat (pozivaoc metode, u konkretnom slucaju objekat kolekcija1) u okviru koga su, na definisanu lokaciju, dodati proslijedjeni parametri. Nakon izvrsenja metode InsertAt, oba objekta, parovi1 i parovi2, bi trebali posjedovati sljedeci sadrzaj:
+	//0 Vrijednost -> 0
+	//10 Vrijednost -> 10
+	//1 Vrijednost -> 1
+	//2 Vrijednost -> 2
+	//* ....
+	//*/
 
 	KolekcijaG1<int, string, 10> kolekcija2 = kolekcija1.InsertAt(1, 10, "Vrijednost -> 10");
 	cout << kolekcija2 << crt;
@@ -1195,9 +1211,9 @@ int main() {
 		cout << "Exception: " << e.what() << crt;
 	}
 
-	delete kolekcija3;
-	kolekcija1 = kolekcija2;
-	cout << kolekcija1 << crt;
+	delete kolekcija3; // test destruktor
+	kolekcija1 = kolekcija2; // test op = 
+	cout << kolekcija1 << crt; // test << 
 
 	Termin termin1(19, 02, 30), termin2(10, 30, 40), termin3(14, 15, 20), termin4(16, 45, 20);
 
@@ -1205,13 +1221,14 @@ int main() {
 	Predavanje uv_zracenja(termin2, "Uloga UV zracenja u koznim oboljenjima", DERMATOLOGIJA);
 	Predavanje anemije(termin3, "Anemije u svakodnevnoj praksi", OPSTA_MEDICINA);
 
-	//cout << oboljenja_srca << endl;
-	//cout << uv_zracenja << endl;
-	//cout << anemije << endl;
 
-	//cout << oboljenja_srca.Info() << endl;
-	//cout << uv_zracenja.Info() << endl;
-	//cout << anemije.Info() << endl;
+	//cout << oboljenja_srca;
+	//cout << uv_zracenja;
+	//cout << anemije;
+
+	//cout << oboljenja_srca.Info();
+	//cout << uv_zracenja.Info();
+	//cout << anemije.Info();
 
 	Ucesnik emina("Emina Junuz"), goran("Goran Skondric"), azra("Azra Maric"), tajib("Tajib Hero");
 	//metoda PrijaviSe dodaje prijavu na predavanje ucesniku, ukoliko je prijava uspjesna, vraca true, a u suprotnom false.
@@ -1223,47 +1240,58 @@ int main() {
 	goran.PrijaviSe(uv_zracenja);
 	tajib.PrijaviSe(uv_zracenja);
 
+
+
+
 	////info metoda vraca sve detalje o dogadjaju u string formatu npr.: 19:02:30 Oboljenja srca KARDIOLOGIJA
 
 	if (!emina.PrijaviSe(oboljenja_srca)) {
 		cout << "Ucesnik " << emina.getImePrezime() << " vec prijavljen na predavanje " << oboljenja_srca.Info() << crt;
 	}
 
-	//Ucesnik eminaKopija = emina;
 
-	//cout << emina << endl;
-	////cout << eminaKopija << endl;
-	//cout << goran << endl;
-	//cout << azra << endl;
-	//cout << tajib << endl;
+	cout << emina << endl;
+	cout << goran << endl;
+	cout << tajib << endl;
+	cout << azra << endl;
+
+	cout << crt;
+
+	Ucesnik ucesnikKopija = emina;
+
+	Ucesnik ucesnikOperatorDodjele("Vedad Keskin");
+
+	ucesnikOperatorDodjele = goran;
+
+	cout << ucesnikKopija;
+	cout << ucesnikOperatorDodjele;
 
 
 	Tim timAlpha("Tim Alpha"), timBeta("Tim Beta");
 
-	////metoda DodajUcesnika treba da doda ucesnika u tim, ukoliko ucesnik vec nije clan tima, u suprotnom treba baciti izuzetak.
+	//metoda DodajUcesnika treba da doda ucesnika u tim, ukoliko ucesnik vec nije clan tima, u suprotnom treba baciti izuzetak.
 
 	timAlpha.DodajUcesnika(emina); timAlpha.DodajUcesnika(goran);
 	timBeta.DodajUcesnika(azra); timBeta.DodajUcesnika(tajib);
 
 
 	try {
-		timAlpha.DodajUcesnika(emina); // emina je vec clanica tima Alpha
+		timAlpha.DodajUcesnika(emina);//emina je vec clanica tima Alpha
 	}
 	catch (exception& e) {
 		cout << "Exception: " << e.what() << "\n";
 	}
 
-	cout << timAlpha << endl;
-	cout << timBeta << endl;
-
 	Konferencija savremena_medicina("Umjetna inteligencija u dijagnostici i lijecenju – novo lice medicine");
 
 	savremena_medicina.DodajTimove(timAlpha, timBeta);
 
-	////ispisuje naziv konferencije, nazive timova i podatke o svim clanovima tima
+	//ispisuje naziv konferencije, nazive timova i podatke o svim clanovima tima
 
-	////metoda PrijaviDogadjaj treba omoguciti prijavu dogadjaja / predavanja ucesniku / clanu proslijedjenog tima.na osnovu poruka
-	////koje se ispisuju u nastavku, implementirati metodu PrijaviDogadjaj tako da se prijave vrse samo na osnovu ispravnih podataka.
+	cout << savremena_medicina;
+
+	//metoda PrijaviDogadjaj treba omoguciti prijavu dogadjaja / predavanja ucesniku / clanu proslijedjenog tima.na osnovu poruka
+	//koje se ispisuju u nastavku, implementirati metodu PrijaviDogadjaj tako da se prijave vrse samo na osnovu ispravnih podataka.
 
 	if (savremena_medicina.PrijaviDogadjaj(timAlpha.getNaziv(), emina.getSifra(), uv_zracenja))
 		cout << "Prijava uspjesna" << crt;
@@ -1275,14 +1303,10 @@ int main() {
 		cout << "Ucesnik nije clan proslijedjenog tima" << crt;
 	if (!savremena_medicina.PrijaviDogadjaj(timAlpha.getNaziv(), "24-GX-002", anemije))
 		cout << "Prijava sa nepostojecom sifrom nije uspjela.";
-
-
-	////metoda vraca sve ucesnike koji su se na odredjenoj konferenciji prijavili na minimalno proslijedjeni broj predavanja
-
-	cout << savremena_medicina;
+	//metoda vraca sve ucesnike koji su se na odredjenoj konferenciji prijavili na minimalno proslijedjeni broj predavanja
 
 	vector<Ucesnik*> vrijedniUcesnici = savremena_medicina(2);
-	for (auto ucesnik : vrijedniUcesnici) // foreach 
+	for (auto ucesnik : vrijedniUcesnici)
 		cout << ucesnik->getImePrezime() << "\n";
 
 	/*
