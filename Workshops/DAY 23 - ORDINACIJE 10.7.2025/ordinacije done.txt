@@ -356,7 +356,7 @@ public:
 	int getTrenutno() const { return _trenutno; }
 
 
-	friend ostream& operator << (ostream& COUT,const KolekcijaG1& obj) {
+	friend ostream& operator << (ostream& COUT, const KolekcijaG1& obj) {
 		for (size_t i = 0; i < obj._trenutno; i++)
 			COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
 		return COUT;
@@ -424,7 +424,7 @@ protected: // 1. RAZLIKA
 	Termin _termin;
 public:
 	Dogadjaj(Termin termin) : _termin(termin) {
-	
+
 		//_termin = termin;
 
 	}
@@ -473,7 +473,7 @@ public:
 
 	//Predavanje oboljenja_srca(termin1, "Oboljenja srca", KARDIOLOGIJA);
 
-	Predavanje(Termin termin, const char* tema, Specializacija spec ) : Dogadjaj(termin) { // 2. KORAK
+	Predavanje(Termin termin, const char* tema, Specializacija spec) : Dogadjaj(termin) { // 2. KORAK
 
 		_tema = AlocirajNiz(tema);
 		_specijalizacija = spec;
@@ -531,7 +531,7 @@ public:
 
 	friend ostream& operator<<(ostream& COUT, const Predavanje& obj) {
 
-		COUT << obj._termin << " " << obj._tema << " " << obj._specijalizacija ;
+		COUT << obj._termin << " " << obj._tema << " " << obj._specijalizacija;
 
 		return COUT;
 	}
@@ -610,7 +610,7 @@ public:
 		}
 		return *this;
 	}
-	
+
 
 	bool operator == (const Ucesnik& obj) {
 		return strcmp(_sifra, obj._sifra) == 0;
@@ -649,7 +649,7 @@ public:
 		// 3. POHRANITI
 
 		_prijavljeni.push_back(new Predavanje(predavanje));
-		
+
 		return true;
 
 	}
@@ -683,7 +683,7 @@ public:
 
 	friend ostream& operator << (ostream& COUT, const Ucesnik& obj) {
 
-		COUT << "Ucesnik: "<< obj._imePrezime << " [" << obj._sifra << "]" << endl;
+		COUT << "Ucesnik: " << obj._imePrezime << " [" << obj._sifra << "]" << endl;
 
 		// 4. ISPIS --> preko Info()
 
@@ -694,9 +694,9 @@ public:
 		//}
 
 
-	    for (int i = 0; i < obj._prijavljeni.size(); i++)
+		for (int i = 0; i < obj._prijavljeni.size(); i++)
 		{
-			COUT <<"\t\t\t"<< obj._prijavljeni[i]->Info();
+			COUT << "\t\t\t" << obj._prijavljeni[i]->Info();
 		}
 
 		return COUT;
@@ -800,16 +800,18 @@ public:
 			_timovi.AddElement(new Tim(*obj._timovi.getElement1(i)), new Tim(*obj._timovi.getElement2(i)));
 		}
 
+		//_timovi = obj._timovi;
+
 	}
 
 	Konferencija& operator = (const Konferencija& obj) {
 		if (this != &obj) {
 
-			for (int i = 0; i < _timovi.getTrenutno(); i++)
-			{
-				delete _timovi.getElement1(i);
-				delete _timovi.getElement2(i);
-			}
+			//for (int i = 0; i < _timovi.getTrenutno(); i++)
+			//{
+			//	delete _timovi.getElement1(i);
+			//	delete _timovi.getElement2(i);
+			//}
 
 			_naziv = AlocirajNiz(obj._naziv);
 
@@ -817,6 +819,9 @@ public:
 			{
 				_timovi.AddElement(new Tim(*obj._timovi.getElement1(i)), new Tim(*obj._timovi.getElement2(i)));
 			}
+
+			//_timovi = obj._timovi;
+
 
 		}
 		return *this;
@@ -990,15 +995,15 @@ public:
 
 		// 1. RAZLIKA -> DEALOKACIJA
 
-		for (int i = 0; i < _timovi.getTrenutno(); i++)
-		{
+		//for (int i = 0; i < _timovi.getTrenutno(); i++)
+		//{
 
-			delete _timovi.getElement1(i);
-			_timovi.getElement1(i) = nullptr;
-			delete _timovi.getElement2(i);
-			_timovi.getElement2(i) = nullptr;
+		//	delete _timovi.getElement1(i);
+		//	_timovi.getElement1(i) = nullptr;
+		//	delete _timovi.getElement2(i);
+		//	_timovi.getElement2(i) = nullptr;
 
-		}
+		//}
 
 
 	}
