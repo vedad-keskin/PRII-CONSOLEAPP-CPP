@@ -288,7 +288,7 @@ public:
 		return strcmp(_naziv, obj._naziv) == 0 && _kategorija == obj._kategorija && _cijena == obj._cijena;
 	}
 
-	~Proizvod() { 
+	~Proizvod() {
 		delete[] _naziv;
 		_naziv = nullptr;
 	}
@@ -417,7 +417,7 @@ public:
 	//05.10.2025 09:30:00 KUPLJENO 1 PROIZVODA U UKUPNOM IZNOSU OD 1500KM
 
 	friend ostream& operator<<(ostream& COUT, const Kupovina& obj) {
-		
+
 		COUT << obj._vrijemeRealizacije << " KUPLJENO " << obj._kupljeniProizvodi.size() << " PROIZVODA U UKUPNOM IZNOSU OD " << obj._iznos << "KM";
 
 		return COUT;
@@ -467,7 +467,7 @@ public:
 
 	friend ostream& operator<<(ostream& COUT, const Povrat& obj) {
 
-		COUT << obj._vrijemeRealizacije << " VRACENO " << obj._vraceniProizvodi.size() << " PROIZVODA U UKUPNOM IZNOSU OD " << obj._iznos << "KM" ;
+		COUT << obj._vrijemeRealizacije << " VRACENO " << obj._vraceniProizvodi.size() << " PROIZVODA U UKUPNOM IZNOSU OD " << obj._iznos << "KM";
 
 		return COUT;
 	}
@@ -576,7 +576,7 @@ public:
 					return false;
 
 				}
-			
+
 			}
 
 		}
@@ -597,7 +597,7 @@ public:
 
 			if (castedK) {
 
-				
+
 				if (*castedK == povrat) {
 
 					_transakcije.push_back(new Povrat(povrat));
@@ -606,7 +606,7 @@ public:
 				}
 
 				// rucno 
-				
+
 				//for (int j = 0; j < castedK->GetProizvodi().size(); j++)
 				//{
 
@@ -657,7 +657,7 @@ public:
 	const char* GetImePrezime() const { return _imePrezime; }
 	vector<Transakcija*>& GetTransakcije() { return _transakcije; }
 
-	friend ostream& operator<<(ostream& COUT,const Kupac& kupac) {
+	friend ostream& operator<<(ostream& COUT, const Kupac& kupac) {
 		COUT << crt << kupac._imePrezime << " [" << kupac._sifra <<
 			"]\n";
 		for (int i = 0; i < kupac._transakcije.size(); i++)
@@ -788,7 +788,7 @@ public:
 
 				}
 
-				
+
 
 
 			}
@@ -826,7 +826,7 @@ public:
 
 	friend ostream& operator << (ostream& COUT, const Prodavnica& obj) {
 
-		COUT << "Naziv prodavnice: "<<obj._naziv << endl;
+		COUT << "Naziv prodavnice: " << obj._naziv << endl;
 
 		for (int i = 0; i < obj._kupci.size(); i++)
 		{
@@ -846,7 +846,6 @@ bool UcitajPodatke(string nazivFajla, vector<Prodavnica>& prodavnice) {
 		return false;
 	}
 
-	bool loaded = false;
 
 	string eachRow;
 
@@ -879,7 +878,6 @@ bool UcitajPodatke(string nazivFajla, vector<Prodavnica>& prodavnice) {
 				}
 				if (!kupacExists) {
 					prodavnice[i].DodajKupca(noviKupac);
-					loaded = true;
 
 				}
 			}
@@ -887,7 +885,7 @@ bool UcitajPodatke(string nazivFajla, vector<Prodavnica>& prodavnice) {
 
 	}
 
-	return loaded;
+	return true;
 
 
 
