@@ -19,21 +19,7 @@ char* AlocirajTekst(const char* tekst) {
 	return temp;
 }
 
-//funkcija za generisanje sifre kupca na osnovu imena i prezimena i rednog broja.
-	//sifra je u formatu INICIJALI:TRENUTNA_GODINA-ID_KUPCA, npr. AB:2025-003.
-	//koristiti trenutnu godinu, dobijenu iz sistema na kome se program izvrsava
-	//funkciju koristiti prilikom kreiranja objekta klase Kupac za inicijalizaciju atributa _sifra
 
-	//cout << GenerisiSifru("Amina Buric", 3) << endl; // AB:2025-003
-	//cout << GenerisiSifru("Amar Macic", 15) << endl; // AM:2025-015
-	//cout << GenerisiSifru("Maid Ramic", 156) << endl; // MR:2025-156
-	////za validaciju sifre koristiti funkciju ValidirajSifru koja treba, koristeci regex, osigurati postivanje osnovnih pravila
-	////vezanih za format koja su definisana u prethodnom dijelu zadatka.
-
-bool ValidirajSifru(const char* sifra) {
-	regex reg("[A-B]{2}[:][0-9]{4}[-][0-9]{3}");
-	return regex_match(sifra, reg);
-}
 
 
 int trenutnaGodina() {
@@ -43,9 +29,9 @@ int trenutnaGodina() {
 	return lokalno.tm_year + 1900;
 }
 
-string GenerisiSifru(string ime, int id) {
-	char prvoSlovoIme = toupper(ime[0]);
-	char prvoSlovoPrezime = toupper(ime[ime.find(' ') + 1]);
+string GenerisiSifru(string imeprezime, int id) {
+	char prvoSlovoIme = toupper(imeprezime[0]);
+	char prvoSlovoPrezime = toupper(imeprezime[imeprezime.find(' ') + 1]);
 
 	string sifra;
 
@@ -63,8 +49,25 @@ string GenerisiSifru(string ime, int id) {
 		sifra += "";
 
 	sifra += to_string(id);
-	return AlocirajTekst(sifra.c_str());
+	sifra;
 }
+
+//funkcija za generisanje sifre kupca na osnovu imena i prezimena i rednog broja.
+	//sifra je u formatu INICIJALI:TRENUTNA_GODINA-ID_KUPCA, npr. AB:2025-003.
+	//koristiti trenutnu godinu, dobijenu iz sistema na kome se program izvrsava
+	//funkciju koristiti prilikom kreiranja objekta klase Kupac za inicijalizaciju atributa _sifra
+
+	//cout << GenerisiSifru("Amina Buric", 3) << endl; // AB:2025-003
+	//cout << GenerisiSifru("Amar Macic", 15) << endl; // AM:2025-015
+	//cout << GenerisiSifru("Maid Ramic", 156) << endl; // MR:2025-156
+	////za validaciju sifre koristiti funkciju ValidirajSifru koja treba, koristeci regex, osigurati postivanje osnovnih pravila
+	////vezanih za format koja su definisana u prethodnom dijelu zadatka.
+
+bool ValidirajSifru(const char* sifra) {
+	regex reg("[A-B]{2}[:][0-9]{4}[-][0-9]{3}");
+	return regex_match(sifra, reg);
+}
+
 
 string crt = "\n---------------------------------------------------------------------------------\n";
 string PORUKA_TELEFON = crt + "TELEFONE ISKLJUCITE I ODLOZITE U TORBU, DZEP ILI DRUGU LOKACIJU VAN DOHVATA.\n"
