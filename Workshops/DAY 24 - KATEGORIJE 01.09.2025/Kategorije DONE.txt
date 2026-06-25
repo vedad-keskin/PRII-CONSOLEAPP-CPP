@@ -45,11 +45,10 @@ string GenerisiSifru(string imeprezime, int id) {
 		sifra += "00";
 	else if (id < 100)
 		sifra += "0";
-	else
-		sifra += "";
 
 	sifra += to_string(id);
-	sifra;
+
+	return sifra;
 }
 
 //funkcija za generisanje sifre kupca na osnovu imena i prezimena i rednog broja.
@@ -94,7 +93,7 @@ enum Kategorija { ELEKTRONIKA, KNJIGE, MODA, PREHRANA };
 const char* KategorijaNazivi[] = { "ELEKTRONIKA", "KNJIGE", "MODA",
 "PREHRANA" };
 ostream& operator<<(ostream& COUT, const Kategorija& p) {
-	cout << KategorijaNazivi[p];
+	COUT << KategorijaNazivi[p];
 	return COUT;
 }
 
