@@ -187,7 +187,7 @@ public:
 	T2& GetDrugi(int indeks)const { return *_drugi[indeks]; }
 	T1& operator[](int indeks) { return *_prvi[indeks]; }
 
-	friend ostream& operator<<(ostream& COUT, KolekcijaParova& obj) {
+	friend ostream& operator<<(ostream& COUT, const KolekcijaParova& obj) {
 		for (int i = 0; i < obj._trenutno; i++)
 			COUT << obj.GetPrvi(i) << " " << obj.GetDrugi(i) << "\n";
 		return COUT;

@@ -117,7 +117,7 @@ class Kolekcija {
 	int _trenutno;
 public:
 	Kolekcija() : _prvi(nullptr), _drugi(nullptr), _trenutno(0) {
-	
+
 	}
 
 	Kolekcija(const Kolekcija& obj) {
@@ -168,10 +168,10 @@ public:
 
 
 
-		T1* temp1 = _prvi; 
+		T1* temp1 = _prvi;
 		T2* temp2 = _drugi;
 
-		_prvi = new T1[_trenutno + 1]; 
+		_prvi = new T1[_trenutno + 1];
 		_drugi = new T2[_trenutno + 1];
 
 		for (int i = 0; i < _trenutno; i++)
@@ -183,10 +183,10 @@ public:
 		_prvi[_trenutno] = el1;
 		_drugi[_trenutno] = el2;
 
-		 _trenutno++; 
+		_trenutno++;
 
-		 delete[]temp1;
-		 delete[]temp2;
+		delete[]temp1;
+		delete[]temp2;
 
 
 	}
@@ -263,7 +263,7 @@ public:
 	T2& GetDrugi(int indeks) const { return _drugi[indeks]; }
 	T1& operator[](int indeks) const { return _prvi[indeks]; }
 
-	friend ostream& operator<<(ostream& COUT,const Kolekcija& obj) {
+	friend ostream& operator<<(ostream& COUT, const Kolekcija& obj) {
 		for (int i = 0; i < obj.GetTrenutno(); i++)
 			COUT << obj.GetPrvi(i) << " " << obj.GetDrugi(i) << endl;
 		return COUT;
@@ -275,7 +275,7 @@ public:
 };
 
 class Datum {
-	int *_godina, *_mjesec, *_dan;
+	int* _godina, * _mjesec, * _dan;
 public:
 	Datum(int dan = 1, int mjesec = 1, int godina = 2000) {
 		_godina = new int(godina);
@@ -306,11 +306,11 @@ public:
 	}
 
 
-	bool operator == (const Datum obj) const { 
+	bool operator == (const Datum obj) const {
 		return *_dan == *obj._dan && *_mjesec == *obj._mjesec && *_godina == *obj._godina;
 	}
 
-	int SumaDana() {  
+	int SumaDana() {
 		return *_dan + *_mjesec * 30 + *_godina + 365;
 	}
 
@@ -321,7 +321,7 @@ public:
 	}
 
 	friend ostream& operator<< (ostream& COUT, const Datum& obj) {
-		COUT << setw(2) << setfill('0') << *obj._dan << "." <<  setw(2) << setfill('0')  << *obj._mjesec << "." << *obj._godina;
+		COUT << setw(2) << setfill('0') << *obj._dan << "." << setw(2) << setfill('0') << *obj._mjesec << "." << *obj._godina;
 		return COUT;
 	}
 
@@ -359,7 +359,7 @@ public:
 	}
 
 	bool operator == (const Posudba& obj) {
-		return strcmp(_naslov, obj._naslov) == 0 ;
+		return strcmp(_naslov, obj._naslov) == 0;
 	}
 
 	~Posudba() {
@@ -483,7 +483,7 @@ public:
 	const char* GetImePrezime() const { return _imePrezime; }
 	vector<Posudba>& GetPosudbe() { return _posudbe; }
 
-	friend ostream& operator<<(ostream& COUT,const ClanBiblioteke& obj) {
+	friend ostream& operator<<(ostream& COUT, const ClanBiblioteke& obj) {
 		COUT << obj._imePrezime << " [" << obj._clanskiBroj << "]" << endl;
 		for (auto& posudba : obj._posudbe)
 			//ToString metoda vraca podatke o posudbi u formatu prikazanom u nastavku.
@@ -499,7 +499,7 @@ class Biblioteka {
 	char* _naziv;
 	vector<ClanBiblioteke> _clanovi;
 public:
-	Biblioteka(const char* naziv) { 
+	Biblioteka(const char* naziv) {
 		_naziv = AlocirajTekst(naziv);
 	}
 
@@ -532,7 +532,7 @@ public:
 
 	}
 
-	~Biblioteka() { 
+	~Biblioteka() {
 		delete[] _naziv;
 		_naziv = nullptr;
 	}
@@ -563,7 +563,7 @@ public:
 
 		for (int i = 0; i < _clanovi.size(); i++)
 		{
-			if (_clanovi.size() >= brojPosudbi) {
+			if (_clanovi[i].GetPosudbe().size() >= brojPosudbi) {
 
 				aktivni.push_back(new ClanBiblioteke(_clanovi[i]));
 
@@ -585,7 +585,6 @@ public:
 		for (int i = 0; i < _clanovi.size(); i++)
 		{
 
-			bool imaPosudbu = false;
 			int brojPosudbiPoZanru = 0;
 
 			for (int j = 0; j < _clanovi[i].GetPosudbe().size(); j++)
@@ -593,7 +592,6 @@ public:
 
 				if (_clanovi[i].GetPosudbe()[j].GetZanr() == zanr) {
 
-					imaPosudbu = true;
 					brojPosudbiPoZanru++;
 
 				}
@@ -601,7 +599,7 @@ public:
 			}
 
 
-			if (imaPosudbu) {
+			if (brojPosudbiPoZanru >= 1) {
 				strucnePosudbe.Dodaj(_clanovi[i], brojPosudbiPoZanru);
 			}
 
