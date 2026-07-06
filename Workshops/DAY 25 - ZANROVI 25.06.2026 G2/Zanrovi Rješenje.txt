@@ -61,8 +61,8 @@ int GetTrenutnaGodina() {
 
 string GenerisiClanskiBroj(string imePrezime, int redniBroj) {
 
-	char prvoSlovoIme = toupper(imePrezime[0]);
-	char prvoSlovoPrezime = toupper(imePrezime[imePrezime.find(' ') + 1]);
+	char prvoSlovoIme = imePrezime[0];
+	char prvoSlovoPrezime = imePrezime[imePrezime.find(' ') + 1];
 
 	string sifra;
 
@@ -110,13 +110,18 @@ ostream& operator<<(ostream& COUT, const Zanr& obj) {
 	return COUT;
 }
 
+ 
+
 template<class T1, class T2, int max>
 class Kolekcija {
 	T1* _prvi;
+	//T1* _prvi[max];
+	//T1 _prvi[max];
 	T2* _drugi;
 	int _trenutno;
 public:
 	Kolekcija() : _prvi(nullptr), _drugi(nullptr), _trenutno(0) {
+
 
 	}
 
@@ -156,6 +161,9 @@ public:
 	}
 
 	void Dodaj(T1 el1, T2 el2) {
+
+
+
 
 
 		//for (int i = 0; i < *_trenutno; i++)
@@ -199,7 +207,7 @@ public:
 
 	Kolekcija DodajNaPoziciju(int lokacija, T1 el1, T2 el2) {
 
-		if (lokacija < 0 || lokacija > _trenutno) {
+		if (_trenutno == max || lokacija < 0 || lokacija > _trenutno) {
 			throw exception("Lokacija ne postoji");
 		}
 
@@ -213,13 +221,7 @@ public:
 			prosireniInventar.Dodaj(_prvi[i], _drugi[i]);
 		}
 
-		//if (lokacija == _trenutno) {
-
-		//	prosireniInventar.Dodaj(el1, el2);
-
-		//}
-
-		*this = prosireniInventar;
+		//*this = prosireniInventar;
 
 		return prosireniInventar;
 	}
@@ -237,20 +239,22 @@ public:
 			throw exception("Opseg nije ispravan");
 		}
 
-		Kolekcija prosireniInventar;
+		Kolekcija preostaleKnjige;
 
 		Kolekcija* uklonjeneKnjige = new Kolekcija();
 
 		for (int i = 0; i < _trenutno; i++)
 		{
+
+			//    i >=   3         i < 3 + 2 = 5 ... 3 4  
 			if (i >= lokacijaOd && i < lokacijaOd + brojElemenata) {
 				uklonjeneKnjige->Dodaj(_prvi[i], _drugi[i]);
 			}
 			else
-				prosireniInventar.Dodaj(_prvi[i], _drugi[i]);
+				preostaleKnjige.Dodaj(_prvi[i], _drugi[i]);
 		}
 
-		*this = prosireniInventar;
+		*this = preostaleKnjige;
 
 		return uklonjeneKnjige;
 
@@ -268,6 +272,7 @@ public:
 			COUT << obj.GetPrvi(i) << " " << obj.GetDrugi(i) << endl;
 		return COUT;
 	}
+
 	~Kolekcija() {
 		delete[] _prvi; _prvi = nullptr;
 		delete[] _drugi; _drugi = nullptr;
@@ -310,9 +315,6 @@ public:
 		return *_dan == *obj._dan && *_mjesec == *obj._mjesec && *_godina == *obj._godina;
 	}
 
-	int SumaDana() {
-		return *_dan + *_mjesec * 30 + *_godina + 365;
-	}
 
 	~Datum() {
 		delete _dan; _dan = nullptr;
@@ -372,7 +374,6 @@ public:
 	Datum& GetDatumPosudbe() { return _datumPosudbe; }
 	int GetBrojDana() const { return _brojDana; }
 
-	//05.10.2026 Tvrdjava ROMAN 14 dana
 
 	string ToString() const {
 
@@ -383,6 +384,8 @@ public:
 		return ss.str();
 
 	}
+
+	//05.10.2026 Tvrdjava ROMAN 14 dana
 
 	friend ostream& operator << (ostream& COUT, const Posudba& obj) {
 
@@ -406,7 +409,7 @@ public:
 	}
 
 	ClanBiblioteke(const ClanBiblioteke& obj) {
-
+		
 		_imePrezime = AlocirajTekst(obj._imePrezime);
 		_clanskiBroj = AlocirajTekst(obj._clanskiBroj);
 
@@ -426,6 +429,10 @@ public:
 		}
 		return *this;
 	}
+
+	////DodajPosudbu dodaje posudbu ako clan nema ranije zaduzenu knjigu istog naslova,
+	////ako trenutno ima manje od tri posudbe i ako je broj dana posudbe u rasponu od 1 do 30.
+	////metoda vraca true ako je posudba dodana, u suprotnom vraca false.
 
 	bool DodajPosudbu(Posudba posudba) {
 
@@ -459,7 +466,7 @@ public:
 		{
 			if (strcmp(_posudbe[i].GetNaslov(), naslov) == 0) {
 
-				_posudbe.erase(_posudbe.begin() + i); // iterator + pozicija
+				_posudbe.erase(_posudbe.begin() + i ); // iterator + pozicija
 
 				return true;
 
@@ -470,7 +477,7 @@ public:
 
 	}
 
-	bool operator == (const ClanBiblioteke& obj) {
+	bool operator == (const ClanBiblioteke& obj) const {
 		return strcmp(_clanskiBroj, obj._clanskiBroj) == 0;
 	}
 
@@ -537,13 +544,17 @@ public:
 		_naziv = nullptr;
 	}
 
+	//EvidentirajPosudbu pronalazi clana na osnovu clanskog broja i dodaje mu posudbu.
+	//i dalje vaze pravila definisana u metodi DodajPosudbu. metoda vraca true ili false.
+	//if (gradska.EvidentirajPosudbu(goran.GetClanskiBroj(), pjesme))
+
 	bool EvidentirajPosudbu(const char* clanskiBroj, Posudba posudba) {
 
 		for (int i = 0; i < _clanovi.size(); i++)
 		{
 			if (strcmp(clanskiBroj, _clanovi[i].GetClanskiBroj()) == 0) {
 
-				return _clanovi[i].DodajPosudbu(posudba);
+				return _clanovi[i].DodajPosudbu(posudba); // false
 
 			}
 		}
@@ -755,6 +766,9 @@ int main() {
 		!ValidirajClanskiBroj("2026-AB/003"))
 		cout << "CLANSKI BROJ NIJE VALIDAN" << crt;
 
+
+
+
 	Kolekcija<int, string, 20> inventar;
 
 	for (int i = 0; i < 8; i++)
@@ -766,7 +780,6 @@ int main() {
 	//u slucaju popunjene kolekcije ili neispravne lokacije potrebno je baciti izuzetak (za potrebe testiranja mozete dodati try catch blok).
 	Kolekcija<int, string, 20> prosireniInventar = inventar.DodajNaPoziciju(2, 99, "Posebno izdanje");
 
-
 	try {
 		//za neispravan raspon potrebno je baciti izuzetak
 		prosireniInventar.DodajNaPoziciju(10, 98, "Greska izdanje");
@@ -776,7 +789,6 @@ int main() {
 	}
 
 	cout << prosireniInventar << crt;
-
 
 	/*UkloniRaspon uklanja broj elemenata definisan drugim parametrom, pocevsi od lokacije
 	definisane prvim parametrom (ukljucujuci tu lokaciju). metoda vraca pokazivac na novu kolekciju sa uklonjenim
@@ -807,6 +819,7 @@ int main() {
 	//ToString metoda vraca podatke o posudbi u formatu prikazanom u nastavku.
 	//voditi racuna o prikazu jednocifrenih vrijednosti datuma (npr. 5 -> 05).
 	cout << tvrdjava.ToString() << crt;
+	cout << tvrdjava << crt;
 	//05.10.2026 Tvrdjava ROMAN 14 dana
 
 	ClanBiblioteke amina("Amina Buric"), goran("Goran Skondric"), berun("Berun Agic");
@@ -876,34 +889,34 @@ int main() {
 	cout << univerzitetska << crt;
 
 
-	vector<Biblioteka> biblioteke;
-	biblioteke.push_back(gradska);
-	biblioteke.push_back(univerzitetska);
+	//vector<Biblioteka> biblioteke;
+	//biblioteke.push_back(gradska);
+	//biblioteke.push_back(univerzitetska);
 
-	/*
-	Funkcija UcitajPodatke ucitava podatke o bibliotekama i njihovim clanovima iz datoteke
-	cije ime se prosljedjuje kao prvi parametar. Svaka linija je zapisana u formatu:
+	///*
+	//Funkcija UcitajPodatke ucitava podatke o bibliotekama i njihovim clanovima iz datoteke
+	//cije ime se prosljedjuje kao prvi parametar. Svaka linija je zapisana u formatu:
 
-		naziv biblioteke|ime i prezime clana
+	//	naziv biblioteke|ime i prezime clana
 
-	Za svaki ispravan red potrebno je:
-		- pronaci postojecu ili kreirati novu biblioteku,
-		- kreirati i dodati clana u odgovarajucu biblioteku,
-		- onemoguciti dupliranje biblioteka i clanova unutar iste biblioteke.
+	//Za svaki ispravan red potrebno je:
+	//	- pronaci postojecu ili kreirati novu biblioteku,
+	//	- kreirati i dodati clana u odgovarajucu biblioteku,
+	//	- onemoguciti dupliranje biblioteka i clanova unutar iste biblioteke.
 
-	Funkcija vraca true ako je ucitan najmanje jedan novi podatak, a false ako datoteka ne
-	postoji ili nije ucitan nijedan novi podatak.
+	//Funkcija vraca true ako je ucitan najmanje jedan novi podatak, a false ako datoteka ne
+	//postoji ili nije ucitan nijedan novi podatak.
 
-	Primjer sadrzaja datoteke:
-		Gradska biblioteka|Emina Junuz
-		Gradska biblioteka|Jasmin Azemovic
-		Univerzitetska biblioteka|Zanin Vejzovic
-	*/
-	if (UcitajPodatke("clanovi.txt", biblioteke))
-		cout << "Ucitavanje uspjesno" << crt;
+	//Primjer sadrzaja datoteke:
+	//	Gradska biblioteka|Emina Junuz
+	//	Gradska biblioteka|Jasmin Azemovic
+	//	Univerzitetska biblioteka|Zanin Vejzovic
+	//*/
+	//if (UcitajPodatke("clanovi.txt", biblioteke))
+	//	cout << "Ucitavanje uspjesno" << crt;
 
-	for (auto& biblioteka : biblioteke)
-		cout << biblioteka.GetNaziv() << " sa " << biblioteka.GetClanovi().size() << " clanova" << crt;
+	//for (auto& biblioteka : biblioteke)
+	//	cout << biblioteka.GetNaziv() << " sa " << biblioteka.GetClanovi().size() << " clanova" << crt;
 
 	cin.get();
 	return 0;

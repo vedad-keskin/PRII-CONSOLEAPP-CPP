@@ -120,7 +120,7 @@ class Kolekcija {
 	T2 _drugi[max];
 	int* _trenutno;
 public:
-	Kolekcija() { 
+	Kolekcija() {
 		_trenutno = new int(0);
 	}
 
@@ -225,7 +225,7 @@ public:
 
 
 
-	~Kolekcija() { 
+	~Kolekcija() {
 		delete _trenutno;
 		_trenutno = nullptr;
 	}
@@ -233,11 +233,11 @@ public:
 	// 1. OPCIJA
 
 	int GetTrenutno() const { return *_trenutno; }
-	T1& GetPrvi(int indeks)  { return _prvi[indeks]; }
-	T2& GetDrugi(int indeks)  { return _drugi[indeks]; }
+	T1& GetPrvi(int indeks) { return _prvi[indeks]; }
+	T2& GetDrugi(int indeks) { return _drugi[indeks]; }
 	T1& operator[](int indeks) const { return _prvi[indeks]; }
 
-	friend ostream& operator<<(ostream& COUT,  Kolekcija& obj) {
+	friend ostream& operator<<(ostream& COUT, Kolekcija& obj) {
 		for (int i = 0; i < obj.GetTrenutno(); i++)
 			COUT << obj.GetPrvi(i) << " " << obj.GetDrugi(i) << endl;
 		return COUT;
@@ -280,7 +280,7 @@ public:
 	DatumVrijeme& operator=(const DatumVrijeme& obj) {
 		if (this != &obj) {
 			delete _godina; delete _mjesec; delete _dan;
-			delete _sati; delete _minute; 
+			delete _sati; delete _minute;
 
 			_godina = new int(*obj._godina);
 			_mjesec = new int(*obj._mjesec);
@@ -309,13 +309,13 @@ public:
 
 	~DatumVrijeme() {
 		delete _godina; delete _mjesec; delete _dan;
-		delete _sati; delete _minute; 
+		delete _sati; delete _minute;
 		_godina = nullptr; _mjesec = nullptr; _dan = nullptr;
-		_sati = nullptr; _minute = nullptr; 
+		_sati = nullptr; _minute = nullptr;
 	}
 
 
-	friend ostream& operator<<(ostream& COUT,const DatumVrijeme& obj) {
+	friend ostream& operator<<(ostream& COUT, const DatumVrijeme& obj) {
 		COUT << setw(2) << setfill('0') << *obj._dan << "." << setw(2) << setfill('0') << *obj._mjesec << "." << *obj._godina << " " << setw(2) << setfill('0') << *obj._sati << ":" << setw(2) << setfill('0') << *obj._minute;
 		return COUT;
 	}
@@ -402,7 +402,7 @@ public:
 		//radnoMjesto:             |==========| 600 -------- 660  (10:00 - 11:00)
 		//                         ^
 		//                  dodiruju se, ali nema overlapa
-		
+
 
 		if (pocetak1 < kraj2 && pocetak2 < kraj1) {
 			return true;
@@ -513,7 +513,7 @@ public:
 	const char* GetImePrezime() const { return _imePrezime; }
 	vector<Rezervacija>& GetRezervacije() { return _rezervacije; }
 
-	friend ostream& operator<<(ostream& COUT,const Korisnik& obj) {
+	friend ostream& operator<<(ostream& COUT, const Korisnik& obj) {
 		COUT << obj._imePrezime << " [" << obj._sifra << "]" << endl;
 		for (auto& rezervacija : obj._rezervacije)
 			//ToString metoda klase Rezervacija vraca podatke o rezervaciji u formatu:
@@ -528,7 +528,7 @@ class CentarZaRad {
 	char* _naziv;
 	vector<Korisnik> _korisnici;
 public:
-	CentarZaRad(const char* naziv) { 
+	CentarZaRad(const char* naziv) {
 		_naziv = AlocirajTekst(naziv);
 	}
 
@@ -548,7 +548,7 @@ public:
 	}
 
 	bool operator == (const CentarZaRad& obj) {
-		
+
 		return strcmp(_naziv, obj._naziv) == 0;
 
 	}
@@ -564,6 +564,29 @@ public:
 		}
 
 		_korisnici.push_back(korisnik);
+
+	}
+
+	//RegistrujRezervaciju pronalazi korisnika na osnovu sifre i dodaje mu rezervaciju.
+	//i dalje vaze pravila definisana u metodi DodajRezervaciju. metoda vraca true ili false.
+	//if (radniKutak.RegistrujRezervaciju(goran.GetSifra(), goranovaSala))
+	//	cout << "Rezervacija registrovana" << crt;
+
+	bool RegistrujRezervaciju(const char* sifraKorisnika, Rezervacija rezervacija) {
+
+
+		for (int i = 0; i < _korisnici.size(); i++)
+		{
+
+			if (strcmp(sifraKorisnika, _korisnici[i].GetSifra()) == 0) {
+
+				return _korisnici[i].DodajRezervaciju(rezervacija);
+
+			}
+
+		}
+
+		return false;
 
 	}
 
@@ -629,7 +652,7 @@ public:
 
 
 
-	~CentarZaRad() { 
+	~CentarZaRad() {
 		delete[] _naziv;
 		_naziv = nullptr;
 	}
@@ -807,7 +830,7 @@ int main() {
 		cout << "Exception: " << e.what() << crt;
 	}
 
-	DatumVrijeme vrijeme1(10, 9, 2026, 9, 0), vrijeme2(10, 9, 2026, 9, 30),	vrijeme3(10, 9, 2026, 10, 0), vrijeme4(10, 9, 2026, 12, 0);
+	DatumVrijeme vrijeme1(10, 9, 2026, 9, 0), vrijeme2(10, 9, 2026, 9, 30), vrijeme3(10, 9, 2026, 10, 0), vrijeme4(10, 9, 2026, 12, 0);
 
 	Rezervacija salaA("SALA-A", SALA, vrijeme1, 60);
 	Rezervacija studio1("STUDIO-1", STUDIO, vrijeme2, 90);
@@ -857,6 +880,13 @@ int main() {
 
 	cout << radniKutak << endl;
 	cout << poslovnaZona << endl;
+
+	Rezervacija goranovaSala("SALA-B", SALA, vrijeme4, 120);
+
+	//RegistrujRezervaciju pronalazi korisnika na osnovu sifre i dodaje mu rezervaciju.
+	//i dalje vaze pravila definisana u metodi DodajRezervaciju. metoda vraca true ili false.
+	if (radniKutak.RegistrujRezervaciju(goran.GetSifra(), goranovaSala))
+		cout << "Rezervacija registrovana" << crt;
 
 
 	//AktivniKorisnici vraca pokazivace na korisnike koji imaju najmanje onoliko rezervacija
