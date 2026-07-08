@@ -360,7 +360,7 @@ public:
 		return *this;
 	}
 
-	bool operator == (const Posudba& obj) {
+	bool operator == (const Posudba& obj) const {
 		return strcmp(_naslov, obj._naslov) == 0;
 	}
 
@@ -436,7 +436,7 @@ public:
 
 	bool DodajPosudbu(Posudba posudba) {
 
-		if (_posudbe.size() >= 3 || posudba.GetBrojDana() < 0 || posudba.GetBrojDana() > 30) {
+		if (_posudbe.size() >= 3 || posudba.GetBrojDana() < 1 || posudba.GetBrojDana() > 30) {
 			return false;
 		}
 
@@ -621,12 +621,13 @@ public:
 
 	}
 
-	const char* GetNaziv() const { return _naziv; }
-	vector<ClanBiblioteke>& GetClanovi() { return _clanovi; }
 
-	bool operator == (const Biblioteka& obj) {
+	bool operator == (const Biblioteka& obj) const {
 		return strcmp(_naziv, obj._naziv) == 0;
 	}
+
+	const char* GetNaziv() const { return _naziv; }
+	vector<ClanBiblioteke>& GetClanovi() { return _clanovi; }
 
 	friend ostream& operator << (ostream& COUT, const Biblioteka& obj) {
 		COUT << "Biblioteka: " << obj._naziv << endl;

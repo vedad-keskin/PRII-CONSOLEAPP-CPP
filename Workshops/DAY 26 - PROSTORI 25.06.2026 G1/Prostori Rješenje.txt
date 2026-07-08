@@ -232,29 +232,29 @@ public:
 
 	// 1. OPCIJA
 
-	int GetTrenutno() const { return *_trenutno; }
-	T1& GetPrvi(int indeks) { return _prvi[indeks]; }
-	T2& GetDrugi(int indeks) { return _drugi[indeks]; }
-	T1& operator[](int indeks) const { return _prvi[indeks]; }
-
-	friend ostream& operator<<(ostream& COUT, Kolekcija& obj) {
-		for (int i = 0; i < obj.GetTrenutno(); i++)
-			COUT << obj.GetPrvi(i) << " " << obj.GetDrugi(i) << endl;
-		return COUT;
-	}
-
-	// 2. OPCIJA
-
 	//int GetTrenutno() const { return *_trenutno; }
-	//T1 GetPrvi(int indeks) const { return _prvi[indeks]; }
-	//T2 GetDrugi(int indeks) const { return _drugi[indeks]; }
-	//T1 operator[](int indeks) const { return _prvi[indeks]; }
+	//T1& GetPrvi(int indeks)  { return _prvi[indeks]; }
+	//T2& GetDrugi(int indeks)   { return _drugi[indeks]; }
+	//T1& operator[](int indeks)  { return _prvi[indeks]; }
 
-	//friend ostream& operator<<(ostream& COUT, const Kolekcija& obj) {
+	//friend ostream& operator<<(ostream& COUT, Kolekcija& obj) {
 	//	for (int i = 0; i < obj.GetTrenutno(); i++)
 	//		COUT << obj.GetPrvi(i) << " " << obj.GetDrugi(i) << endl;
 	//	return COUT;
 	//}
+
+	// 2. OPCIJA
+
+	int GetTrenutno() const { return *_trenutno; }
+	T1 GetPrvi(int indeks) const { return _prvi[indeks]; }
+	T2 GetDrugi(int indeks) const { return _drugi[indeks]; }
+	T1 operator[](int indeks) const { return _prvi[indeks]; }
+
+	friend ostream& operator<<(ostream& COUT, const Kolekcija& obj) {
+		for (int i = 0; i < obj.GetTrenutno(); i++)
+			COUT << obj.GetPrvi(i) << " " << obj.GetDrugi(i) << endl;
+		return COUT;
+	}
 
 };
 
@@ -366,6 +366,11 @@ public:
 	TipProstora GetTipProstora() const { return _tipProstora; }
 	DatumVrijeme& GetPocetak() { return _pocetak; }
 	int GetTrajanjeMinuta() const { return _trajanjeMinuta; }
+
+
+	//ImaKonfliktSa vraca true ako su rezervacije istog datuma i njihovi vremenski intervali
+	//se preklapaju. rezervacija koja pocinje u trenutku kada prethodna zavrsava nije konfliktna.
+	//if (salaA.ImaKonfliktSa(studio1))
 
 	bool ImaKonfliktSa(Rezervacija drugaRezervacija) {
 
@@ -481,17 +486,19 @@ public:
 			}
 		}
 
-		int ukupnoMinuta = 0;
+		int dailyLimitMins = 0;
 
 		for (int i = 0; i < _rezervacije.size(); i++) {
 			if (rezervacija.GetPocetak().IstiDan(_rezervacije[i].GetPocetak())) {
-				ukupnoMinuta += _rezervacije[i].GetTrajanjeMinuta();
+
+				dailyLimitMins += _rezervacije[i].GetTrajanjeMinuta(); // +60 , +60 .. 120 
+
 			}
 		}
 
-		ukupnoMinuta += rezervacija.GetTrajanjeMinuta();
+		dailyLimitMins += rezervacija.GetTrajanjeMinuta(); // 120 + 400 = 520
 
-		if (ukupnoMinuta > 480) {
+		if (dailyLimitMins > 480) {
 			return false;
 		}
 
@@ -500,7 +507,7 @@ public:
 		return true;
 	}
 
-	bool operator == (const Korisnik& obj) {
+	bool operator == (const Korisnik& obj) const {
 		return strcmp(_sifra, obj._sifra) == 0;
 	}
 
@@ -851,9 +858,9 @@ int main() {
 
 	Korisnik amina("Amina Buric"), goran("Goran Skondric"), berun("Berun Agic");
 
-	//DodajRezervaciju dodaje rezervaciju korisniku ako se ona ne preklapa sa nekom od ranije
-	//dodanih rezervacija i ako ukupno trajanje svih rezervacija korisnika u jednom danu ne
-	//prelazi 480 minuta. metoda vraca true ako je rezervacija dodana, u suprotnom vraca false.
+	////DodajRezervaciju dodaje rezervaciju korisniku ako se ona ne preklapa sa nekom od ranije
+	////dodanih rezervacija i ako ukupno trajanje svih rezervacija korisnika u jednom danu ne
+	////prelazi 480 minuta. metoda vraca true ako je rezervacija dodana, u suprotnom vraca false.
 	if (amina.DodajRezervaciju(salaA))
 		cout << "Rezervacija dodana" << crt;
 	if (!amina.DodajRezervaciju(studio1))
@@ -866,6 +873,7 @@ int main() {
 	cout << amina << endl;
 
 	CentarZaRad radniKutak("Radni kutak"), poslovnaZona("Poslovna zona");
+
 	radniKutak.DodajKorisnika(amina);
 	radniKutak.DodajKorisnika(goran);
 	poslovnaZona.DodajKorisnika(berun);
@@ -878,8 +886,6 @@ int main() {
 		cout << "Exception: " << e.what() << crt;
 	}
 
-	cout << radniKutak << endl;
-	cout << poslovnaZona << endl;
 
 	Rezervacija goranovaSala("SALA-B", SALA, vrijeme4, 120);
 
@@ -888,6 +894,9 @@ int main() {
 	if (radniKutak.RegistrujRezervaciju(goran.GetSifra(), goranovaSala))
 		cout << "Rezervacija registrovana" << crt;
 
+
+	cout << radniKutak << endl;
+	cout << poslovnaZona << endl;
 
 	//AktivniKorisnici vraca pokazivace na korisnike koji imaju najmanje onoliko rezervacija
 	//koliko je definisano vrijednoscu proslijedjenog parametra.
@@ -898,36 +907,37 @@ int main() {
 	//KoristenjePoTipu vraca kolekciju parova (korisnik, broj minuta) za sve korisnike koji
 	//imaju najmanje jednu rezervaciju prostora proslijedjenog tipa.
 	Kolekcija<Korisnik, int, 50> koristenjeSala = radniKutak.KoristenjePoTipu(SALA);
+
 	for (int i = 0; i < koristenjeSala.GetTrenutno(); i++)
 		cout << koristenjeSala.GetPrvi(i).GetImePrezime() << " -> " << koristenjeSala.GetDrugi(i) << " minuta" << crt;
 
-	vector<CentarZaRad> centri;
-	centri.push_back(radniKutak);
-	centri.push_back(poslovnaZona);
+	//vector<CentarZaRad> centri;
+	//centri.push_back(radniKutak);
+	//centri.push_back(poslovnaZona);
 
-	/*
-	Funkcija UcitajPodatke ucitava podatke o centrima za rad i njihovim korisnicima iz
-	datoteke cije ime se prosljedjuje kao prvi parametar. Svaka linija je zapisana u formatu:
+	///*
+	//Funkcija UcitajPodatke ucitava podatke o centrima za rad i njihovim korisnicima iz
+	//datoteke cije ime se prosljedjuje kao prvi parametar. Svaka linija je zapisana u formatu:
 
-		naziv centra|ime i prezime korisnika
+	//	naziv centra|ime i prezime korisnika
 
-	Za svaki ispravan red potrebno je:
-		- pronaci postojeci ili kreirati novi centar za rad,
-		- kreirati i dodati korisnika u odgovarajuci centar,
-		- onemoguciti dupliranje centara i korisnika unutar istog centra.
+	//Za svaki ispravan red potrebno je:
+	//	- pronaci postojeci ili kreirati novi centar za rad,
+	//	- kreirati i dodati korisnika u odgovarajuci centar,
+	//	- onemoguciti dupliranje centara i korisnika unutar istog centra.
 
-	Funkcija vraca true ako je ucitan najmanje jedan novi podatak, a false ako datoteka ne
-	postoji ili nije ucitan nijedan novi podatak.
+	//Funkcija vraca true ako je ucitan najmanje jedan novi podatak, a false ako datoteka ne
+	//postoji ili nije ucitan nijedan novi podatak.
 
-	Primjer sadrzaja datoteke:
-		Radni kutak|Emina Junuz
-		Radni kutak|Jasmin Azemovic
-		Poslovna zona|Zanin Vejzovic
-	*/
-	if (UcitajPodatke("korisnici.txt", centri))
-		cout << "Ucitavanje uspjesno" << crt;
-	for (auto& centar : centri)
-		cout << centar.GetNaziv() << " sa " << centar.GetKorisnici().size() << " korisnika" << crt;
+	//Primjer sadrzaja datoteke:
+	//	Radni kutak|Emina Junuz
+	//	Radni kutak|Jasmin Azemovic
+	//	Poslovna zona|Zanin Vejzovic
+	//*/
+	//if (UcitajPodatke("korisnici.txt", centri))
+	//	cout << "Ucitavanje uspjesno" << crt;
+	//for (auto& centar : centri)
+	//	cout << centar.GetNaziv() << " sa " << centar.GetKorisnici().size() << " korisnika" << crt;
 
 	cin.get();
 	return 0;

@@ -141,8 +141,8 @@ public:
 		_trenutno++;
 	}
 
-	KolekcijaParova<int, string, 20> DodajNaPoziciju(int lokacija, T1 el1, T2 el2) {
-		KolekcijaParova<int, string, 20> kolekcija1;
+	KolekcijaParova DodajNaPoziciju(int lokacija, T1 el1, T2 el2) {
+		KolekcijaParova kolekcija1;
 
 		for (int i = 0; i < _trenutno; i++)
 		{
@@ -154,11 +154,11 @@ public:
 		return kolekcija1;
 	}
 
-	KolekcijaParova<int, string, 20>* UkloniRaspon(int od, int raspon) {
+	KolekcijaParova* UkloniRaspon(int od, int raspon) {
 
-		KolekcijaParova<int, string, 20>kolekcija1;
+		KolekcijaParova kolekcija1;
 
-		KolekcijaParova<int, string, 20>* kolekcija3 = new KolekcijaParova();
+		KolekcijaParova* kolekcija3 = new KolekcijaParova();
 
 		for (int i = 0; i < _trenutno; i++)
 		{
