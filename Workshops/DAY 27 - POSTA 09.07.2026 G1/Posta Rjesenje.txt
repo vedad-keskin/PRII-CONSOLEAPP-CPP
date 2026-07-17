@@ -409,6 +409,10 @@ public:
 		return _statusi.GetElement1(_statusi.GetTrenutno() - 1);
 	}
 
+	DatumVrijeme GetTrenutnoDatumVrijeme()const {
+		return _statusi.GetElement2(_statusi.GetTrenutno() - 1);
+	}
+
 	/*
 	Konstruktor Posiljke generise oznaku i evidentira pocetni status KREIRANA
 	sa proslijedjenim vremenom kreiranja.
@@ -548,6 +552,9 @@ public:
 		Dealociraj();
 	}
 };
+
+
+mutex m;
 class DostavnaSluzba {
 	char* _naziv;
 	vector<Posiljka> _posiljke;
@@ -595,6 +602,164 @@ public:
 		_posiljke.push_back(posiljka);
 
 	}
+
+	/*
+	PronadjiPosiljku vraca pokazivac na posiljku sa proslijedjenom oznakom.
+	Ako posiljka nije pronadjena, metoda vraca nullptr.
+	*/
+	//string oznakaKnjige = knjige.GetOznaka();
+	//Posiljka* pronadjena = brzaPosta.PronadjiPosiljku(oznakaKnjige);
+
+	Posiljka* PronadjiPosiljku(string oznaka) {
+
+		for (int i = 0; i < _posiljke.size(); i++)
+		{
+			if (oznaka == _posiljke[i].GetOznaka()) {
+
+				return new Posiljka(_posiljke[i]); 
+
+			}
+		}
+
+		return nullptr;
+	}
+	/*
+	EvidentirajStatus pronalazi posiljku na osnovu oznake i pokusava dodati
+	novi status koristeci pravila metode DodajStatus.
+	Nakon svakog uspjesno evidentiranog statusa potrebno je u zasebnom threadu
+	poslati obavijest primaocu. Obavijest se ne salje ako posiljka ne
+	postoji ili status nije dodan, te u tim slucajevima metoda vraca false.
+	Primjer sadrzaja obavijesti:
+	------------------------------------------------------------------
+	---------------
+	To: goran@fit.ba
+	From: info@brzaposta.ba
+	Subject: Promjena statusa posiljke
+	Postovani Goran Skondric,
+	Posiljka BH-ST-0007-GS je promijenila status u PREUZETA.
+	Vrijeme evidentiranja: 01.07.2026 09:00
+	Hvala sto koristite nase usluge.
+	BrzaPosta Tim
+	------------------------------------------------------------------
+	---------------
+	*/
+	//if (brzaPosta.EvidentirajStatus(oznakaKnjige, PREUZETA, preuzeta))
+
+	void PosaljiMail(Posiljka posiljka) {
+
+		m.lock();
+
+		cout << crt << "To: "<< posiljka.GetEmailPrimaoca() << endl;
+		cout << "From: info@brzaposta.ba" << endl;
+		cout << "Subject: Promjena statusa posiljke" << endl;
+		cout << "Postovani " << posiljka.GetImePrezimePrimaoca() << "," << endl;
+		cout << "Posiljka " << posiljka.GetOznaka() << " je promijenila status u " << posiljka.GetTrenutniStatus() << endl;
+		cout << "Vrijeme evidentiranja: " << posiljka.GetTrenutnoDatumVrijeme() << endl;
+		cout << "Hvala sto koristite nase usluge." << endl;
+		cout << _naziv << " tim" << crt;
+
+		m.unlock();
+
+	}
+
+	bool EvidentirajStatus(string oznaka, StatusPosiljke status, DatumVrijeme datumvrijeme) {
+
+		for (int i = 0; i < _posiljke.size(); i++)
+		{
+
+			if (oznaka ==  _posiljke[i].GetOznaka()) {
+
+
+				if (_posiljke[i].DodajStatus(status, datumvrijeme)) {
+
+					thread t1(&DostavnaSluzba::PosaljiMail, this, _posiljke[i]);
+
+					t1.join();
+
+					return true;
+
+				}
+				else {
+
+					return false;
+
+				}
+
+
+			}
+
+		}
+
+
+
+	}
+
+	/*
+	PosiljkePoStatusu vraca vector pokazivaca na sve posiljke ciji trenutni
+	status odgovara proslijedjenom statusu.
+	*/
+	//vector<Posiljka*> preuzetePosiljke = brzaPosta.PosiljkePoStatusu(PREUZETA);
+
+	vector<Posiljka*> PosiljkePoStatusu(StatusPosiljke status) {
+
+		vector<Posiljka*> preuzetePosiljke;
+
+		for (int i = 0; i < _posiljke.size(); i++)
+		{
+
+			if (_posiljke[i].GetTrenutniStatus() == status) {
+
+				preuzetePosiljke.push_back(new Posiljka(_posiljke[i]));
+
+			}
+
+		}
+
+		return preuzetePosiljke;
+
+	}
+
+
+	/*
+	StatistikaPoStatusu vraca kolekciju koja za svaki status, redoslijedom
+	definisanim enumom StatusPosiljke, sadrzi status i broj posiljki koje se
+	trenutno nalaze u tom statusu. U rezultat se dodaje svih pet statusa,
+	ukljucujuci i one za koje je broj posiljki jednak nuli.
+	*/
+	//Kolekcija<StatusPosiljke, int, 5> statistika = brzaPosta.StatistikaPoStatusu();
+
+	Kolekcija<StatusPosiljke, int, 5> StatistikaPoStatusu() {
+
+		Kolekcija<StatusPosiljke, int, 5> statistika;
+
+		// prolazimo kroz svih 5 statusa redom (KREIRANA, PREUZETA, ...)
+
+		for (int i = 0; i < 5; i++) {
+
+
+			StatusPosiljke status = (StatusPosiljke)i;
+
+			int brojPosiljki = 0;
+
+			// brojimo koliko posiljki ima taj trenutni status
+			for (int i = 0; i < _posiljke.size(); i++) {
+				if (_posiljke[i].GetTrenutniStatus() == status) {
+
+					brojPosiljki++;
+
+				}
+			}
+
+			// dodajemo i ako je broj 0
+			statistika.Dodaj(status, brojPosiljki);
+		}
+
+		return statistika;
+	}
+
+
+
+
 
 	const char* GetNaziv() const { return _naziv; }
 	vector<Posiljka>& GetPosiljke() { return _posiljke; }
@@ -823,68 +988,73 @@ int main() {
 		cout << "Exception: " << e.what() << crt;
 	}
 
+
+	/*
+	PronadjiPosiljku vraca pokazivac na posiljku sa proslijedjenom oznakom.
+	Ako posiljka nije pronadjena, metoda vraca nullptr.
+	*/
+	string oznakaKnjige = knjige.GetOznaka();
+	Posiljka* pronadjena = brzaPosta.PronadjiPosiljku(oznakaKnjige);
+
+	if (pronadjena != nullptr)
+		cout << "Pronadjena posiljka: " << pronadjena->GetOznaka() << crt;
+
+	if (brzaPosta.PronadjiPosiljku("BH-ST-9999-XX") == nullptr)
+		cout << "Nepostojeca posiljka nije pronadjena" << crt;
+	/*
+	EvidentirajStatus pronalazi posiljku na osnovu oznake i pokusava dodati
+	novi status koristeci pravila metode DodajStatus.
+	Nakon svakog uspjesno evidentiranog statusa potrebno je u zasebnom threadu
+	poslati obavijest primaocu. Obavijest se ne salje ako posiljka ne
+	postoji ili status nije dodan, te u tim slucajevima metoda vraca false.
+	Primjer sadrzaja obavijesti:
+	------------------------------------------------------------------
+	---------------
+	To: goran@fit.ba
+	From: info@brzaposta.ba
+	Subject: Promjena statusa posiljke
+	Postovani Goran Skondric,
+	Posiljka BH-ST-0007-GS je promijenila status u PREUZETA.
+	Vrijeme evidentiranja: 01.07.2026 09:00
+	Hvala sto koristite nase usluge.
+	BrzaPosta Tim
+	------------------------------------------------------------------
+	---------------
+	*/
+	if (brzaPosta.EvidentirajStatus(oznakaKnjige, PREUZETA, preuzeta))
+		cout << "Status evidentiran i obavijest poslana" << crt;
+	if (!brzaPosta.EvidentirajStatus(oznakaKnjige, ISPORUCENA, isporucena))
+		cout << "Obavijest nije poslana za neispravnu promjenu statusa" << crt;
+	if (!brzaPosta.EvidentirajStatus("NEPOSTOJECA", PREUZETA, preuzeta))
+		cout << "Obavijest nije poslana za nepostojecu posiljku" << crt;
+
+
 	cout << brzaPosta << endl;
 
-	///*
-	//PronadjiPosiljku vraca pokazivac na posiljku sa proslijedjenom oznakom.
-	//Ako posiljka nije pronadjena, metoda vraca nullptr.
-	//*/
-	//string oznakaKnjige = knjige.GetOznaka();
-	//Posiljka* pronadjena = brzaPosta.PronadjiPosiljku(oznakaKnjige);
 
-	//if (pronadjena != nullptr)
-	//	cout << "Pronadjena posiljka: " << pronadjena->GetOznaka() << crt;
 
-	//if (brzaPosta.PronadjiPosiljku("BH-ST-9999-XX") == nullptr)
-	//	cout << "Nepostojeca posiljka nije pronadjena" << crt;
-	///*
-	//EvidentirajStatus pronalazi posiljku na osnovu oznake i pokusava dodati
-	//novi status koristeci pravila metode DodajStatus.
-	//Nakon svakog uspjesno evidentiranog statusa potrebno je u zasebnom threadu
-	//poslati obavijest primaocu. Obavijest se ne salje ako posiljka ne
-	//postoji ili status nije dodan, te u tim slucajevima metoda vraca false.
-	//Primjer sadrzaja obavijesti:
-	//------------------------------------------------------------------
-	//---------------
-	//To: goran@fit.ba
-	//From: info@brzaposta.ba
-	//Subject: Promjena statusa posiljke
-	//Postovani Goran Skondric,
-	//Posiljka BH-ST-0007-GS je promijenila status u PREUZETA.
-	//Vrijeme evidentiranja: 01.07.2026 09:00
-	//Hvala sto koristite nase usluge.
-	//BrzaPosta Tim
-	//------------------------------------------------------------------
-	//---------------
-	//*/
-	//if (brzaPosta.EvidentirajStatus(oznakaKnjige, PREUZETA, preuzeta))
-	//	cout << "Status evidentiran i obavijest poslana" << crt;
-	//if (!brzaPosta.EvidentirajStatus(oznakaKnjige, ISPORUCENA, isporucena))
-	//	cout << "Obavijest nije poslana za neispravnu promjenu statusa" << crt;
-	//if (!brzaPosta.EvidentirajStatus("NEPOSTOJECA", PREUZETA, preuzeta))
-	//	cout << "Obavijest nije poslana za nepostojecu posiljku" << crt;
-	///*
-	//PosiljkePoStatusu vraca vector pokazivaca na sve posiljke ciji trenutni
-	//status odgovara proslijedjenom statusu.
-	//*/
-	//vector<Posiljka*> preuzetePosiljke = brzaPosta.PosiljkePoStatusu(PREUZETA);
+	/*
+	PosiljkePoStatusu vraca vector pokazivaca na sve posiljke ciji trenutni
+	status odgovara proslijedjenom statusu.
+	*/
+	vector<Posiljka*> preuzetePosiljke = brzaPosta.PosiljkePoStatusu(PREUZETA);
 
-	//for (auto posiljka : preuzetePosiljke)
-	//	cout << posiljka->GetOznaka() << " -> " << StatusPosiljkeNazivi[(int)posiljka->GetTrenutniStatus()] << crt;
+	for (auto posiljka : preuzetePosiljke)
+		cout << posiljka->GetOznaka() << " -> " << StatusPosiljkeNazivi[(int)posiljka->GetTrenutniStatus()] << crt;
 
-	///*
-	//StatistikaPoStatusu vraca kolekciju koja za svaki status, redoslijedom
-	//definisanim enumom StatusPosiljke, sadrzi status i broj posiljki koje se
-	//trenutno nalaze u tom statusu. U rezultat se dodaje svih pet statusa,
-	//ukljucujuci i one za koje je broj posiljki jednak nuli.
-	//*/
-	//Kolekcija<StatusPosiljke, int, 5> statistika = brzaPosta.StatistikaPoStatusu();
+	/*
+	StatistikaPoStatusu vraca kolekciju koja za svaki status, redoslijedom
+	definisanim enumom StatusPosiljke, sadrzi status i broj posiljki koje se
+	trenutno nalaze u tom statusu. U rezultat se dodaje svih pet statusa,
+	ukljucujuci i one za koje je broj posiljki jednak nuli.
+	*/
+	Kolekcija<StatusPosiljke, int, 5> statistika = brzaPosta.StatistikaPoStatusu();
 
-	//for (int i = 0; i < statistika.GetTrenutno(); i++)
-	//	cout << StatusPosiljkeNazivi[(int)statistika.GetElement1(i)] << " -> " << statistika.GetElement2(i) << crt;
+	for (int i = 0; i < statistika.GetTrenutno(); i++)
+		cout << StatusPosiljkeNazivi[(int)statistika.GetElement1(i)] << " -> " << statistika.GetElement2(i) << crt;
 
-	//DostavnaSluzba kopijaSluzbe = brzaPosta;
-	//cout << kopijaSluzbe.GetNaziv() << " ima " << kopijaSluzbe.GetPosiljke().size() << " posiljki" << crt;
+	DostavnaSluzba kopijaSluzbe = brzaPosta;
+	cout << kopijaSluzbe.GetNaziv() << " ima " << kopijaSluzbe.GetPosiljke().size() << " posiljki" << crt;
 
 	cin.get();
 	return 0;
