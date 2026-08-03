@@ -13,7 +13,7 @@ public:
 	// 3. Konstruktor kopije (copy constructor)
 	// 4. Operator dodjele (operator =)
 	// 5. Dealokacija (destructor)
-	// 6. Operator ispisa (operator <<) 
+	// 6. Operator ispisa (operator <<) -> voditi računa da cijena bude u formatu 1.2 -> 1.20 
 	// 7. Dodatne operatore
 
 
@@ -102,6 +102,11 @@ public:
 	void PrintRacun() {
 		// Ispisuje sve stavke računa zajedno sa iznosom za plaćanje sa i bez PDV-a i brojem računa
 		// Voditi računa da se jedan račun ne može dva puta isprintati (paziti na bool _naplaceno)
+		// Broj računa prikazati u formatu:
+		// 1 -> 001 (tri cifre, popunjene vodećim nulama).
+		// Iznos sa i bez PDV-a prikazati u formatu:
+		// 17.43333 -> 17.43 (dvije cifre iza nule).
+
 
 	}
 

@@ -10,9 +10,6 @@
 #include <ctime>
 #include <iomanip> 
 
-
-
-
 using namespace std;
 
 
@@ -47,6 +44,8 @@ char* AlocirajTekst(const char* tekst) {
 
 
 enum StatusZahtjeva { ZAPRIMLJEN, DIJAGNOSTIKA, POPRAVKA, ZAVRSEN };
+
+
 const char* StatusZahtjevaNazivi[] = {
 	"ZAPRIMLJEN", "DIJAGNOSTIKA", "POPRAVKA", "ZAVRSEN"
 };
@@ -88,6 +87,7 @@ string GenerisiOznaku(string imeprezime, int redniBroj, int godina) {
 
 	}
 
+
 	// SRV -> fiksni prefiks
 
 	oznaka += "SRV-";
@@ -109,23 +109,18 @@ string GenerisiOznaku(string imeprezime, int redniBroj, int godina) {
 	// 2. NACIN
 
 
-	//if (id < 10) {
-
-	//	oznaka += "000";
-
-	//}
-	//else if (id < 100) {
+	//if (redniBroj < 10) {
 
 	//	oznaka += "00";
 
 	//}
-	//else if (id < 1000) {
+	//else if (redniBroj < 100) {
 
 	//	oznaka += "0";
 
 	//}
 
-	//oznaka += to_string(id);
+	//oznaka += to_string(redniBroj);
 	//oznaka += "-";
 
 
@@ -243,12 +238,15 @@ public:
 		Kolekcija bezDuplikata;
 
 		for (int i = 0; i < _trenutno; i++) {
+
 			bool postoji = false;
 
 			for (int j = 0; j < bezDuplikata._trenutno; j++) {
+
 				if (_elementi1[i] == bezDuplikata._elementi1[j] && _elementi2[i] == bezDuplikata._elementi2[j]) {
+
 					postoji = true;
-					//break;
+
 				}
 			}
 
@@ -379,6 +377,8 @@ public:
 		_dan = _mjesec = _godina = _sati = _minute = nullptr;
 	}
 };
+
+
 class Intervencija {
 	string _opis;
 	string _tehnicar;
@@ -473,6 +473,10 @@ public:
 		return *this;
 	}
 
+	~Klijent() {
+
+	}
+
 	bool operator == (const Klijent& obj) const {
 		return _imePrezime == obj._imePrezime && _email == obj._email && _telefon == obj._telefon;
 	}
@@ -487,6 +491,8 @@ public:
 		return COUT;
 	}
 };
+
+
 class ServisniZahtjev {
 	char* _oznaka;
 	char* _uredjaj;
@@ -524,8 +530,11 @@ public:
 		_oznaka = AlocirajTekst(obj._oznaka);
 		_uredjaj = AlocirajTekst(obj._uredjaj);
 		_opisKvara = AlocirajTekst(obj._opisKvara);
+
 		_redniBroj = obj._redniBroj;
+
 		_klijent = obj._klijent;
+
 		_statusi = obj._statusi;
 		_intervencije = obj._intervencije;
 
@@ -535,6 +544,11 @@ public:
 	ServisniZahtjev& operator = (const ServisniZahtjev& obj) {
 
 		if (this != &obj) {
+
+			delete[] _oznaka;
+			delete[] _uredjaj;
+			delete[] _opisKvara;
+
 			_oznaka = AlocirajTekst(obj._oznaka);
 			_uredjaj = AlocirajTekst(obj._uredjaj);
 			_opisKvara = AlocirajTekst(obj._opisKvara);
@@ -672,6 +686,7 @@ public:
 	const Kolekcija<StatusZahtjeva, DatumVrijeme, 10>& GetStatusi() const { return _statusi; }
 	vector<Intervencija>& GetIntervencije() { return _intervencije; }
 	const vector<Intervencija>& GetIntervencije() const { return _intervencije; }
+
 	StatusZahtjeva GetTrenutniStatus() const { return _statusi.GetElement1(_statusi.GetTrenutno() - 1); }
 
 	DatumVrijeme GetTrenutnoDatumVrijeme() const {
@@ -719,6 +734,9 @@ public:
 
 	Servis& operator = (const Servis& obj) {
 		if (this != &obj) {
+
+			delete[] _naziv;
+
 			_naziv = AlocirajTekst(obj._naziv);
 			_zahtjevi = obj._zahtjevi;
 		}
@@ -801,7 +819,7 @@ public:
 
 	}
 
-	bool EvidentirajStatus(string oznaka, StatusZahtjeva status, DatumVrijeme datum) {
+	bool EvidentirajStatus(string oznaka, StatusZahtjeva novistatus, DatumVrijeme novidatum) {
 
 		for (int i = 0; i < _zahtjevi.size(); i++)
 		{
@@ -809,10 +827,10 @@ public:
 			if (oznaka == _zahtjevi[i].GetOznaka()) {
 
 
-				if (_zahtjevi[i].DodajStatus(status, datum)) {
+				if (_zahtjevi[i].DodajStatus(novistatus, novidatum)) {
 
 					// Racun se salje iskljucivo nakon ZAVRSEN
-					if (status == ZAVRSEN) {
+					if (novistatus == ZAVRSEN) {
 
 						thread t1(&Servis::PosaljiRacun, this, _zahtjevi[i]);
 
@@ -892,13 +910,13 @@ public:
 		delete[] _naziv; _naziv = nullptr;
 	}
 
-friend ostream& operator<<(ostream& COUT, const Servis& obj) {
-	COUT << "Naziv servisa: " << obj._naziv << endl;
-	for (int i = 0; i < obj._zahtjevi.size(); i++) {
-		COUT << " - " << obj._zahtjevi[i] << endl;
+	friend ostream& operator<<(ostream& COUT, const Servis& obj) {
+		COUT << "Naziv servisa: " << obj._naziv << endl;
+		for (int i = 0; i < obj._zahtjevi.size(); i++) {
+			COUT << " - " << obj._zahtjevi[i] << endl;
+		}
+		return COUT;
 	}
-	return COUT;
-}
 
 
 };
@@ -1059,6 +1077,8 @@ int main() {
 	if (laptop.ToString() == "SRV-042/AB-2026 | Amina Buric | Laptop | ZAPRIMLJEN")
 		cout << "ServisniZahtjev ToString OK" << crt;
 	
+
+
 	//DodajStatus dodaje status samo ako je vrijeme vece od vremena posljednjeg
 	//statusa i ako status predstavlja neposredno sljedecu fazu.
 	//Dozvoljen slijed je: ZAPRIMLJEN -> DIJAGNOSTIKA -> POPRAVKA -> ZAVRSEN
@@ -1091,10 +1111,12 @@ int main() {
 
 	laptop.DodajIntervenciju(zamjenaDiska);
 	laptop.DodajIntervenciju(instalacija);
+
+
 	cout << "Ukupna cijena: " << laptop.UkupnaCijena() << " KM" << crt;
 	cout << "Ukupno trajanje: " << laptop.UkupnoTrajanje() << " min" << crt;
 
-
+	cout << laptop << endl;
 
 	ServisniZahtjev kopijaLaptopa = laptop;
 	cout << kopijaLaptopa << crt;
@@ -1109,6 +1131,7 @@ int main() {
 	*/
 	fitServis.DodajZahtjev(laptop);
 	fitServis.DodajZahtjev(telefon);
+
 	try {
 		fitServis.DodajZahtjev(telefon);
 	}
@@ -1151,15 +1174,15 @@ int main() {
 	//Hvala na povjerenju.
 	//--------------------------------------------------------------------------------
 	//
+
 	if (fitServis.EvidentirajStatus(oznakaLaptopa, ZAVRSEN, zavrsen))
 		cout << "Zahtjev zavrsen i racun poslan" << crt;
-	if (!fitServis.EvidentirajStatus(
-		oznakaLaptopa, ZAVRSEN, DatumVrijeme(9, 7, 2026, 12, 0)))
-		cout << "Ponavljanje zavrsnog statusa nije dozvoljeno" << crt;
-	if (!fitServis.EvidentirajStatus(
-		"NEPOSTOJECI", DIJAGNOSTIKA, dijagnostika))
-		cout << "Status nije evidentiran za nepostojeci zahtjev" << crt;
 
+	if (!fitServis.EvidentirajStatus(oznakaLaptopa, ZAVRSEN, DatumVrijeme(9, 7, 2026, 12, 0)))
+		cout << "Ponavljanje zavrsnog statusa nije dozvoljeno" << crt;
+
+	if (!fitServis.EvidentirajStatus("NEPOSTOJECI", DIJAGNOSTIKA, dijagnostika))
+		cout << "Status nije evidentiran za nepostojeci zahtjev" << crt;
 
 
 	/*
@@ -1171,17 +1194,15 @@ int main() {
 	for (auto zahtjev : nezavrseni)
 		cout << zahtjev->GetOznaka() << " -> " << StatusZahtjevaNazivi[(int)zahtjev->GetTrenutniStatus()] << crt;
 
-
 	/*
 	IzracunajPrihod vraca zbir cijena svih intervencija evidentiranih na
 	zahtjevima koji imaju status ZAVRSEN. Intervencije na nezavrsenim
 	zahtjevima ne ulaze u prihod.
 	*/
+
 	cout << "Ostvareni prihod: " << fitServis.IzracunajPrihod() << " KM" << crt;
 
-
 	cout << fitServis << endl;
-
 
 	Servis kopijaServisa = fitServis;
 

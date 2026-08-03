@@ -1,4 +1,5 @@
 #include<iostream>
+#include<iomanip>
 using namespace std;
 
 
@@ -69,7 +70,7 @@ public:
 
 	friend ostream& operator << (ostream& COUT, const Artikal& obj) {
 
-		COUT << obj._naziv << " [" << obj._sifra << "] - " << obj._cijena << " KM" << endl;
+		COUT << obj._naziv << " [" << obj._sifra << "] - " << fixed << setprecision(2) << obj._cijena << " KM" << endl;
 		COUT << "Kolicina na skladistu: " << obj._kolicinaNaSkladistu << " kom" << endl;
 
 		return COUT;
@@ -482,7 +483,7 @@ public:
 			return;
 		}
 
-		cout << "======= Br. racuna " << _brojRacuna << " =========" << endl << endl;
+		cout << "======= Br. racuna " << setfill('0') << setw(3) << _brojRacuna << " =========" << endl << endl;
 
 		for (int i = 0; i < _trenutno; i++)
 		{
@@ -490,8 +491,8 @@ public:
 			cout << "==============================" << endl << endl;
 		}
 
-		cout << "Iznos bez PDV: " << _iznosBezPDV << " KM" << endl;
-		cout << "Iznos sa PDV: " << _iznosSaPDV << " KM" << endl;
+		cout << "Iznos bez PDV: " << fixed << setprecision(2) << _iznosBezPDV << " KM" << endl;
+		cout << "Iznos sa PDV: " << fixed << setprecision(2) << _iznosSaPDV << " KM" << endl;
 
 		_naplaceno = true;
 	}
