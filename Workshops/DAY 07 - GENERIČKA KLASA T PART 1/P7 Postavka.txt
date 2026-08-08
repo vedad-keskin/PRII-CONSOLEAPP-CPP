@@ -12,45 +12,56 @@ char* GetNizKaraktera(const char* tekst) {
 
 
 template<class T, int max>
-class Kolekcija { // Dicionary, Rjecnik , Parovi , Kolekcija
+class Kolekcija {
 public:
 	T* _niz;
 	int _trenutno;
-	// Kreirati i implementirati
-	// 1. Defaultni konstruktor (default constructor)
-	// 2. Konstruktor koji prima parametre (user-defined constructor)
-	// 3. Konstruktor kopije (copy constructor)
-	// 4. Operator dodjele (operator =)
-	// 5. Dealokacija (destructor)
-	// 6. Operator ispisa (operator <<) 
-	// 7. Dodatne funkcije
+
+	/*
+	* Kreirati i implementirati
+	* 1. Defaultni konstruktor (default constructor)
+	* 2. Konstruktor kopije (copy constructor)
+	* 3. Operator dodjele (operator =)
+	* 4. Dealokacija (destructor)
+	* 5. Operator ispisa (operator <<)
+	* 6. Dodatne funkcije
+	*/
 
 
-
-
-	void AddElement(T el) {
-		// Dodaje element tipa T u niz
-		// Onemogućiti izlazak niza izvan opsega bacajem izuzetka tipa Exception
-		// Onemogućiti dupliranje elemenata bacajem izuzetka tipa Exception
+	void AddElement(T el) { /* alt. Dodaj */
+		/*
+		* Dodaje element tipa T u niz
+		* Onemoguciti izlazak niza izvan opsega bacajem izuzetka tipa exception
+		* Onemoguciti dupliranje elemenata bacajem izuzetka tipa exception
+		*/
 
 	}
 
 
+	/*
+	* metoda prihvata indekse lokacije, te vraca elemente koji se u kolekciji
+	* nalaze na proslijedjenim lokacijama (ukljucujuci i te lokacije)
+	*
+	* Nakon izvrsenja, objekat kolekcijaOP bi trebao posjedovati sljedeci sadrzaj:
+	* C
+	* D
+	* E
+	* F
+	*
+	* objekat kolekcijaKopija ostaje nepromijenjen
+	*/
+	//Kolekcija<char, 10> kolekcijaOP = kolekcijaKopija(2, 5);
+	Kolekcija operator()(int lokacijaOd, int lokacijaDo) {
 
-	///*
-	//* metoda prihvata indekse lokacije, te vraća elemente koji se u rjecniku nalaze na proslijedjenim lokacijama (ukljucujuci i te lokacije)
-	//*/
+	}
 
 
-
-
-
-
-
-
-
-	/* metoda RemoveAt treba da ukloni i vrati (kao povratnu vrijednost) clanoverijecnika koji se nalaze na lokaciji definisanoj prvim parametrom.
-	* Nakon izvrsenja metode RemoveAt, objekat kolekcijaSlova bi trebao posjedovati sljedeci sadrzaj:
+	/*
+	* metoda RemoveAt treba da ukloni i vrati (kao povratnu vrijednost)
+	* clanove kolekcije koji se nalaze na lokaciji definisanoj prvim parametrom.
+	*
+	* Nakon izvrsenja metode RemoveAt, objekat kolekcijaKopija bi trebao
+	* posjedovati sljedeci sadrzaj:
 	* A
 	* B
 	* D
@@ -60,110 +71,181 @@ public:
 	* a objekat kolekcijaRemoveAt samo element:
 	* C
 	*/
+	//Kolekcija<char, 10> kolekcijaRemoveAt = kolekcijaKopija.RemoveAt(2);
+	Kolekcija RemoveAt(int lokacija) { /* alt. UkloniSaPozicije */
+
+	}
 
 
+	/*
+	* InsertAt dodaje novi element na lokaciju definisanu prvim parametrom.
+	* Metoda vraca novu kolekciju sa umetnutim elementom.
+	* U slucaju popunjene kolekcije ili neispravne lokacije potrebno je baciti
+	* izuzetak (za potrebe testiranja mozete dodati try catch blok).
+	*
+	* Nakon izvrsenja, objekat kolekcijaInsertAt bi trebao posjedovati sljedeci sadrzaj:
+	* A
+	* B
+	* X
+	* C
+	* D
+	* E
+	* F
+	* G
+	* H
+	* I
+	*
+	* objekat kolekcijaOriginal ostaje nepromijenjen
+	*/
+	//Kolekcija<char, 10> kolekcijaInsertAt = kolekcijaOriginal.InsertAt(2, 'X');
+	Kolekcija InsertAt(int lokacija, T el) { /* alt. DodajNaPoziciju */
+
+	}
 
 
-
-	//InsertAt dodaje novi par na lokaciju definisanu prvim parametrom. metoda vraca trenutno stanje kolekcije.
-	//u slucaju popunjene kolekcije ili neispravne lokacije potrebno je baciti izuzetak (za potrebe testiranja mozete dodati try catch blok).
-
-
-
-
-
-	/*UkloniRaspon uklanja broj elemenata definisan drugim parametrom, pocevsi od lokacije
-	definisane prvim parametrom (ukljucujuci tu lokaciju). metoda vraca pokazivac na novu kolekciju sa uklonjenim
-	elementima, a pozivalac je odgovoran za njenu dealokaciju.*/
+	/*
+	* RemoveRange uklanja broj elemenata definisan drugim parametrom, pocevsi od
+	* lokacije definisane prvim parametrom (ukljucujuci tu lokaciju).
+	* Metoda vraca pokazivac na novu kolekciju sa uklonjenim elementima,
+	* a pozivalac je odgovoran za njenu dealokaciju.
+	* U slucaju neispravnog opsega potrebno je baciti izuzetak.
+	*
+	* Nakon izvrsenja, objekat kolekcijaRemoveRange bi trebao posjedovati:
+	* D
+	* E
+	*
+	* a objekat kolekcijaOriginal:
+	* A
+	* B
+	* C
+	* F
+	* G
+	* H
+	* I
+	*/
 	//Kolekcija<char, 10>* kolekcijaRemoveRange = kolekcijaOriginal.RemoveRange(3, 2);
+	Kolekcija* RemoveRange(int lokacijaOd, int brojElementa) { /* alt. UkloniRaspon */
 
-
-
-
-
-
+	}
 
 };
+
 
 class Zivotinja {
 	char* _naziv;
 	int _tezina;
 public:
-
-
+	/*
+	* Kreirati i implementirati
+	* 1. Defaultni / user-defined konstruktor
+	* 2. Konstruktor kopije (copy constructor)
+	* 3. Operator dodjele (operator =)
+	* 4. Dealokacija (destructor)
+	* 5. Operator poredenja (operator ==)  -> poredi po _naziv
+	* 6. Operator ispisa (operator <<)     -> format: Naziv [Xkg]
+	*/
 
 };
 
+
 void main() {
 
-	//Kolekcija<int> kolekcijaBrojeva(10);
+	/* ========== KOLEKCIJA INT ========== */
+
+	//Kolekcija<int, 10> kolekcijaBrojeva;
 
 	//for (int i = 0; i < 10; i++)
 	//{
 	//	kolekcijaBrojeva.AddElement(i);
 	//}
 
-	//cout << kolekcijaBrojeva;
+	//cout << kolekcijaBrojeva << endl;
 
-	//Kolekcija<char,10> kolekcijaOriginal;
+	//try {
+	/* AddElement - kapacitet popunjen (max == 10) */
+	//	kolekcijaBrojeva.AddElement(99);
+	//}
+	//catch (exception& err) {
+	//	cout << "Exception AddElement (kapacitet): " << err.what() << endl;
+	//}
 
-	//int ascii = 65; // A
+
+	/* ========== KOLEKCIJA CHAR + AddElement / duplikat ========== */
+
+	//Kolekcija<char, 10> kolekcijaOriginal;
+
+	/* 65 -> A , 66 -> B */
+	//int ascii = 65;
 
 	//for (int i = 0; i < 9; i++)
 	//{
-	//	kolekcijaOriginal.AddElement(ascii + i); // 65 , 66 , 67 .. A B C ..
+	/* A B C D E F G H I */
+	//	kolekcijaOriginal.AddElement(ascii + i);
 	//}
 
 	//try {
-
-	//	kolekcijaOriginal.AddElement('C'); // --> exception 
-	//	
+	/* AddElement - duplikat */
+	//	kolekcijaOriginal.AddElement('C');
 	//}
 	//catch (exception& err) {
-
-	//	cout << err.what() << endl;
-
+	//	cout << "Exception AddElement (duplikat): " << err.what() << endl;
 	//}
 
 	//cout << "ORIGINALNA KOLEKCIJA: " << endl;
 	//cout << kolekcijaOriginal << endl;
 
+	/* konstruktor kopije */
 	//Kolekcija<char, 10> kolekcijaKopija = kolekcijaOriginal;
 
+	//cout << "KOLEKCIJA KOPIJA (ctor): " << endl;
+	//cout << kolekcijaKopija << endl;
 
-	///*
-	//* metoda prihvata indekse lokacije, te vraća elemente koji se u rjecniku nalaze na proslijedjenim lokacijama (ukljucujuci i te lokacije)
-	//*/
-	//Kolekcija<char, 10> kolekcijaOP = kolekcijaKopija(2, 5);
+	/* operator = */
+	//Kolekcija<char, 10> kolekcijaDodjela;
+	//kolekcijaDodjela = kolekcijaOriginal;
+
+	//cout << "KOLEKCIJA DODJELA (op=): " << endl;
+	//cout << kolekcijaDodjela << endl;
 
 
-	///*clanovi objekta kolekcijaOP bi trebali biti:
-	//C
-	//D
-	//E
-	//F
-	//*/
+	/* ========== OPERATOR () ========== */
+
+	/*
+	* metoda prihvata indekse lokacije, te vraca elemente koji se u kolekciji
+	* nalaze na proslijedjenim lokacijama (ukljucujuci i te lokacije)
+	*
+	* Nakon izvrsenja, objekat kolekcijaOperator bi trebao posjedovati sljedeci sadrzaj:
+	* C
+	* D
+	* E
+	* F
+	*
+	* objekat kolekcijaKopija ostaje nepromijenjen
+	*/
+	//Kolekcija<char, 10> kolekcijaOperator = kolekcijaKopija(2, 5);
 
 	//cout << "KOLEKCIJA OPERATOR ( ): " << endl;
-	//cout << kolekcijaOP << endl;
+	//cout << kolekcijaOperator << endl;
 
 
+	/* ========== RemoveAt ========== */
 
-
-
-	///* metoda RemoveAt treba da ukloni i vrati (kao povratnu vrijednost) clanoverijecnika koji se nalaze na lokaciji definisanoj prvim parametrom.
-	//* Nakon izvrsenja metode RemoveAt, objekat kolekcijaSlova bi trebao posjedovati sljedeci sadrzaj:
-	//* A 
-	//* B 
-	//* D 
-	//* E 
-	//* ....
-	//*
-	//* a objekat kolekcijaRemoveAt samo element:
-	//* C
-	//*/
+	/*
+	* metoda RemoveAt treba da ukloni i vrati (kao povratnu vrijednost)
+	* clanove kolekcije koji se nalaze na lokaciji definisanoj prvim parametrom.
+	*
+	* Nakon izvrsenja metode RemoveAt, objekat kolekcijaKopija bi trebao
+	* posjedovati sljedeci sadrzaj:
+	* A
+	* B
+	* D
+	* E
+	* ....
+	*
+	* a objekat kolekcijaRemoveAt samo element:
+	* C
+	*/
 	//Kolekcija<char, 10> kolekcijaRemoveAt = kolekcijaKopija.RemoveAt(2);
-
 
 	//cout << "KOLEKCIJA REMOVE AT: " << endl;
 	//cout << kolekcijaRemoveAt << endl;
@@ -172,27 +254,81 @@ void main() {
 	//cout << kolekcijaKopija << endl;
 
 
-	////DodajNaPoziciju dodaje novi par na lokaciju definisanu prvim parametrom. metoda vraca trenutno stanje kolekcije.
-	////u slucaju popunjene kolekcije ili neispravne lokacije potrebno je baciti izuzetak (za potrebe testiranja mozete dodati try catch blok).
+	/* ========== InsertAt ========== */
 
+	/*
+	* InsertAt dodaje novi element na lokaciju definisanu prvim parametrom.
+	* Metoda vraca novu kolekciju sa umetnutim elementom.
+	* U slucaju popunjene kolekcije ili neispravne lokacije potrebno je baciti
+	* izuzetak (za potrebe testiranja mozete dodati try catch blok).
+	*
+	* Nakon izvrsenja, objekat kolekcijaInsertAt bi trebao posjedovati sljedeci sadrzaj:
+	* A
+	* B
+	* X
+	* C
+	* D
+	* E
+	* F
+	* G
+	* H
+	* I
+	*
+	* objekat kolekcijaOriginal ostaje nepromijenjen
+	*/
 	//Kolekcija<char, 10> kolekcijaInsertAt = kolekcijaOriginal.InsertAt(2, 'X');
 
-	////try {
-	////	//za neispravan raspon potrebno je baciti izuzetak
-	////	kolekcijaInsertAt.InsertAt(15, 'Z');
-	////}
-	////catch (exception& e) {
-	////	cout << "Exception: " << e.what() << endl;
-	////}
+	//try {
+	/* InsertAt - neispravna lokacija */
+	//	kolekcijaInsertAt.InsertAt(15, 'Z');
+	//}
+	//catch (exception& e) {
+	//	cout << "Exception InsertAt (lokacija): " << e.what() << endl;
+	//}
+
+	//try {
+	/* InsertAt - kapacitet popunjen (kolekcijaBrojeva ima 10 elemenata) */
+	//	kolekcijaBrojeva.InsertAt(0, 99);
+	//}
+	//catch (exception& e) {
+	//	cout << "Exception InsertAt (kapacitet): " << e.what() << endl;
+	//}
 
 	//cout << "KOLEKCIJA INSERT AT: " << endl;
 	//cout << kolekcijaInsertAt << endl;
 
 
-	///*UkloniRaspon uklanja broj elemenata definisan drugim parametrom, pocevsi od lokacije
-	//definisane prvim parametrom (ukljucujuci tu lokaciju). metoda vraca pokazivac na novu kolekciju sa uklonjenim
-	//elementima.*/
+	/* ========== RemoveRange ========== */
+
+	/*
+	* RemoveRange uklanja broj elemenata definisan drugim parametrom, pocevsi od
+	* lokacije definisane prvim parametrom (ukljucujuci tu lokaciju).
+	* Metoda vraca pokazivac na novu kolekciju sa uklonjenim elementima,
+	* a pozivalac je odgovoran za njenu dealokaciju.
+	*
+	* Nakon izvrsenja, objekat kolekcijaRemoveRange bi trebao posjedovati:
+	* D
+	* E
+	*
+	* a objekat kolekcijaOriginal:
+	* A
+	* B
+	* C
+	* F
+	* G
+	* H
+	* I
+	*/
 	//Kolekcija<char, 10>* kolekcijaRemoveRange = kolekcijaOriginal.RemoveRange(3, 2);
+
+	//try {
+	/* RemoveRange - neispravan opseg */
+	//	Kolekcija<char, 10>* neispravan = kolekcijaOriginal.RemoveRange(8, 5);
+	//	delete neispravan;
+	//}
+	//catch (exception& e) {
+	//	cout << "Exception RemoveRange (opseg): " << e.what() << endl;
+	//}
 
 	//cout << "KOLEKCIJA REMOVE RANGE: " << endl;
 	//cout << *kolekcijaRemoveRange << endl;
@@ -200,25 +336,112 @@ void main() {
 	//cout << "PREOSTALI ELEMENTI: " << endl;
 	//cout << kolekcijaOriginal << endl;
 
+	//delete kolekcijaRemoveRange;
 
+
+	/* ========== Zivotinja kolekcija ========== */
 
 	//Zivotinja zivotinja1("Maca", 4);
 	//Zivotinja zivotinja2("Cuko", 10);
 	//Zivotinja zivotinja3("Ptica", 1);
 	//Zivotinja zivotinja4("Slon", 4000);
 	//Zivotinja zivotinja5("Konj", 500);
+	//Zivotinja zivotinja6("Tigar", 200);
 
+	//Kolekcija<Zivotinja, 10> zooloskiOriginal;
 
-	//Kolekcija<Zivotinja, 10> zooloski;
+	//zooloskiOriginal.AddElement(zivotinja1);
+	//zooloskiOriginal.AddElement(zivotinja2);
+	//zooloskiOriginal.AddElement(zivotinja3);
+	//zooloskiOriginal.AddElement(zivotinja4);
+	//zooloskiOriginal.AddElement(zivotinja5);
 
-	//zooloski.AddElement(zivotinja1);
-	//zooloski.AddElement(zivotinja2);
-	//zooloski.AddElement(zivotinja3);
-	//zooloski.AddElement(zivotinja4);
-	//zooloski.AddElement(zivotinja5);
+	//try {
+	/* AddElement - duplikat (Zivotinja, operator ==) */
+	//	zooloskiOriginal.AddElement(zivotinja1);
+	//}
+	//catch (exception& err) {
+	//	cout << "Exception AddElement Zivotinja (duplikat): " << err.what() << endl;
+	//}
 
+	//cout << "ORIGINALNA ZOOLOSKA: " << endl;
+	//cout << zooloskiOriginal << endl;
 
-	//cout << zooloski;
+	/* konstruktor kopije */
+	//Kolekcija<Zivotinja, 10> zooloskiKopija = zooloskiOriginal;
+
+	//cout << "ZOOLOSKA KOPIJA (ctor): " << endl;
+	//cout << zooloskiKopija << endl;
+
+	/* operator = */
+	//Kolekcija<Zivotinja, 10> zooloskiDodjela;
+	//zooloskiDodjela = zooloskiOriginal;
+
+	//cout << "ZOOLOSKA DODJELA (op=): " << endl;
+	//cout << zooloskiDodjela << endl;
+
+	/*
+	* operator ()
+	* ocekivano: Cuko, Ptica, Slon
+	*/
+	//Kolekcija<Zivotinja, 10> zooloskiOP = zooloskiKopija(1, 3);
+
+	//cout << "ZOOLOSKA OPERATOR ( ): " << endl;
+	//cout << zooloskiOP << endl;
+
+	/*
+	* RemoveAt
+	* uklonjeno: Ptica
+	* preostalo: Maca, Cuko, Slon, Konj
+	*/
+	//Kolekcija<Zivotinja, 10> zooloskiRemoveAt = zooloskiKopija.RemoveAt(2);
+
+	//cout << "ZOOLOSKA REMOVE AT: " << endl;
+	//cout << zooloskiRemoveAt << endl;
+
+	//cout << "PREOSTALI ELEMENTI: " << endl;
+	//cout << zooloskiKopija << endl;
+
+	/*
+	* InsertAt
+	* ocekivano: Maca, Cuko, Tigar, Ptica, Slon, Konj
+	*/
+	//Kolekcija<Zivotinja, 10> zooloskiInsertAt = zooloskiOriginal.InsertAt(2, zivotinja6);
+
+	//try {
+	/* InsertAt - neispravna lokacija */
+	//	zooloskiInsertAt.InsertAt(15, zivotinja6);
+	//}
+	//catch (exception& e) {
+	//	cout << "Exception InsertAt Zivotinja (lokacija): " << e.what() << endl;
+	//}
+
+	//cout << "ZOOLOSKA INSERT AT: " << endl;
+	//cout << zooloskiInsertAt << endl;
+
+	/*
+	* RemoveRange
+	* uklonjeno: Slon, Konj
+	* preostalo: Maca, Cuko, Ptica
+	*/
+	//Kolekcija<Zivotinja, 10>* zooloskiRemoveRange = zooloskiOriginal.RemoveRange(3, 2);
+
+	//try {
+	/* RemoveRange - neispravan opseg */
+	//	Kolekcija<Zivotinja, 10>* neispravan = zooloskiOriginal.RemoveRange(8, 5);
+	//	delete neispravan;
+	//}
+	//catch (exception& e) {
+	//	cout << "Exception RemoveRange Zivotinja (opseg): " << e.what() << endl;
+	//}
+
+	//cout << "ZOOLOSKA REMOVE RANGE: " << endl;
+	//cout << *zooloskiRemoveRange << endl;
+
+	//cout << "PREOSTALI ELEMENTI: " << endl;
+	//cout << zooloskiOriginal << endl;
+
+	//delete zooloskiRemoveRange;
 
 
 	system("pause>0");
