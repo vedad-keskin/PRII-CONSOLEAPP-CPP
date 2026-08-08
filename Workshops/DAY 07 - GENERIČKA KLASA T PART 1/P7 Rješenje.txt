@@ -11,20 +11,18 @@ char* GetNizKaraktera(const char* tekst) {
 }
 
 
-template<class T>
+template<class T, int max>
 class Kolekcija { // Dicionary, Rjecnik , Parovi , Kolekcija
 public:
 	T* _niz;
-	int _max;
 	int _trenutno;
 
 
-	Kolekcija(int max = 10) {
+	Kolekcija() {
 
 		_trenutno = 0;
-		_max = max;
 
-		_niz = new T[_max];
+		_niz = new T[max];
 
 	}
 
@@ -33,9 +31,7 @@ public:
 
 		_trenutno = obj._trenutno;
 
-		_max = obj._max;
-
-		_niz = new T[_max];
+		_niz = new T[max];
 
 		for (int i = 0; i < _trenutno; i++)
 		{
@@ -53,9 +49,7 @@ public:
 
 			_trenutno = obj._trenutno;
 
-			_max = obj._max;
-
-			_niz = new T[_max];
+			_niz = new T[max];
 
 			for (int i = 0; i < _trenutno; i++)
 			{
@@ -89,7 +83,7 @@ public:
 
 		// Onemogućiti izlazak niza izvan opsega bacajem izuzetka tipa Exception
 
-		if (_max == _trenutno) {
+		if (max == _trenutno) {
 
 			throw exception("Kapacitet niza je popunjen");
 
@@ -118,133 +112,137 @@ public:
 
 	}
 
+	//                                     2         5
+	Kolekcija operator () (int pocetak, int kraj) {
+
+		Kolekcija kolekcijaOP;  // prazna kolekcija koja u sebi nema nista
 
 
-	bool IsEmpty() {
-		// Vršiti provjeru da li je niz prazan
-
-		//if (_trenutno == 0) {
-		//	return true;
-		//}
-		//else {
-		//	return false;
-		//}
-
-		return _trenutno == 0 ? true : false;
-
-	}
-
-
-	bool RemoveLast() {
-		// Uklanja zadnji element iz niza
-
-		//if (IsEmpty() == true) {
-		if (IsEmpty()) {
-
-			return false;
-
-		}
-
-		_trenutno--;
-
-		return true;
-
-	}
-
-
-	bool RemoveAt(int lokacija) { // 3
-		// Uklanja element na određenoj poziciji
-
-		if (IsEmpty() || lokacija < 0 || lokacija >= _trenutno) {
-
-			return false;
-
-		}
-
-		for (int i = lokacija; i < _trenutno - 1; i++)
+		for (int i = pocetak; i <= kraj; i++)
 		{
-			_niz[i] = _niz[i + 1];
+			kolekcijaOP.AddElement(_niz[i]);
 		}
 
-		_trenutno--;
-
+		return kolekcijaOP;
 
 	}
 
 
-	bool RemoveAt(T el) {
-		// Uklanja element koji je jednak proslijeđenom
-
-		for (int i = 0; i < _trenutno; i++)
-		{
-
-			if (el == _niz[i]) { // C == C --> niz[2] = C 
-
-				//      2 3 4 5 
-				for (int j = i; j < _trenutno - 1; j++)
-				{
-					_niz[j] = _niz[j + 1];
-				}
-
-				_trenutno--;
-
-				return true;
-			}
-
-		}
 
 
-	}
 
 
-	void InsertAt(T el, int lokacija) {
-		// Dodaje element na određenu lokaciju
-
-		if (_trenutno == _max || IsEmpty() || lokacija < 0 || lokacija >= _trenutno) {
-
-			return;
-
-		}
-
-		for (int i = _trenutno; i > lokacija; i--)
-		{
-			_niz[i] = _niz[i - 1];
-		}
-
-		_niz[lokacija] = el;
-
-		_trenutno++;
-
-	}
 
 
-	T* GetNajmanjiElement() {
-		// Vraća najmanji element iz niza i to kao pokazivač
+	/* metoda RemoveAt treba da ukloni i vrati (kao povratnu vrijednost) clanoverijecnika koji se nalaze na lokaciji definisanoj prvim parametrom.
+	* Nakon izvrsenja metode RemoveAt, objekat kolekcijaSlova bi trebao posjedovati sljedeci sadrzaj:
+	* A
+	* B
+	* D
+	* E
+	* ....
+	*
+	* a objekat kolekcijaRemoveAt samo element:
+	* C
+	*/
 
-		if (IsEmpty()) {
+
+	Kolekcija RemoveAt(int lokacija) { // alt. Ukloni
+
+
+		Kolekcija kolekcijaRemoveAt; // prazna kolekcija 
+
+		Kolekcija kolekcijaOriginal; // prazna kolekcija 
 		
-			return nullptr;
-
-		}
-
-		// 12 6 8 3 4
-
-		//int najmanji = INT_MAX;
-		T* najmanji = new T(_niz[0]); // 12
 
 		for (int i = 0; i < _trenutno; i++)
 		{
-			//     int > int , 6 > 3 , char > char , A > B , .. Zivotinja > Zivotinja 
-			if (*najmanji > _niz[i]) {
 
-				*najmanji = _niz[i]; // 3
+			if (lokacija == i) {
+
+				kolekcijaRemoveAt.AddElement(_niz[i]);
+
+			}
+			else {
+
+				kolekcijaOriginal.AddElement(_niz[i]);
+
+
+			}
+
+
+		}
+
+
+		*this = kolekcijaOriginal;
+
+		return kolekcijaRemoveAt;
+
+	}
+
+
+	//InsertAt dodaje novi par na lokaciju definisanu prvim parametrom. metoda vraca trenutno stanje kolekcije.
+	//u slucaju popunjene kolekcije ili neispravne lokacije potrebno je baciti izuzetak (za potrebe testiranja mozete dodati try catch blok).
+
+
+	Kolekcija InsertAt(int lokacija, T el) { // alt. DodajNaPoziciju
+
+		if (_trenutno == max || lokacija < 0 || lokacija > _trenutno) {
+			throw exception("Lokacija ne postoji");
+		}
+
+		Kolekcija kolekcijaInsertAt;
+
+		for (int i = 0; i < _trenutno; i++)
+		{
+			if (i == lokacija) {
+				kolekcijaInsertAt.AddElement(el);
+			}
+			kolekcijaInsertAt.AddElement(_niz[i]);
+		}
+
+
+		return kolekcijaInsertAt;
+	}
+
+
+	/*UkloniRaspon uklanja broj elemenata definisan drugim parametrom, pocevsi od lokacije
+	definisane prvim parametrom (ukljucujuci tu lokaciju). metoda vraca pokazivac na novu kolekciju sa uklonjenim
+	elementima, a pozivalac je odgovoran za njenu dealokaciju.*/
+	//Kolekcija<char, 10>* kolekcijaRemoveRange = kolekcijaOriginal.RemoveRange(3, 2);
+
+	Kolekcija* RemoveRange(int lokacijaOd, int brojElemenata) {
+
+		if (lokacijaOd < 0 || lokacijaOd + brojElemenata > _trenutno) {
+			throw exception("Opseg nije ispravan");
+		}
+
+		Kolekcija* kolekcijaRemoveRange = new Kolekcija();
+
+		Kolekcija kolekcijaPreostali;
+
+		for (int i = 0; i < _trenutno; i++)
+		{
+
+			//    i >=   3         i < 3 + 2 = 5 ... 3 4  
+			if (i >= lokacijaOd && i < lokacijaOd + brojElemenata) {
+				kolekcijaRemoveRange->AddElement(_niz[i]);
+			}
+			else {
+
+				kolekcijaPreostali.AddElement(_niz[i]);
 
 			}
 		}
 
-		return najmanji;
+		*this = kolekcijaPreostali;
+
+		return kolekcijaRemoveRange;
 
 	}
+
+
+
 
 
 };
@@ -300,7 +298,7 @@ public:
 	}
 
 	friend ostream& operator << (ostream& COUT, const Zivotinja& obj) {
-		COUT << obj._naziv << " ["<<obj._tezina << " kg]";
+		COUT << obj._naziv << " [" << obj._tezina << " kg]";
 		return COUT;
 	}
 
@@ -317,68 +315,120 @@ void main() {
 
 	//cout << kolekcijaBrojeva;
 
-	//Kolekcija<char> kolekcijaSlova;
+	Kolekcija<char,10> kolekcijaOriginal;
 
-	//int ascii = 65; // A
+	int ascii = 65; // A
 
-	//for (int i = 0; i < 9; i++)
-	//{
-	//	kolekcijaSlova.AddElement(ascii + i); // 65 , 66 , 67 .. A B C ..
-	//}
+	for (int i = 0; i < 9; i++)
+	{
+		kolekcijaOriginal.AddElement(ascii + i); // 65 , 66 , 67 .. A B C ..
+	}
+
+	try {
+
+		kolekcijaOriginal.AddElement('C'); // --> exception 
+		
+	}
+	catch (exception& err) {
+
+		cout << err.what() << endl;
+
+	}
+
+	cout << "ORIGINALNA KOLEKCIJA: " << endl;
+	cout << kolekcijaOriginal << endl;
+
+	Kolekcija<char, 10> kolekcijaKopija = kolekcijaOriginal;
+
+
+	/*
+	* metoda prihvata indekse lokacije, te vraća elemente koji se u rjecniku nalaze na proslijedjenim lokacijama (ukljucujuci i te lokacije)
+	*/
+	Kolekcija<char, 10> kolekcijaOP = kolekcijaKopija(2, 5);
+
+
+	/*clanovi objekta kolekcijaOP bi trebali biti:
+	C
+	D
+	E
+	F
+	*/
+
+	cout << "KOLEKCIJA OPERATOR ( ): " << endl;
+	cout << kolekcijaOP << endl;
+
+
+
+
+
+	/* metoda RemoveAt treba da ukloni i vrati (kao povratnu vrijednost) clanoverijecnika koji se nalaze na lokaciji definisanoj prvim parametrom.
+	* Nakon izvrsenja metode RemoveAt, objekat kolekcijaSlova bi trebao posjedovati sljedeci sadrzaj:
+	* A 
+	* B 
+	* D 
+	* E 
+	* ....
+	*
+	* a objekat kolekcijaRemoveAt samo element:
+	* C
+	*/
+	Kolekcija<char, 10> kolekcijaRemoveAt = kolekcijaKopija.RemoveAt(2);
+
+
+	cout << "KOLEKCIJA REMOVE AT: " << endl;
+	cout << kolekcijaRemoveAt << endl;
+
+	cout << "PREOSTALI ELEMENTI: " << endl;
+	cout << kolekcijaKopija << endl;
+
+
+	//DodajNaPoziciju dodaje novi par na lokaciju definisanu prvim parametrom. metoda vraca trenutno stanje kolekcije.
+	//u slucaju popunjene kolekcije ili neispravne lokacije potrebno je baciti izuzetak (za potrebe testiranja mozete dodati try catch blok).
+
+	Kolekcija<char, 10> kolekcijaInsertAt = kolekcijaOriginal.InsertAt(2, 'X');
 
 	//try {
-
-	//	kolekcijaSlova.AddElement('C'); // --> exception 
-	//	
+	//	//za neispravan raspon potrebno je baciti izuzetak
+	//	kolekcijaInsertAt.InsertAt(15, 'Z');
 	//}
-	//catch (exception& err) {
-
-	//	cout << err.what() << endl;
-
+	//catch (exception& e) {
+	//	cout << "Exception: " << e.what() << endl;
 	//}
 
-	//kolekcijaSlova.RemoveLast();
-
-	//kolekcijaSlova.RemoveAt(3); // D
-
-	//kolekcijaSlova.RemoveAt('C');
-
-	//kolekcijaSlova.InsertAt('Z', 1);
-
-	//cout << kolekcijaSlova;
-
-	//cout << "Najmanji element niz je " << *kolekcijaSlova.GetNajmanjiElement() << endl;
+	cout << "KOLEKCIJA INSERT AT: " << endl;
+	cout << kolekcijaInsertAt << endl;
 
 
+	/*UkloniRaspon uklanja broj elemenata definisan drugim parametrom, pocevsi od lokacije
+	definisane prvim parametrom (ukljucujuci tu lokaciju). metoda vraca pokazivac na novu kolekciju sa uklonjenim
+	elementima.*/
+	Kolekcija<char, 10>* kolekcijaRemoveRange = kolekcijaOriginal.RemoveRange(3, 2);
 
-	Zivotinja zivotinja1("Maca", 4);
-	Zivotinja zivotinja2("Cuko", 10);
-	Zivotinja zivotinja3("Ptica", 1);
-	Zivotinja zivotinja4("Slon", 4000);
-	Zivotinja zivotinja5("Konj", 500);
+	cout << "KOLEKCIJA REMOVE RANGE: " << endl;
+	cout << *kolekcijaRemoveRange << endl;
+
+	cout << "PREOSTALI ELEMENTI: " << endl;
+	cout << kolekcijaOriginal << endl;
 
 
-	Kolekcija<Zivotinja> zooloski;
 
-	zooloski.AddElement(zivotinja1);
-	zooloski.AddElement(zivotinja2);
-	zooloski.AddElement(zivotinja3);
-	zooloski.AddElement(zivotinja4);
-	zooloski.AddElement(zivotinja5);
+	//Zivotinja zivotinja1("Maca", 4);
+	//Zivotinja zivotinja2("Cuko", 10);
+	//Zivotinja zivotinja3("Ptica", 1);
+	//Zivotinja zivotinja4("Slon", 4000);
+	//Zivotinja zivotinja5("Konj", 500);
 
-	//zooloski.RemoveLast();
 
-	//zooloski.RemoveAt(1);
+	//Kolekcija<Zivotinja, 10> zooloski;
 
-	//zooloski.RemoveAt(zivotinja1);
+	//zooloski.AddElement(zivotinja1);
+	//zooloski.AddElement(zivotinja2);
+	//zooloski.AddElement(zivotinja3);
+	//zooloski.AddElement(zivotinja4);
+	//zooloski.AddElement(zivotinja5);
 
-	Zivotinja zivotinja6("Vuk", 200);
 
-	zooloski.InsertAt(zivotinja6, 0);
-
-	cout << "Najmanja zivoitnja je " << *zooloski.GetNajmanjiElement() << endl;
-
-	cout << zooloski;
+	//cout << zooloski;
 
 
 	system("pause>0");
