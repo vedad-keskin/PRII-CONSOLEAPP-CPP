@@ -364,20 +364,20 @@ void main() {
 	//	cout << "Exception AddElement Zivotinja (duplikat): " << err.what() << endl;
 	//}
 
-	//cout << "ORIGINALNA ZOOLOSKA: " << endl;
+	//cout << "ZOOLOSKI ORIGINAL: " << endl;
 	//cout << zooloskiOriginal << endl;
 
 	/* konstruktor kopije */
 	//Kolekcija<Zivotinja, 10> zooloskiKopija = zooloskiOriginal;
 
-	//cout << "ZOOLOSKA KOPIJA (ctor): " << endl;
+	//cout << "ZOOLOSKI KOPIJA (ctor): " << endl;
 	//cout << zooloskiKopija << endl;
 
 	/* operator = */
 	//Kolekcija<Zivotinja, 10> zooloskiDodjela;
 	//zooloskiDodjela = zooloskiOriginal;
 
-	//cout << "ZOOLOSKA DODJELA (op=): " << endl;
+	//cout << "ZOOLOSKI DODJELA (op=): " << endl;
 	//cout << zooloskiDodjela << endl;
 
 	/*
@@ -386,7 +386,7 @@ void main() {
 	*/
 	//Kolekcija<Zivotinja, 10> zooloskiOP = zooloskiKopija(1, 3);
 
-	//cout << "ZOOLOSKA OPERATOR ( ): " << endl;
+	//cout << "ZOOLOSKI OPERATOR ( ): " << endl;
 	//cout << zooloskiOP << endl;
 
 	/*
@@ -396,7 +396,7 @@ void main() {
 	*/
 	//Kolekcija<Zivotinja, 10> zooloskiRemoveAt = zooloskiKopija.RemoveAt(2);
 
-	//cout << "ZOOLOSKA REMOVE AT: " << endl;
+	//cout << "ZOOLOSKI REMOVE AT: " << endl;
 	//cout << zooloskiRemoveAt << endl;
 
 	//cout << "PREOSTALI ELEMENTI: " << endl;
@@ -416,7 +416,7 @@ void main() {
 	//	cout << "Exception InsertAt Zivotinja (lokacija): " << e.what() << endl;
 	//}
 
-	//cout << "ZOOLOSKA INSERT AT: " << endl;
+	//cout << "ZOOLOSKI INSERT AT: " << endl;
 	//cout << zooloskiInsertAt << endl;
 
 	/*
@@ -435,7 +435,7 @@ void main() {
 	//	cout << "Exception RemoveRange Zivotinja (opseg): " << e.what() << endl;
 	//}
 
-	//cout << "ZOOLOSKA REMOVE RANGE: " << endl;
+	//cout << "ZOOLOSKI REMOVE RANGE: " << endl;
 	//cout << *zooloskiRemoveRange << endl;
 
 	//cout << "PREOSTALI ELEMENTI: " << endl;
