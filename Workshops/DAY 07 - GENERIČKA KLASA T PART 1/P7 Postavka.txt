@@ -42,7 +42,7 @@ public:
 	* metoda prihvata indekse lokacije, te vraca elemente koji se u kolekciji
 	* nalaze na proslijedjenim lokacijama (ukljucujuci i te lokacije)
 	*
-	* Nakon izvrsenja, objekat kolekcijaOP bi trebao posjedovati sljedeci sadrzaj:
+	* Nakon izvrsenja, objekat kolekcijaOperator bi trebao posjedovati sljedeci sadrzaj:
 	* C
 	* D
 	* E
@@ -50,7 +50,7 @@ public:
 	*
 	* objekat kolekcijaKopija ostaje nepromijenjen
 	*/
-	//Kolekcija<char, 10> kolekcijaOP = kolekcijaKopija(2, 5);
+	//Kolekcija<char, 10> kolekcijaOperator = kolekcijaKopija(2, 5);
 	Kolekcija operator()(int lokacijaOd, int lokacijaDo) {
 
 	}
@@ -162,7 +162,7 @@ void main() {
 	//cout << kolekcijaBrojeva << endl;
 
 	//try {
-	/* AddElement - kapacitet popunjen (max == 10) */
+		/* AddElement - kapacitet popunjen (max == 10) */
 	//	kolekcijaBrojeva.AddElement(99);
 	//}
 	//catch (exception& err) {
@@ -184,7 +184,7 @@ void main() {
 	//}
 
 	//try {
-	/* AddElement - duplikat */
+		/* AddElement - duplikat */
 	//	kolekcijaOriginal.AddElement('C');
 	//}
 	//catch (exception& err) {
@@ -279,7 +279,7 @@ void main() {
 	//Kolekcija<char, 10> kolekcijaInsertAt = kolekcijaOriginal.InsertAt(2, 'X');
 
 	//try {
-	/* InsertAt - neispravna lokacija */
+		/* InsertAt - neispravna lokacija */
 	//	kolekcijaInsertAt.InsertAt(15, 'Z');
 	//}
 	//catch (exception& e) {
@@ -287,7 +287,7 @@ void main() {
 	//}
 
 	//try {
-	/* InsertAt - kapacitet popunjen (kolekcijaBrojeva ima 10 elemenata) */
+		/* InsertAt - kapacitet popunjen (kolekcijaBrojeva ima 10 elemenata) */
 	//	kolekcijaBrojeva.InsertAt(0, 99);
 	//}
 	//catch (exception& e) {
@@ -322,7 +322,7 @@ void main() {
 	//Kolekcija<char, 10>* kolekcijaRemoveRange = kolekcijaOriginal.RemoveRange(3, 2);
 
 	//try {
-	/* RemoveRange - neispravan opseg */
+		/* RemoveRange - neispravan opseg */
 	//	Kolekcija<char, 10>* neispravan = kolekcijaOriginal.RemoveRange(8, 5);
 	//	delete neispravan;
 	//}
@@ -357,7 +357,7 @@ void main() {
 	//zooloskiOriginal.AddElement(zivotinja5);
 
 	//try {
-	/* AddElement - duplikat (Zivotinja, operator ==) */
+		/* AddElement - duplikat (Zivotinja, operator ==) */
 	//	zooloskiOriginal.AddElement(zivotinja1);
 	//}
 	//catch (exception& err) {
@@ -384,10 +384,10 @@ void main() {
 	* operator ()
 	* ocekivano: Cuko, Ptica, Slon
 	*/
-	//Kolekcija<Zivotinja, 10> zooloskiOP = zooloskiKopija(1, 3);
+	//Kolekcija<Zivotinja, 10> zooloskiOperator = zooloskiKopija(1, 3);
 
 	//cout << "ZOOLOSKI OPERATOR ( ): " << endl;
-	//cout << zooloskiOP << endl;
+	//cout << zooloskiOperator << endl;
 
 	/*
 	* RemoveAt
@@ -409,7 +409,7 @@ void main() {
 	//Kolekcija<Zivotinja, 10> zooloskiInsertAt = zooloskiOriginal.InsertAt(2, zivotinja6);
 
 	//try {
-	/* InsertAt - neispravna lokacija */
+		/* InsertAt - neispravna lokacija */
 	//	zooloskiInsertAt.InsertAt(15, zivotinja6);
 	//}
 	//catch (exception& e) {
@@ -427,7 +427,7 @@ void main() {
 	//Kolekcija<Zivotinja, 10>* zooloskiRemoveRange = zooloskiOriginal.RemoveRange(3, 2);
 
 	//try {
-	/* RemoveRange - neispravan opseg */
+		/* RemoveRange - neispravan opseg */
 	//	Kolekcija<Zivotinja, 10>* neispravan = zooloskiOriginal.RemoveRange(8, 5);
 	//	delete neispravan;
 	//}
