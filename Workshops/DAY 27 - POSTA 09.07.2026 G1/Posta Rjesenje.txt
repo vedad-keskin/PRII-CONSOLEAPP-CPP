@@ -63,6 +63,7 @@ ostream& operator<<(ostream& COUT, const VrstaDostave& obj) {
 
 
 enum StatusPosiljke { KREIRANA, PREUZETA, U_TRANZITU, ISPORUCENA, OTKAZANA };
+
 const char* StatusPosiljkeNazivi[] = { "KREIRANA", "PREUZETA", "U TRANZITU", "ISPORUCENA", "OTKAZANA" };
 
 ostream& operator<<(ostream& COUT, const StatusPosiljke& obj) {
@@ -85,12 +86,15 @@ rijeci. Redni broj mora biti u rasponu 1-9999.
 Za neispravne podatke funkcija vraca "BH-XX-0000-XX".
 */
 
-string GenerisiOznaku(const char* imeprezime, int id, VrstaDostave vd) {
+string GenerisiOznaku(const char* imePrezime, int redniBroj, VrstaDostave vrstaDostave){
 
 	string oznaka;
 
+	string ip = imePrezime;
 
-	if (id > 9999 || id < 1 || vd > MEDJUNARODNA || strchr(imeprezime, ' ') == nullptr) {
+
+	//if (redniBroj > 9999 || redniBroj < 1 || vrstaDostave > MEDJUNARODNA || strchr(imePrezime, ' ') == nullptr) {
+	if (redniBroj > 9999 || redniBroj < 1 || vrstaDostave > MEDJUNARODNA || ip.rfind(' ') == -1) {
 
 		oznaka = "BH-XX-0000-XX";
 
@@ -104,7 +108,7 @@ string GenerisiOznaku(const char* imeprezime, int id, VrstaDostave vd) {
 
 	// VD -> vrsta dostave: ST (standardna), BR (brza), MD (medjunarodna)
 
-	oznaka += VrstaDostaveOznake[vd];
+	oznaka += VrstaDostaveOznake[vrstaDostave];
 
 	oznaka += "-";
 
@@ -116,7 +120,7 @@ string GenerisiOznaku(const char* imeprezime, int id, VrstaDostave vd) {
 
 	stringstream ss;
 
-	ss << setfill('0') << setw(4) << id; // 1 -->  0001 -> 10 -> 0010 
+	ss << setfill('0') << setw(4) << redniBroj; // 1 -->  0001 -> 10 -> 0010 
 
 	oznaka += ss.str();
 
@@ -150,10 +154,9 @@ string GenerisiOznaku(const char* imeprezime, int id, VrstaDostave vd) {
 
 	// IN->inicijali imena i prezimena primaoca.
 
-	string ip = imeprezime;
 
-	char prvoSlovoImena = imeprezime[0];
-	char prvoSlovoPrezimena = imeprezime[ip.rfind(' ') + 1];
+	char prvoSlovoImena = toupper( imePrezime[0]);
+	char prvoSlovoPrezimena = imePrezime[ip.rfind(' ') + 1];
 
 	oznaka += prvoSlovoImena;
 	oznaka += prvoSlovoPrezimena;
@@ -177,9 +180,9 @@ bool ValidirajOznaku(const string& oznaka)
 
 bool ValidirajOznaku(const string& oznaka) {
 
-	regex pattern("(BH-)(ST-|BR-|MD-)(?!0000)[0-9]{4}[-][A-Z]{2}");
+	regex uzorak("(BH-)(ST-|BR-|MD-)(?!0000)[0-9]{4}[-][A-Z]{2}");
 
-	return regex_match(oznaka, pattern);
+	return regex_match(oznaka, uzorak);
 
 }
 
@@ -221,7 +224,6 @@ public:
 				delete _elementi1[i];
 				delete _elementi2[i];
 			}
-			_trenutno = 0;
 
 			_trenutno = obj._trenutno;
 
@@ -256,7 +258,7 @@ public:
 
 	Kolekcija DodajNaPoziciju(int lokacija, T1 el1, T2 el2) {
 
-		if (lokacija < 0 || lokacija > _trenutno || max == _trenutno) {
+		if (lokacija < 0 || lokacija >= _trenutno || max == _trenutno) {
 			throw exception("Lokacija ne postoji ili je kolekcija popunjena");
 		}
 
@@ -270,14 +272,9 @@ public:
 			prosireniInventar.Dodaj(*_elementi1[i], *_elementi2[i]);
 		}
 
-		if (lokacija == _trenutno) { 
-			prosireniInventar.Dodaj(el1, el2);
-		}
-
-		*this = prosireniInventar;
 
 
-		return *this;
+		return prosireniInventar;
 	}
 
 	/*
@@ -296,22 +293,31 @@ public:
 		}
 
 
-		pair<int, string> uklonjeni(*_elementi1[pozicija], *_elementi2[pozicija]); // 2 --> 
+		//pair<int, string> uklonjeni(*_elementi1[pozicija], *_elementi2[pozicija]); // 2 --> 
 
-		Kolekcija prosireniBrojevi;
+		pair<int, string> uklonjeni;
+
+		uklonjeni.first = *_elementi1[pozicija];
+		uklonjeni.second = *_elementi2[pozicija];
+
+
+		Kolekcija preostali;
+
+
+
 
 		for (int i = 0; i < _trenutno; i++)
 		{
 
 			if (pozicija != i) {
 
-				prosireniBrojevi.Dodaj(*_elementi1[i], *_elementi2[i]);
+				preostali.Dodaj(*_elementi1[i], *_elementi2[i]);
 
 			}
 
 		}
 
-		*this = prosireniBrojevi;
+		*this = preostali;
 
 
 		return uklonjeni;
@@ -321,14 +327,17 @@ public:
 
 
 	int GetTrenutno() const { return _trenutno; }
+	int GetTrenutno() { return _trenutno; }
+
 	T1& GetElement1(int indeks) { return *_elementi1[indeks]; }
 	T2& GetElement2(int indeks) { return *_elementi2[indeks]; }
 
 	const T1& GetElement1(int indeks) const { return *_elementi1[indeks]; }
 	const T2& GetElement2(int indeks) const { return *_elementi2[indeks]; }
 
-
 	T1& operator[](int indeks) { return *_elementi1[indeks]; }
+	T1& operator[](int indeks) const { return *_elementi1[indeks]; }
+
 
 	friend ostream& operator<<(ostream& COUT, const Kolekcija& obj) {
 		for (int i = 0; i < obj.GetTrenutno(); i++)
@@ -346,6 +355,7 @@ public:
 		_trenutno = 0;
 	}
 };
+
 class DatumVrijeme {
 	int* _dan, * _mjesec, * _godina, * _sati, * _minute;
 public:
@@ -436,18 +446,25 @@ public:
 };
 
 class Posiljka {
-	char* _oznaka; // BH-XX-0000-XX
-	char* _sadrzaj;
-	char* _imePrezimePrimaoca;
-	char* _emailPrimaoca;
-	VrstaDostave _vrstaDostave;
-	int _redniBroj;
+	char* _oznaka; // BH-BR-0042-AB
+	char* _sadrzaj; // "Dokumenti"
+	char* _imePrezimePrimaoca; // "Amina Buric"
+	char* _emailPrimaoca; // "amina@fit.ba"
+	VrstaDostave _vrstaDostave; // BRZA
+	int _redniBroj; // 42
+	Kolekcija<StatusPosiljke, DatumVrijeme, 10> _statusi;	
 
 	// enum StatusPosiljke { KREIRANA, PREUZETA, U_TRANZITU, ISPORUCENA, OTKAZANA };
-	Kolekcija<StatusPosiljke, DatumVrijeme, 10> _statusi;	// KREIRANA - 1.1.2000
-															// PREUZETA - 2.2.2000
-															// U_TRANZITU - 3.3.2000
-															// ISPORUCENA - 4.4.2000
+
+
+	// KREIRANA - 01.07.2026 08:00
+	// PREUZETA - 01.07.2026 09:00
+		// U_TRANZITU - 01.07.2026 10:00
+		// ISPORUCENA - 01.07.2026 11:00
+
+
+
+
 	void Dealociraj() {
 		delete[] _oznaka;
 		delete[] _sadrzaj;
@@ -457,21 +474,6 @@ class Posiljka {
 	}
 
 public:
-	const char* GetOznaka() const { return _oznaka; }
-	const char* GetSadrzaj() const { return _sadrzaj; }
-	const char* GetImePrezimePrimaoca() const { return _imePrezimePrimaoca; }
-	const char* GetEmailPrimaoca() const { return _emailPrimaoca; }
-	VrstaDostave GetVrstaDostave() const { return _vrstaDostave; }
-	int GetRedniBroj() const { return _redniBroj; }
-	Kolekcija<StatusPosiljke, DatumVrijeme, 10>& GetStatusi() { return _statusi; }
-
-	StatusPosiljke GetTrenutniStatus()const {
-		return _statusi.GetElement1(_statusi.GetTrenutno() - 1);
-	}
-
-	DatumVrijeme GetTrenutnoDatumVrijeme()const {
-		return _statusi.GetElement2(_statusi.GetTrenutno() - 1);
-	}
 
 	/*
 	Konstruktor Posiljke generise oznaku i evidentira pocetni status KREIRANA
@@ -494,6 +496,25 @@ public:
 		_statusi.Dodaj(KREIRANA, datumvrijeme);
 
 	}
+
+
+	const char* GetOznaka() const { return _oznaka; }
+	const char* GetSadrzaj() const { return _sadrzaj; }
+	const char* GetImePrezimePrimaoca() const { return _imePrezimePrimaoca; }
+	const char* GetEmailPrimaoca() const { return _emailPrimaoca; }
+	VrstaDostave GetVrstaDostave() const { return _vrstaDostave; }
+	int GetRedniBroj() const { return _redniBroj; }
+	Kolekcija<StatusPosiljke, DatumVrijeme, 10>& GetStatusi() { return _statusi; }
+
+	StatusPosiljke GetTrenutniStatus()const {
+		return _statusi.GetElement1(_statusi.GetTrenutno() - 1);
+	}
+
+	DatumVrijeme GetTrenutnoDatumVrijeme()const {
+		return _statusi.GetElement2(_statusi.GetTrenutno() - 1);
+	}
+
+
 
 	Posiljka(const Posiljka& obj) {
 
@@ -547,7 +568,12 @@ public:
 	false, bez izmjene kolekcije statusa.
 	*/
 
-	// KREIRANA -> 01.07.2026 08:00
+	// KREIRANA - 01.07.2026 08:00
+	// PREUZETA - 01.07.2026 09:00
+
+
+		// U_TRANZITU - 01.07.2026 07:00
+		// ISPORUCENA - 01.07.2026 11:00
 
 	bool DodajStatus(StatusPosiljke novistatus, DatumVrijeme novodatumvrijeme) { // 	PREUZETA 01.07.2026 09:00
 
@@ -602,9 +628,13 @@ public:
 	}
 
 	string ToString() const {
+
 		stringstream ss;
+
 		ss << _oznaka << " | " << _imePrezimePrimaoca << " | " << _vrstaDostave << " | " << _sadrzaj << " | " << GetTrenutniStatus();
+
 		return ss.str();
+
 	}
 
 
@@ -620,7 +650,6 @@ public:
 		Dealociraj();
 	}
 };
-
 
 mutex m;
 class DostavnaSluzba {
@@ -683,7 +712,7 @@ public:
 		for (int i = 0; i < _posiljke.size(); i++)
 		{
 			if (oznaka == _posiljke[i].GetOznaka()) {
-			
+
 				return new Posiljka(_posiljke[i]);
 
 			}
@@ -691,6 +720,11 @@ public:
 
 		return nullptr;
 	}
+
+
+
+
+
 	/*
 	EvidentirajStatus pronalazi posiljku na osnovu oznake i pokusava dodati
 	novi status koristeci pravila metode DodajStatus.
@@ -758,7 +792,7 @@ public:
 
 		}
 
-
+		return false;
 
 	}
 
@@ -805,27 +839,27 @@ public:
 		for (int i = 0; i < 5; i++) {
 
 
-			StatusPosiljke status = (StatusPosiljke)i; // KRE . PRE .. 
+			StatusPosiljke svakiStatus = (StatusPosiljke)i; // KRE . PRE .. 
 
-			int brojPosiljki = 0;
+			int brojacPosiljkiPoStatusu = 0;
 
 			// brojimo koliko posiljki ima taj trenutni status
-			for (int i = 0; i < _posiljke.size(); i++) {
-				if (_posiljke[i].GetTrenutniStatus() == status) {
 
-					brojPosiljki++;
+			for (int j = 0; j < _posiljke.size(); j++) {
+
+				if (_posiljke[j].GetTrenutniStatus() == svakiStatus) {
+
+					brojacPosiljkiPoStatusu++;
 
 				}
 			}
 
 			// dodajemo i ako je broj 0
-			statistika.Dodaj(status, brojPosiljki);
+			statistika.Dodaj(svakiStatus, brojacPosiljkiPoStatusu);
 		}
 
 		return statistika;
 	}
-
-
 
 
 
@@ -839,11 +873,12 @@ public:
 
 
 	friend ostream& operator << (ostream& COUT, const DostavnaSluzba& obj) {
-		COUT << "Posta: " << obj._naziv << endl;
+
+		COUT << "Dostavna sluzba: " << obj._naziv << endl;
 
 		for (int i = 0; i < obj._posiljke.size(); i++)
 		{
-			COUT << " - " << obj._posiljke[i] << endl;
+			COUT << obj._posiljke[i] << endl;
 		}
 
 		return COUT;
@@ -893,7 +928,6 @@ int main() {
 	cout << GenerisiOznaku("Amina Buric", 42, BRZA) << endl;
 	cout << GenerisiOznaku("Goran Skondric", 7, STANDARDNA) << endl;
 	cout << GenerisiOznaku("Ana Marija Kovac", 156, MEDJUNARODNA) << endl;
-	cout << GenerisiOznaku("Amina Buric", 10000, BRZA) << endl;
 
 	/*
 	Koristeci regex, funkcija ValidirajOznaku provjerava da li je oznaka
@@ -918,12 +952,12 @@ int main() {
 
 	cout << brojevi << crt;
 
-	/*
-	DodajNaPoziciju dodaje novi par na lokaciju/indeks definisanu prvim parametrom,
-	pomjera postojece pokazivace udesno i vraca trenutno stanje
-	kolekcije (izmijenjeni tj. prosireni objekat).
-	U slucaju popunjene kolekcije ili neispravne lokacije potrebno je baciti izuzetak.
-	*/
+	///*
+	//DodajNaPoziciju dodaje novi par na lokaciju/indeks definisanu prvim parametrom,
+	//pomjera postojece pokazivace udesno i vraca trenutno stanje
+	//kolekcije (izmijenjeni tj. prosireni objekat).
+	//U slucaju popunjene kolekcije ili neispravne lokacije potrebno je baciti izuzetak.
+	//*/
 
 	Kolekcija<int, string, 5> prosireniBrojevi = brojevi.DodajNaPoziciju(1, 15, "Petnaest");
 	cout << prosireniBrojevi << crt;
@@ -934,7 +968,7 @@ int main() {
 	Za poziciju izvan opsega baca se izuzetak.
 	*/
 
-	pair<int, string > uklonjeni = prosireniBrojevi.UkloniSaPozicije(2);
+	pair<int, string> uklonjeni = prosireniBrojevi.UkloniSaPozicije(2);
 
 	cout << "Uklonjeno: " << uklonjeni.first << " " << uklonjeni.second << crt;
 
@@ -965,6 +999,7 @@ int main() {
 
 
 	Kolekcija<int, string, 5> kopijaBrojeva = brojevi; // copy constr.
+
 	kopijaBrojeva[0] = 100;
 
 	Kolekcija<int, string, 5> dodijeljeniBrojevi;
@@ -980,7 +1015,7 @@ int main() {
 	DatumVrijeme preuzeta(1, 7, 2026, 9, 0);
 	DatumVrijeme tranzit(1, 7, 2026, 10, 0);
 	DatumVrijeme isporucena(1, 7, 2026, 11, 0);
-	///*
+	/*
 	//ToString vraca datum i vrijeme u formatu DD.MM.GGGG HH:MM,
 	//ukljucujuci pocetne nule.
 	//*/
@@ -1003,16 +1038,14 @@ int main() {
 	Posiljka knjige("Knjige", "Goran Skondric", "goran@fit.ba", STANDARDNA, 7, kreirana);
 	Posiljka oprema("Oprema", "Ana Marija Kovac", "ana@fit.ba", MEDJUNARODNA, 156, kreirana);
 
-	cout << dokumenti << endl;
-	cout << knjige << endl;
-	cout << oprema << endl;
-
 	/*
 	//ToString vraca podatke u formatu:
 	//oznaka | ime i prezime | vrsta dostave | sadrzaj | trenutni status
 	//BH-BR-0042-AB | Amina Buric | BRZA | Dokumenti | KREIRANA
 	//*/
 	cout << dokumenti.ToString() << crt;
+	cout << knjige.ToString() << crt;
+	cout << oprema.ToString() << crt;
 
 	if (dokumenti.ToString() == "BH-BR-0042-AB | Amina Buric | BRZA | Dokumenti | KREIRANA")
 		cout << "Posiljka ToString OK" << crt;
@@ -1026,16 +1059,22 @@ int main() {
 	Preskakanje, ponavljanje statusa i hronoloski neispravno vrijeme vracaju
 	false, bez izmjene kolekcije statusa.
 	*/
+
 	if (dokumenti.DodajStatus(PREUZETA, preuzeta))
 		cout << "Status PREUZETA dodan" << crt;
+
 	if (dokumenti.DodajStatus(U_TRANZITU, tranzit))
 		cout << "Status U TRANZITU dodan" << crt;
+
 	if (dokumenti.DodajStatus(ISPORUCENA, isporucena))
 		cout << "Status ISPORUCENA dodan" << crt;
+
 	if (!dokumenti.DodajStatus(OTKAZANA, isporucena))
 		cout << "Promjena zavrsnog statusa nije dozvoljena" << crt;
+
 	if (!knjige.DodajStatus(U_TRANZITU, preuzeta))
 		cout << "Preskakanje statusa nije dozvoljeno" << crt;
+
 	if (oprema.DodajStatus(OTKAZANA, preuzeta))
 		cout << "Posiljka otkazana" << crt;
 
@@ -1054,6 +1093,7 @@ int main() {
 	dvije posiljke sa istim rednim brojem ili istom oznakom. U slucaju
 	duplikata metoda baca izuzetak.
 	*/
+
 	brzaPosta.DodajPosiljku(knjige);
 	brzaPosta.DodajPosiljku(oprema);
 
@@ -1081,25 +1121,26 @@ int main() {
 
 
 	/*
-	//EvidentirajStatus pronalazi posiljku na osnovu oznake i pokusava dodati
-	//novi status koristeci pravila metode DodajStatus.
-	//Nakon svakog uspjesno evidentiranog statusa potrebno je u zasebnom threadu
-	//poslati obavijest primaocu. Obavijest se ne salje ako posiljka ne
-	//postoji ili status nije dodan, te u tim slucajevima metoda vraca false.
-	//Primjer sadrzaja obavijesti:
-	//------------------------------------------------------------------
-	//---------------
-	//To: goran@fit.ba
-	//From: info@brzaposta.ba
-	//Subject: Promjena statusa posiljke
-	//Postovani Goran Skondric,
-	//Posiljka BH-ST-0007-GS je promijenila status u PREUZETA.
-	//Vrijeme evidentiranja: 01.07.2026 09:00
-	//Hvala sto koristite nase usluge.
-	//BrzaPosta Tim
-	//------------------------------------------------------------------
-	//---------------
-	//*/
+	EvidentirajStatus pronalazi posiljku na osnovu oznake i pokusava dodati
+	novi status koristeci pravila metode DodajStatus.
+	Nakon svakog uspjesno evidentiranog statusa potrebno je u zasebnom threadu
+	poslati obavijest primaocu. Obavijest se ne salje ako posiljka ne
+	postoji ili status nije dodan, te u tim slucajevima metoda vraca false.
+	Primjer sadrzaja obavijesti:
+	------------------------------------------------------------------
+	---------------
+	To: goran@fit.ba
+	From: info@brzaposta.ba
+	Subject: Promjena statusa posiljke
+	Postovani Goran Skondric,
+	Posiljka BH-ST-0007-GS je promijenila status u PREUZETA.
+	Vrijeme evidentiranja: 01.07.2026 09:00
+	Hvala sto koristite nase usluge.
+	BrzaPosta Tim
+	------------------------------------------------------------------
+	---------------
+	*/
+
 	if (brzaPosta.EvidentirajStatus(oznakaKnjige, PREUZETA, preuzeta))
 		cout << "Status evidentiran i obavijest poslana" << crt;
 
@@ -1108,9 +1149,6 @@ int main() {
 
 	if (!brzaPosta.EvidentirajStatus("NEPOSTOJECA", PREUZETA, preuzeta))
 		cout << "Obavijest nije poslana za nepostojecu posiljku" << crt;
-
-
-	cout << brzaPosta << endl;
 
 
 
@@ -1136,6 +1174,9 @@ int main() {
 
 	DostavnaSluzba kopijaSluzbe = brzaPosta;
 	cout << kopijaSluzbe.GetNaziv() << " ima " << kopijaSluzbe.GetPosiljke().size() << " posiljki" << crt;
+
+
+	cout << brzaPosta << endl;
 
 	cin.get();
 	return 0;

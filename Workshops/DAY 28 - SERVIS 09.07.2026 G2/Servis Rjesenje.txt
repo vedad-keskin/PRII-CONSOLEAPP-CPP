@@ -15,23 +15,23 @@ using namespace std;
 
 string crt = "\n---------------------------------------------------------------------------------\n";
 string PORUKA_TELEFON = crt +
-	"TELEFONE ISKLJUCITE I ODLOZITE U TORBU, DZEP ILI DRUGU LOKACIJU VAN DOHVATA.\n"
-	"CESTO SE NA TELEFONIMA (PRO)NALAZE PROGRAMSKI KODOVI KOJI MOGU BITI ISKORISTENI ZA\n"
-	"RJESAVANJE ISPITNOG ZADATKA, STO CE, U SLUCAJU PRONALASKA, BITI SANKCIONISANO.\n\n"
-	"SVI KOD KOJIH BUDE PRONADJEN TELEFON ILI NEKI DRUGI UREDJAJ KOJI MOZE SADRZAVATI\n"
-	"MATERIJAL ILI RJESENJA ISPITNIH ZADATAKA CE BITI UDALJENI SA ISPITA I BIT CE POKRENUT\n"
-	"POSTUPAK PROTIV NJIH" + crt;
+"TELEFONE ISKLJUCITE I ODLOZITE U TORBU, DZEP ILI DRUGU LOKACIJU VAN DOHVATA.\n"
+"CESTO SE NA TELEFONIMA (PRO)NALAZE PROGRAMSKI KODOVI KOJI MOGU BITI ISKORISTENI ZA\n"
+"RJESAVANJE ISPITNOG ZADATKA, STO CE, U SLUCAJU PRONALASKA, BITI SANKCIONISANO.\n\n"
+"SVI KOD KOJIH BUDE PRONADJEN TELEFON ILI NEKI DRUGI UREDJAJ KOJI MOZE SADRZAVATI\n"
+"MATERIJAL ILI RJESENJA ISPITNIH ZADATAKA CE BITI UDALJENI SA ISPITA I BIT CE POKRENUT\n"
+"POSTUPAK PROTIV NJIH" + crt;
 string PORUKA_ISPIT = crt +
-	"0. PROVJERITE DA LI ZADACI PRIPADAJU VASOJ GRUPI (G1/G2)\n"
-	"1. SVE KLASE SA DINAMICKOM ALOKACIJOM MORAJU IMATI ISPRAVAN DESTRUKTOR\n"
-	"2. IZOSTAVLJANJE DESTRUKTORA ILI NJEGOVIH DIJELOVA BIT CE OZNACENO KAO TM\n"
-	"3. ATRIBUTI, METODE I PARAMETRI MORAJU BITI IDENTICNI ONIMA U TESTNOJ MAIN FUNKCIJI,\n"
-	" OSIM AKO POSTOJI JASNO OPISAN RAZLOG ZA MODIFIKACIJU\n"
-	"4. IZUZETKE BACAJTE SAMO TAMO GDJE JE IZRICITO NAGLASENO\n"
-	"5. SVE METODE KOJE SE POZIVAJU U MAIN-U MORAJU POSTOJATI.\n"
-	" AKO NEMATE ZELJENU IMPLEMENTACIJU, OSTAVITE PRAZNO TIJELO ILI VRATITE DEFAULT VRIJEDNOST\n"
-	"6. U MAIN FUNKCIJI MOZETE DODAVATI TESTNE PODATKE I POZIVE PO VLASTITOM IZBORU\n"
-	"7. TESTIRAJTE PROGRAM U OBA MODA (F5 i Ctrl+F5)" + crt;
+"0. PROVJERITE DA LI ZADACI PRIPADAJU VASOJ GRUPI (G1/G2)\n"
+"1. SVE KLASE SA DINAMICKOM ALOKACIJOM MORAJU IMATI ISPRAVAN DESTRUKTOR\n"
+"2. IZOSTAVLJANJE DESTRUKTORA ILI NJEGOVIH DIJELOVA BIT CE OZNACENO KAO TM\n"
+"3. ATRIBUTI, METODE I PARAMETRI MORAJU BITI IDENTICNI ONIMA U TESTNOJ MAIN FUNKCIJI,\n"
+" OSIM AKO POSTOJI JASNO OPISAN RAZLOG ZA MODIFIKACIJU\n"
+"4. IZUZETKE BACAJTE SAMO TAMO GDJE JE IZRICITO NAGLASENO\n"
+"5. SVE METODE KOJE SE POZIVAJU U MAIN-U MORAJU POSTOJATI.\n"
+" AKO NEMATE ZELJENU IMPLEMENTACIJU, OSTAVITE PRAZNO TIJELO ILI VRATITE DEFAULT VRIJEDNOST\n"
+"6. U MAIN FUNKCIJI MOZETE DODAVATI TESTNE PODATKE I POZIVE PO VLASTITOM IZBORU\n"
+"7. TESTIRAJTE PROGRAM U OBA MODA (F5 i Ctrl+F5)" + crt;
 
 
 char* AlocirajTekst(const char* tekst) {
@@ -451,7 +451,7 @@ class Klijent {
 	string _telefon;
 public:
 
-    Klijent(string imePrezime = "", string email = "", string telefon = "") {
+	Klijent(string imePrezime = "", string email = "", string telefon = "") {
 		_imePrezime = imePrezime;
 		_email = email;
 		_telefon = telefon;
@@ -510,10 +510,10 @@ public:
 	*/
 	//ServisniZahtjev laptop("Laptop", "Ne pokrece se", amina, 42, zaprimljen);
 
-    ServisniZahtjev(const char* uredjaj, const char* opisKvara, Klijent klijent, int redniBroj, DatumVrijeme datum) {
+	ServisniZahtjev(const char* uredjaj, const char* opisKvara, Klijent klijent, int redniBroj, DatumVrijeme datum) {
 
 
-		_oznaka = AlocirajTekst(GenerisiOznaku(klijent.GetImePrezime(), redniBroj, datum.GetGodina() ).c_str());
+		_oznaka = AlocirajTekst(GenerisiOznaku(klijent.GetImePrezime(), redniBroj, datum.GetGodina()).c_str());
 
 
 		_uredjaj = AlocirajTekst(uredjaj);
@@ -521,7 +521,7 @@ public:
 
 		_redniBroj = redniBroj;
 		_klijent = klijent;
-		
+
 		_statusi.Dodaj(ZAPRIMLJEN, datum);
 	}
 
@@ -673,7 +673,13 @@ public:
 
 
 	bool operator == (const ServisniZahtjev& obj) const {
-		return _oznaka == obj._oznaka || _redniBroj == obj._redniBroj;
+
+		// 	char* _oznaka; -> strcmp 
+		//  string _oznaka; -> == 
+		//  char* string -> mix .. == 
+
+		return strcmp(_oznaka , obj._oznaka ) == 0 || _redniBroj == obj._redniBroj;
+
 	}
 
 	const char* GetOznaka() const { return _oznaka; }
@@ -697,7 +703,7 @@ public:
 
 	string ToString() const {
 		stringstream ss;
-		ss << _oznaka << " | " << _klijent.GetImePrezime() << " | " << _uredjaj  << " | " << GetTrenutniStatus();
+		ss << _oznaka << " | " << _klijent.GetImePrezime() << " | " << _uredjaj << " | " << GetTrenutniStatus();
 		return ss.str();
 	}
 
@@ -748,7 +754,7 @@ public:
 	}
 
 	bool DodajZahtjev(ServisniZahtjev zahtjev) {
-		
+
 		for (int i = 0; i < _zahtjevi.size(); i++)
 		{
 			if (zahtjev == _zahtjevi[i]) {
@@ -1076,7 +1082,7 @@ int main() {
 
 	if (laptop.ToString() == "SRV-042/AB-2026 | Amina Buric | Laptop | ZAPRIMLJEN")
 		cout << "ServisniZahtjev ToString OK" << crt;
-	
+
 
 
 	//DodajStatus dodaje status samo ako je vrijeme vece od vremena posljednjeg
@@ -1085,7 +1091,7 @@ int main() {
 	//Preskakanje ili ponavljanje statusa nije dozvoljeno. Nakon statusa
 	//ZAVRSEN nisu dozvoljene nove promjene. Neuspjesan pokusaj vraca false
 	//bez izmjene kolekcije statusa.
-	
+
 	if (!laptop.DodajStatus(POPRAVKA, dijagnostika))
 		cout << "Preskakanje statusa nije dozvoljeno" << crt;
 	if (laptop.DodajStatus(DIJAGNOSTIKA, dijagnostika))
@@ -1095,7 +1101,7 @@ int main() {
 
 	cout << laptop << endl;
 
-	
+
 	//DodajIntervenciju dodaje intervenciju samo dok je zahtjev u statusu
 	//DIJAGNOSTIKA ili POPRAVKA, uz cijenu i trajanje vece od nule.
 	//Metoda vraca true ako je intervencija dodana, u suprotnom false.
@@ -1157,7 +1163,7 @@ int main() {
 	if (fitServis.PronadjiZahtjev("SRV-999/XX-2026") == nullptr)
 		cout << "Zahtjev nije pronadjen" << crt;
 
-	
+
 	//EvidentirajStatus pronalazi zahtjev i pokusava dodati status koristeci
 	//pravila metode DodajStatus.
 	//Racun se salje u zasebnom threadu iskljucivo nakon uspjesnog evidentiranja
