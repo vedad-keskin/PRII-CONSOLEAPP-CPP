@@ -42,8 +42,7 @@ string PORUKA_ISPIT = crt + "0. PROVJERITE DA LI ZADACI PRIPADAJU VASOJ GRUPI (G
 
 
 enum Kategorija { ELEKTRONIKA, KNJIGE, MODA, PREHRANA };
-const char* KategorijaNazivi[] = { "ELEKTRONIKA", "KNJIGE", "MODA",
-"PREHRANA" };
+const char* KategorijaNazivi[] = { "ELEKTRONIKA", "KNJIGE", "MODA", "PREHRANA" };
 
 ostream& operator << (ostream& COUT, const Kategorija& obj) {
 	COUT << KategorijaNazivi[obj];
@@ -53,7 +52,7 @@ ostream& operator << (ostream& COUT, const Kategorija& obj) {
 
 
 //funkcija za generisanje sifre kupca na osnovu imena i prezimena i rednog broja.
-	//sifra je u formatu INICIJALI:TRENUTNA_GODINA-ID_KUPCA, npr. AB:2025-003.
+//sifra je u formatu INICIJALI:TRENUTNA_GODINA-ID_KUPCA, npr. AB:2025-003.
 
 string GenerisiSifru(const char* imeprezime, int id) {
 
@@ -106,7 +105,7 @@ template<class T1, class T2, int max>
 class KolekcijaParova {
 	T1* _prvi[max] = { nullptr };
 	T2* _drugi[max] = { nullptr };
-	int _trenutno = 0; 
+	int _trenutno = 0;
 public:
 	KolekcijaParova() = default;
 
@@ -244,7 +243,7 @@ public:
 	T2& GetDrugi(int indeks) { return *_drugi[indeks]; }
 	T1& operator[](int indeks) { return *_prvi[indeks]; }
 
-	friend ostream& operator<<(ostream& COUT, const KolekcijaParova& obj) {
+	friend ostream& operator << (ostream& COUT, const KolekcijaParova& obj) {
 		for (int i = 0; i < obj._trenutno; i++)
 			COUT << obj.GetPrvi(i) << " " << obj.GetDrugi(i) << "\n";
 		return COUT;
@@ -317,13 +316,17 @@ class Proizvod {
 	int _cijena;
 public:
 	Proizvod(const char* naziv = "", Kategorija kategorija = ELEKTRONIKA, int cijena = 0) : _kategorija(kategorija), _cijena(cijena) {
+
 		_naziv = AlocirajTekst(naziv);
+
 	}
 
 	Proizvod(const Proizvod& obj) {
+
 		_naziv = AlocirajTekst(obj._naziv);
 		_kategorija = obj._kategorija;
 		_cijena = obj._cijena;
+
 	}
 
 	Proizvod& operator = (const Proizvod& obj) {
@@ -341,7 +344,7 @@ public:
 		return strcmp(_naziv, obj._naziv) == 0 && _cijena == obj._cijena && _kategorija == obj._kategorija;
 	}
 
-	~Proizvod() { 
+	~Proizvod() {
 		delete[] _naziv;
 		_naziv = nullptr;
 	}
@@ -383,7 +386,7 @@ public:
 
 	virtual ~Transakcija() {
 
-	
+
 	} // 3. RAZLIKA
 
 	virtual string Info() const = 0; // 2. RAZLIKA
@@ -437,6 +440,9 @@ public:
 
 		return ss.str();
 
+
+		//cout << *this;
+
 	}
 
 	bool operator == (const Kupovina& obj) const {
@@ -480,6 +486,7 @@ class Povrat : public Transakcija { // 1. KORAK
 	vector<Proizvod> _vraceniProizvodi;
 public:
 	Povrat(DatumVrijeme vrijemeRealizacije) : Transakcija(vrijemeRealizacije, 0) { // 2. KORAK
+
 	}
 
 	Povrat(const Povrat& obj) : Transakcija(obj) { // 3. KORAK
@@ -545,14 +552,22 @@ class Kupac {
 	static int _id;
 	char* _sifra;
 	char* _imePrezime;
-	vector<Transakcija*> _transakcije; // Transakcija * -> Kupovina/Povrat
 
+	vector<Transakcija*> _transakcije; // Transakcija* ------> Kupovina/Povrat
 
+	// 1. ISPIS -> Info()
+
+	// 2. DODAVANJE -> new Kupovina/Povrat
+
+	// 3. PRISTUP -> dynamic_cast
+
+	// 4. KOPIRANJE -> dynamic_cast
 
 public:
 	Kupac(const char* imePrezime) {
 
 		_imePrezime = AlocirajTekst(imePrezime);
+
 		_sifra = AlocirajTekst(GenerisiSifru(imePrezime, _id).c_str());
 		_id++;
 
@@ -638,6 +653,7 @@ public:
 	// dupliranje proizvoda, a povrat omoguciti samo ako je proizvod kupljen.U zavisnosti od rezultata izvrsenja
 	// metoda vraca true ili false
 
+
 	bool DodajTransakciju(Kupovina kupovina) {
 
 		for (int i = 0; i < _transakcije.size(); i++)
@@ -655,20 +671,22 @@ public:
 
 			}
 
+
+
+
+			// 3. PRISTUP
+
 			// Transakcija* -> Kupovina*
 
-		
 			Kupovina* castedKupovina = dynamic_cast<Kupovina*>(_transakcije[i]);
 
 
 			if (castedKupovina) {
 
 
-				for (int j = 0; j < castedKupovina->GetProizvodi().size(); j++)
-				{
+				for (int j = 0; j < castedKupovina->GetProizvodi().size(); j++) {
 
-					for (int k = 0; k < kupovina.GetProizvodi().size(); k++)
-					{
+					for (int k = 0; k < kupovina.GetProizvodi().size(); k++) {
 
 						if (castedKupovina->GetProizvodi()[j] == kupovina.GetProizvodi()[k]) {
 
@@ -690,6 +708,9 @@ public:
 
 		}
 
+
+
+
 		_transakcije.push_back(new Kupovina(kupovina)); // 2. DODAVANJE -> new Kupovina
 
 		return true;
@@ -702,6 +723,13 @@ public:
 
 		for (int i = 0; i < _transakcije.size(); i++)
 		{
+
+			//if (_transakcije[i]->GetVrijemeRealizacije() == povrat.GetVrijemeRealizacije()) { // TRANSAKCIJE ->  provjeravamo vrijeme
+
+			//	return false;
+
+			//}
+
 
 
 			// Transakcija* -> Kupovina*
@@ -721,8 +749,8 @@ public:
 
 						if (castedKupovina->GetProizvodi()[j] == povrat.GetProizvodi()[k]) {
 
-							
-							_transakcije.push_back(new Povrat(povrat)); 
+
+							_transakcije.push_back(new Povrat(povrat));
 
 							return true;
 
@@ -772,7 +800,7 @@ public:
 		COUT << crt << kupac._imePrezime << " [" << kupac._sifra << "]\n";
 
 		for (int i = 0; i < kupac._transakcije.size(); i++)
-			COUT << " - " << kupac._transakcije[i]->Info() << "\n"; // 1. ISPIS ->  Info()
+			COUT << " - " << kupac._transakcije[i]->Info() << "\n"; // 1. ISPIS -> Info()
 
 		COUT << crt;
 		return COUT;
@@ -885,6 +913,7 @@ public:
 						if (castedKupovina->GetProizvodi()[k].GetKategorija() == kategorija) {
 
 							ukupnaPotrosnja += castedKupovina->GetProizvodi()[k].GetCijena();
+
 							imaTransakciju = true;
 
 						}
@@ -1034,6 +1063,8 @@ int main() {
 	cout << GenerisiSifru("Amina Buric", 3) << endl; // AB:2025-003
 	cout << GenerisiSifru("Amar Macic", 15) << endl; // AM:2025-015
 	cout << GenerisiSifru("Maid Ramic", 156) << endl; // MR:2025-156
+
+
 	//za validaciju sifre koristiti funkciju ValidirajSifru koja treba, koristeci regex, osigurati postivanje osnovnih pravila
 	//vezanih za format koja su definisana u prethodnom dijelu zadatka.
 
@@ -1043,16 +1074,22 @@ int main() {
 		cout << "SIFRA NIJE VALIDNA\n";
 
 	KolekcijaParova<int, string, 20> listaProizvoda;
+
 	for (int i = 0; i < 10; i++)
 		listaProizvoda.Dodaj(i, "Proizvod_" + to_string(i));
+
 	cout << listaProizvoda << crt;
+
 	//DodajNaPoziciju - dodaje par (99, Proizdovi_99) na lokaciju 1 tj.lokaciju definisanu vrijednoscu prvog parametra,
 	// a vraca novo stanje kolekcije tj. kolekciju zajedno sa novododatim elementom
 
 	KolekcijaParova<int, string, 20> prosirenaLista = listaProizvoda.DodajNaPoziciju(1, 99, "Proizvod_99");
 	cout << prosirenaLista << crt;
+
+
 	// UkloniRaspon - od lokacije definisane prvim parametrom uklanja broj elemenata definisanih drugi parametrom
 	// (pocevsi od lokacije 2 ukloni 3 elementa), a vraca pokazivac na kolekciju parova s uklonjenim elementima
+
 	KolekcijaParova<int, string, 20>* uklonjeniProizvodi = prosirenaLista.UkloniRaspon(2, 3);
 	cout << "Uklonjeni:\n" << *uklonjeniProizvodi << crt;
 
@@ -1076,7 +1113,9 @@ int main() {
 	//*/
 
 	*uklonjeniProizvodi = prosirenaLista;
+
 	cout << "Proizvodi:\n" << *uklonjeniProizvodi << crt;
+
 	try
 	{
 		//baciti izuzetak u slucaju nepostojeceg opsega
@@ -1111,12 +1150,12 @@ int main() {
 
 
 
-	//////dodaje proizvod u listu kupljenih proizvoda i azurira iznos kupovine
+	//dodaje proizvod u listu kupljenih proizvoda i azurira iznos kupovine
 
 	kupovina1.DodajProizvod(telefon);
 	kupovina2.DodajProizvod(knjiga);
 
-	//format povratne vrijednosti info metode
+	////format povratne vrijednosti info metode
 	cout << kupovina1.Info() << endl; //05.10.2025 09:30:00 KUPLJENO 1 PROIZVODA U UKUPNOM IZNOSU OD 1500KM
 	cout << kupovina2.Info() << endl; //05.10.2025 09:30:00 KUPLJENO 1 PROIZVODA U UKUPNOM IZNOSU OD 1500KM
 
@@ -1131,7 +1170,7 @@ int main() {
 
 
 	kupovinaDuplikatProizvoda.DodajProizvod(knjiga);
-	//////amina je u kupovina2 vec kupila knjigu, duplikat proizvoda, onemoguciti dodavanje
+	//amina je u kupovina2 vec kupila knjigu, duplikat proizvoda, onemoguciti dodavanje
 
 	if (!amina.DodajTransakciju(kupovinaDuplikatProizvoda))
 		cout << "Duplikat proizvoda\n";
@@ -1143,9 +1182,9 @@ int main() {
 
 	Povrat povratKnjige(vrijeme2);
 	povratKnjige.DodajProizvod(knjiga);
-	////format povratne vrijednosti Info metode
+	//format povratne vrijednosti Info metode
 	cout << povratKnjige.Info() << endl; // 05.10.2025 10:15:00 VRACENO 1 PROIZVODA U UKUPNOM IZNOSU OD 55KM
-	////povrat dozvoljen samo ako je proizvod ranije kupljen
+	//povrat dozvoljen samo ako je proizvod ranije kupljen
 	if (amina.DodajTransakciju(povratKnjige))
 		cout << "Povrat uspjesno izvrsen\n";
 
@@ -1177,16 +1216,11 @@ int main() {
 		cout << "Transakcija registrovana\n";
 
 
-	cout << tehnika << endl;
-	cout << knjizara << endl;
-
-
-
 
 	vector<Prodavnica> prodavnice;
 	prodavnice.push_back(tehnika);
 	prodavnice.push_back(knjizara);
-	
+
 	//	Funkcija UcitajPodatke ima zadatak ucitati podatke o prodavnicama
 	//   i njihovim kupcima iz fajla cije ime se proslijedjuje kao parametar
 	//	(fajl mozete pronaci zajedno sa ispitnim zadatkom). Svaka linija u
@@ -1211,12 +1245,12 @@ int main() {
 	//	Zanin Vejzovic|Knjizara";
 	//
 
-	////string nazivFajla = "podaci.txt";
+	string nazivFajla = "podaci.txt";
 
-	////if (UcitajPodatke(nazivFajla, prodavnice)) cout << "Ucitavanje uspjesno" << crt;
+	if (UcitajPodatke(nazivFajla, prodavnice)) cout << "Ucitavanje uspjesno" << crt;
 
-	//for (auto& prodavnica : prodavnice)
-	//	cout << prodavnica.GetNaziv() << " sa " << prodavnica.GetKupci().size() << " kupaca" << crt;
+	for (auto& prodavnica : prodavnice)
+		cout << prodavnica.GetNaziv() << " sa " << prodavnica.GetKupci().size() << " kupaca" << crt;
 
 
 	//vraca listu svih kupaca iz prodavnice koji su imali najmanje jednu transakciju u proslijedjenoj kategoriji,
@@ -1227,6 +1261,10 @@ int main() {
 
 	for (int i = 0; i < potrosnja.GetTrenutno(); i++)
 		cout << potrosnja.GetPrvi(i).GetImePrezime() << " [" << potrosnja.GetPrvi(i).GetSifra() << "] " << " potrosio/la " << potrosnja.GetDrugi(i) << " KM na proizvode iz kategorije " << ELEKTRONIKA << crt;
+
+
+	cout << tehnika << endl;
+	cout << knjizara << endl;
 
 
 	cin.get();
